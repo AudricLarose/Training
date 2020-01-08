@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="nom"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        tools:layout_editor_absoluteX="155dp"
+        tools:layout_editor_absoluteY="264dp" />
+
+    <TextView
+        android:id="@+id/textView_password"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:hint="Mot de passe"
+        android:layout_below="@+id/textView_username"
+        tools:layout_editor_absoluteX="155dp"
+        tools:layout_editor_absoluteY="309dp" />
+    <TextView
+        android:id="@+id/choix1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="choix pas"
+        android:layout_below="@+id/textView_password"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        tools:layout_editor_absoluteX="155dp"
+        tools:layout_editor_absoluteY="264dp" />
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/choix1"
+        android:text="Bouton" />
+
+
+</RelativeLayout>
