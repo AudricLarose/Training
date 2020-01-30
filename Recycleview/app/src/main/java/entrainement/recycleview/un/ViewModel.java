@@ -28,7 +28,7 @@ public class ViewModel extends AndroidViewModel {
     public void deleteData (ExempleItem exempleItem) {
         repository.deletData(exempleItem);
     }
-    public void deleteAllData (ExempleItem exempleItem) {
+    public void deleteAllData () {
         repository.deletAllData();
     }
     public LiveData<List<ExempleItem>> SelectAllThoseDatas (){

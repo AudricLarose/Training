@@ -24,6 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Locale;
 
+import static android.media.AudioAttributes.USAGE_ALARM;
+
 public class timer extends Activity {
     private long START_TIME;
     private TextView timer;
@@ -46,7 +48,7 @@ public class timer extends Activity {
             int Myint= extras.getInt("valeur");
             ztimeleftMilis=Myint*60000;
             START_TIME=ztimeleftMilis;
-            notifyme();
+//            notifyme();
         }
 
         timer= findViewById(R.id.text_view_coutndown);
@@ -101,8 +103,7 @@ public class timer extends Activity {
             @Override
             public void onFinish() {
                 final long[] pattern = {2000,1000};
-                vibrator.vibrate(pattern,2);
-
+                vibrator.cancel();
                 ztimerRunning= false;
                 start.setText("start");
                 start.setVisibility(View.INVISIBLE);
@@ -115,6 +116,7 @@ public class timer extends Activity {
     }
 
     private void pauseTimer(){
+        vibrator.cancel();
         zcountDownTimer.cancel();
         ztimerRunning= false;
         start.setText("Start");
@@ -131,8 +133,8 @@ public class timer extends Activity {
 
     }
     private void updateCountdownText() {
-                        final long[] pattern = {200,100};
-//        vibrator.vibrate(pattern,1);
+        final long[] pattern1 = {750,50};
+        vibrator.vibrate(pattern1,1);
         int minutes = (int) (ztimeleftMilis/1000)/60;
         int seconds = (int) (ztimeleftMilis/1000)%60;
         String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="30sp"
+        android:textStyle="bold|italic"
+        android:text="Titre"/>
+
+    <TextView
+        android:id="@+id/texte"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title"
+        android:scrollbars="vertical"
+        android:background="@android:color/black"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempor varius erat, eget auctor nibh bibendum in. Maecenas sagittis ipsum id pellentesque accumsan. Integer at ex mauris. Vestibulum sit amet placerat libero, non pharetra neque. Aenean quam mi, mollis eget blandit vitae, maximus sed neque. Maecenas quis sapien neque. Maecenas sem purus, ultricies eget dapibus eget, consequat ac ipsum. Curabitur sapien leo, vulputate eu gravida ut, egestas eu tellus. Donec et tempus metus. Ut consectetur nulla nec luctus luctus. Donec vitae auctor dui, in molestie quam. Suspendisse at velit a nibh semper porta. Morbi finibus odio ac egestas consequat. Fusce ultricies porta mattis. Nunc id massa iaculis, facilisis arcu vitae, interdum nisl. Vivamus non tellus feugiat velit semper interdum quis ac magna.
+
+    Phasellus facilisis lacus massa, quis accumsan velit aliquam eu. Proin ligula mauris, sollicitudin at ante vel, sodales vestibulum elit. Nam at scelerisque mi. Quisque at pulvinar nisl, et commodo arcu. Duis sagittis, ipsum at finibus eleifend, dui nunc semper urna, quis scelerisque dui urna nec velit. Pellentesque justo massa, volutpat eu tempor eget, imperdiet quis diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non libero non augue luctus convallis vitae fermentum augue. Donec sit amet mattis sapien, non tristique erat. Fusce blandit nisi eu facilisis tincidunt. Proin vehicula, lacus a bibendum pretium, nunc mauris gravida turpis, a ultrices est nunc scelerisque massa. Morbi in turpis eu quam volutpat volutpat.
+
+    Ut suscipit, justo vel pellentesque malesuada, nisl odio euismod lorem, vel efficitur odio mauris bibendum urna. Suspendisse sit amet neque facilisis, aliquet tortor eu, sodales ipsum. Praesent auctor lacus vitae porta aliquet. Cras viverra mauris ac maximus sollicitudin. In cursus lectus urna, sit amet ultricies eros hendrerit id. Cras enim augue, volutpat nec efficitur et, vestibulum in quam. Donec tincidunt pulvinar erat sit amet ullamcorper. Nulla id pretium urna, vitae porttitor mi. Cras rhoncus, dui vel aliquet semper, elit lacus pharetra mi, ac porttitor erat ante sit amet velit. Donec pretium, dui vitae placerat tristique, enim lacus malesuada ante, at viverra nulla orci et lacus. Vestibulum in libero faucibus, vehicula ipsum quis, consectetur turpis. Etiam est erat, fermentum in iaculis sit amet, tincidunt ut erat. Donec sed libero eu mi imperdiet facilisis. Donec tristique non elit sed varius. Sed aliquet mi lacus, nec ultrices nisi scelerisque ac."
+        android:textColor="@android:color/white" />
+
+
+</RelativeLayout>

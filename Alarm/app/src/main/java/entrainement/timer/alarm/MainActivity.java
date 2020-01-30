@@ -53,29 +53,11 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         Button button= findViewById(R.id.alarm);
         EditText editText=findViewById(R.id.test);
 
-//        listedemots=heure.split("heure");
-//        String[] heure = listedemots[0].split(" ");
-//        String[] minute = listedemots[1].split(" ");
-//
-//        String[] listedemots2=heure2.split("heure");
-//        String[] heure2 = listedemots2[0].split(" ");
-//        String[] minute2 = listedemots2[1].split(" ");
-//
-//        String[] listedemots3=heure3.split("heure");
-//        String[] heure3 = listedemots3[0].split(" ");
-//        String[] minute3 = listedemots3[1].split(" ");
-
-//        int heures= Integer.parseInt(heure2[0]);
-//        int minutes= Integer.parseInt(minute2[1]);
-
-
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btnOpenMic();
-//                DialogFragment timePicker = new TimePickerFragment();
-//                timePicker.show(getSupportFragmentManager(),"time picker");
+
             }
         });
 
@@ -98,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         AlarmManager alarmManager= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent= new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent,0);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),pendingIntent);
 
     }
 

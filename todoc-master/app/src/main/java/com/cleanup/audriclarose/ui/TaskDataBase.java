@@ -19,7 +19,7 @@ public abstract TaskDao taskDao();
 public static synchronized TaskDataBase getInstance (Context context) {
     if (instance == null) {
         instance = Room.databaseBuilder(context.getApplicationContext(),
-                TaskDataBase.class, "Tache6")
+                TaskDataBase.class, "Tache10")
                 .fallbackToDestructiveMigration()
                 .addCallback(roomCallBack)
                 .build();
@@ -41,7 +41,6 @@ public static synchronized TaskDataBase getInstance (Context context) {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            taskDao.insertTask(new Task(1, 3, "premiere note",1222));
             return null;
         }
     }

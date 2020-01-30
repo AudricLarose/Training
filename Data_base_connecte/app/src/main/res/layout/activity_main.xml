@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imagetest"
+        android:layout_width="210dp"
+        android:layout_height="363dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        tools:layout_editor_absoluteX="-1dp" />
+
+    <ImageView
+        android:id="@+id/imagetest2"
+        android:layout_width="210dp"
+        android:layout_height="363dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        tools:layout_editor_absoluteX="-1dp" />
+
+    <Button
+        android:id="@+id/Imageajout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imagetest"
+        android:layout_alignParentStart="true"
+        android:text="Image"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="537dp" />
+    <Button
+        android:id="@+id/valider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imagetest"
+        android:layout_alignParentRight="true"
+        android:text="valider"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/titre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:layout_below="@+id/valider"
+        tools:layout_editor_absoluteX="-14dp"
+        tools:layout_editor_absoluteY="585dp" />
+
+    <EditText
+        android:id="@+id/longtext"
+        android:layout_width="414dp"
+        android:layout_height="match_parent"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:layout_below="@+id/titre"
+
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="630dp" />
+</RelativeLayout>

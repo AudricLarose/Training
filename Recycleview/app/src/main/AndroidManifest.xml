@@ -3,14 +3,37 @@
     package="entrainement.recycleview.un">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Note"
+        android:label="Data Note"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".carteDisplay"
+            android:label="@string/title_activity_carte_display"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.NoActionBar"></activity>
+
+        <receiver android:name=".mywidgetactivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/mywidgetactivity_info" />
+        </receiver>
+
+        <activity android:name=".mywidgetactivityConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

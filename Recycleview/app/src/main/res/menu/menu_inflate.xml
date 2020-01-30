@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/blue"
+        android:icon="@drawable/ic_casino_black_24dp_blue"
+        android:title="home"/>
+    <item android:id="@+id/orange"
+        android:icon="@drawable/ic_casino_black_24dp"
+        android:title="important"/>
+    <item android:id="@+id/violet"
+        android:icon="@drawable/ic_casino_black_24dp_violet8d65a6"
+        android:title="quick"/>
+</menu>

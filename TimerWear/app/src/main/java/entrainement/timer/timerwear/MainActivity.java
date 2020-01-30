@@ -23,9 +23,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ArrayList<item> ligne = new ArrayList<>();
-        for (int i = 10; i >= 1; i--) {
-            ligne.add(new item(i));
-        }
+        ligne.add(new item(2));
         recyclerView=findViewById(R.id.recycle);
         recyclerView.setHasFixedSize(true);
         adapter=new WRecycle(ligne);

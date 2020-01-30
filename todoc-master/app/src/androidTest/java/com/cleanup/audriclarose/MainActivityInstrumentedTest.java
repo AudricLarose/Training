@@ -1,13 +1,20 @@
 package com.cleanup.audriclarose;
 
+import androidx.room.Room;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
 import com.cleanup.audriclarose.ui.MainActivity;
+import com.cleanup.audriclarose.ui.TaskDao;
+import com.cleanup.audriclarose.ui.TaskDataBase;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +35,22 @@ import static org.junit.Assert.assertThat;
  * @author Gaëtan HERFRAY
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
 @RunWith(AndroidJUnit4.class)
 public class MainActivityInstrumentedTest {
+    private TaskDao userDao;
+    private TaskDataBase db;
+
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+
+    @Before
+    public void createDb() {
+        Context context = ApplicationProvider.getApplicationContext();
+        db = Room.inMemoryDatabaseBuilder(context, TaskDataBase.class).build();
+        userDao = db.taskDao();
+    }
+
 
     @Test
     public void addAndRemoveTask() {
@@ -47,7 +66,9 @@ public class MainActivityInstrumentedTest {
         assertThat(lblNoTask.getVisibility(), equalTo(View.GONE));
         // Check that recyclerView is displayed
         assertThat(listTasks.getVisibility(), equalTo(View.VISIBLE));
-        // Check that it contains one element only
+       //  Check that it contains one element only
+
+
         assertThat(listTasks.getAdapter().getItemCount(), equalTo(1));
 
         onView(withId(R.id.img_delete)).perform(click());
@@ -78,7 +99,7 @@ public class MainActivityInstrumentedTest {
                 .check(matches(withText("zzz Tâche example")));
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(2, R.id.lbl_task_name))
                 .check(matches(withText("hhh Tâche example")));
-
+//
         // Sort alphabetical
         onView(withId(R.id.action_filter)).perform(click());
         onView(withText(R.string.sort_alphabetical)).perform(click());

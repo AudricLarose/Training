@@ -20,9 +20,9 @@ public interface InterfaceDao {
     @Delete
     void delete(ExempleItem item);
 
-    @Query("SELECT * FROM training5 ORDER BY id DESC")
+    @Query("SELECT * FROM training8 ORDER BY id DESC")
     LiveData<List<ExempleItem>> select();
 
-    @Query("DELETE FROM training5")
+    @Query("DELETE FROM training8")
     void deleteAll();
 }

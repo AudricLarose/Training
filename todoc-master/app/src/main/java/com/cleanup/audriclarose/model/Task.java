@@ -15,12 +15,19 @@ import java.util.Comparator;
  * @author Gaëtan HERFRAY
  */
 
-@Entity(tableName = "Tache6")
+@Entity(tableName = "Tache10")
 public class Task {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private long projectId;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     // Suppress warning because setName is called in constructor
     @SuppressWarnings("NullableProblems")
@@ -32,13 +39,11 @@ public class Task {
     /**
      * Instantiates a new Task.
      *
-     * @param id                the unique identifier of the task to set
      * @param projectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
      */
-    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
-        this.setId(id);
+    public Task(long projectId, @NonNull String name, long creationTimestamp) {
         this.setProjectId(projectId);
         this.setName(name);
         this.setCreationTimestamp(creationTimestamp);
@@ -56,24 +61,6 @@ public class Task {
      * Returns the unique identifier of the task.
      *
      * @return the unique identifier of the task
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Sets the unique identifier of the task.
-     *
-     * @param id the unique idenifier of the task to set
-     */
-    private void setId(long id) {
-        this.id = id;
-    }
-
-    /**
-     * Sets the unique identifier of the project associated to the task.
-     *
-     * @param projectId the unique identifier of the project associated to the task to set
      */
     private void setProjectId(long projectId) {
         this.projectId = projectId;

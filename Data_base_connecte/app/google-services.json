@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "653024772257",
+    "firebase_url": "https://databaseconnecte.firebaseio.com",
+    "project_id": "databaseconnecte",
+    "storage_bucket": "databaseconnecte.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653024772257:android:9daefbedbc06c4c60430e0",
+        "android_client_info": {
+          "package_name": "entrainement.timer.data_base_connecte"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653024772257-9rmui3ns4ee6e7kte1aqrqlhvtnuuthg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "entrainement.timer.data_base_connecte",
+            "certificate_hash": "7b45ceb12c5f09320066d47f361c72293e49c58c"
+          }
+        },
+        {
+          "client_id": "653024772257-ig1dm4sq9ksns3rcueua8e25d73iofks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo-8sas6A-TR2pEs5lR_dwblrGeub297o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653024772257-ig1dm4sq9ksns3rcueua8e25d73iofks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

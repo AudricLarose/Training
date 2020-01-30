@@ -1,8 +1,10 @@
 package com.cleanup.audriclarose.ui;
 
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import 	androidx.recyclerview.widget.ItemTouchHelper.Callback;
 
 import android.util.Log;
 import android.view.Menu;
@@ -21,19 +24,27 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.cleanup.audriclarose.R;
 import com.cleanup.audriclarose.model.Project;
 import com.cleanup.audriclarose.model.Task;
+import com.cleanup.audriclarose.ui.TaskViewModel;
+import com.cleanup.audriclarose.ui.TasksAdapter;
+
 
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TooManyListenersException;
+
+import static android.provider.Settings.System.getString;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -65,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
     private TasksAdapter.TaskViewHolder itemss;
-    private Updates updates=new Updates();
 
     @Override
     protected void onStart() {
@@ -95,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         lblNoTasks = findViewById(R.id.lbl_no_task);
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
-       // adapter.setClicketit(new TasksAdapter.onitemclick() {
+        // adapter.setClicketit(new TasksAdapter.onitemclick() {
         //    @Override
-          //  public void clickclick(int position) {
-            //    appelShowCase();
-            //}
+        //  public void clickclick(int position) {
+        //    appelShowCase();
+        //}
         //});
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 adapter.updateTasks(task);
                 tache=task;
                 updateTasks();
+
             }
         });
 
@@ -139,8 +150,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     public void appelShowCase() {
-        Updates updates=new Updates();
-        updates.show(getSupportFragmentManager(),"Update de la liste");
+//        Updates updates=new Updates();
+//        updates.show(getSupportFragmentManager(),"Update de la liste");
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -167,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public void onDeleteTask(Task task) {
         //todo : effacer
         tasks.remove(task);
+        taskViewModel.deleteThisData(task);
         updateTasks();
     }
     /**
@@ -188,14 +200,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
             // If a name has not been set
             if (taskName.trim().isEmpty()) {
-                dialogEditText.setError(getString(R.string.empty_task_name));
+//                dialogEditText.setError(getString(R.string.empty_task_name));
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
                 // TODO: Replace this by id of persisted task
-                long id = (long) (Math.random() * 50000);
+
                 Task task = new Task(
-                        id,
                         taskProject.getId(),
                         taskName,
                         new Date().getTime()
@@ -244,13 +255,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
 
+    //todo ici
     private void updateTasks() {
         if (tache.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
-            lblNoTasks.setVisibility(View.GONE);
-            listTasks.setVisibility(View.VISIBLE);
+               lblNoTasks.setVisibility(View.GONE);
+             listTasks.setVisibility(View.VISIBLE);
             switch (sortMethod) {
                 case ALPHABETICAL:
                     Log.d(TAG,     "updateTasks: alpha");
@@ -267,89 +279,88 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                     break;
             }
 
-           adapter.updateTasks(tache);
+            adapter.updateTasks(tache);
+        }
+        }
+
+        /**
+         * Returns the dialog allowing the user to create a new task.
+         *
+         * @return the dialog allowing the user to create a new task
+         */
+        @NonNull
+        private AlertDialog getAddTaskDialog() {
+            final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.Dialog);
+
+            alertBuilder.setTitle(R.string.add_task);
+            alertBuilder.setView(R.layout.dialog_add_task);
+            alertBuilder.setPositiveButton(R.string.add, null);
+            alertBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    dialogEditText = null;
+                    dialogSpinner = null;
+                    dialog = null;
+                }
+            });
+
+            dialog = alertBuilder.create();
+
+            // This instead of listener to positive button in order to avoid automatic dismiss
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            onPositiveButtonClick(dialog);
+                        }
+                    });
+                }
+            });
+
+            return dialog;
+        }
+
+        /**
+         * Sets the data of the Spinner with projects to associate to a new task
+         */
+        private void populateDialogSpinner() {
+            final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allProjects);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            if (dialogSpinner != null) {
+                dialogSpinner.setAdapter(adapter);
+            }
+        }
+
+        @Override
+        public void clickclick(int position) {
+
+        }
+
+        private enum SortMethod {
+            /**
+             * Sort alphabetical by name
+             */
+            ALPHABETICAL,
+            /**
+             * Inverted sort alphabetical by name
+             */
+            ALPHABETICAL_INVERTED,
+            /**
+             * Lastly created first
+             */
+            RECENT_FIRST,
+            /**
+             * First created first
+             */
+            OLD_FIRST,
+            /**
+             * No sort
+             */
+            NONE
         }
     }
-
-    /**
-     * Returns the dialog allowing the user to create a new task.
-     *
-             * @return the dialog allowing the user to create a new task
-     */
-    @NonNull
-    private AlertDialog getAddTaskDialog() {
-        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.Dialog);
-
-        alertBuilder.setTitle(R.string.add_task);
-        alertBuilder.setView(R.layout.dialog_add_task);
-        alertBuilder.setPositiveButton(R.string.add, null);
-        alertBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                dialogEditText = null;
-                dialogSpinner = null;
-                dialog = null;
-            }
-        });
-
-        dialog = alertBuilder.create();
-
-        // This instead of listener to positive button in order to avoid automatic dismiss
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-
-                Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        onPositiveButtonClick(dialog);
-                    }
-                });
-            }
-        });
-
-        return alertBuilder.create();
-    }
-
-    /**
-     * Sets the data of the Spinner with projects to associate to a new task
-     */
-    private void populateDialogSpinner() {
-        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allProjects);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        if (dialogSpinner != null) {
-            dialogSpinner.setAdapter(adapter);
-        }
-    }
-
-    @Override
-    public void clickclick(int position) {
-
-    }
-
-    private enum SortMethod {
-        /**
-         * Sort alphabetical by name
-         */
-        ALPHABETICAL,
-        /**
-         * Inverted sort alphabetical by name
-         */
-        ALPHABETICAL_INVERTED,
-        /**
-         * Lastly created first
-         */
-        RECENT_FIRST,
-        /**
-         * First created first
-         */
-        OLD_FIRST,
-        /**
-         * No sort
-         */
-        NONE
-    }
-}

@@ -25,7 +25,7 @@ public class Repository {
     new deleteAsynchTask(interfaceDao).execute(exempleItem);
  }
  public void deletAllData (){
-        new deleteAsynchTask(interfaceDao).execute();
+        new dalateall(interfaceDao).execute();
  }
 
  public void update (ExempleItem exempleItem){
@@ -59,12 +59,9 @@ public class Repository {
     }
     public static class deleteAsynchTask extends AsyncTask<ExempleItem, Void, Void>{
         private InterfaceDao interfaceDao;
-
         public deleteAsynchTask(InterfaceDao interfaceDao) {
             this.interfaceDao = interfaceDao;
         }
-
-
         @Override
         protected Void doInBackground(ExempleItem... exempleItems) {
             interfaceDao.delete(exempleItems[0]);
@@ -73,11 +70,9 @@ public class Repository {
     }
     public static class dalateall extends  AsyncTask<Void,Void,Void>{
         private InterfaceDao interfaceDao;
-
         public dalateall(InterfaceDao interfaceDao) {
             this.interfaceDao = interfaceDao;
         }
-
         @Override
         protected Void doInBackground(Void... voids) {
             interfaceDao.deleteAll();
