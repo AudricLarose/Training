@@ -11,12 +11,31 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+// Your IDE likely can auto-import these classes, but there are several
+// different implementations so we list them here to disambiguate.
+import android.Manifest
+import android.content.pm.PackageManager
+import android.util.Size
+import android.graphics.Matrix
+import android.view.TextureView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import java.util.concurrent.TimeUnit
+
+// This is an arbitrary number we are using to keep track of the permission
+// request. Where an app has multiple context for requesting permission,
+// this can help differentiate the different contexts.
+
+// This is an array of all the permission specified in the manifest.
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private ImageView imageView;
+
+
     private Button bouton;
     private static final int IMAGE_REQUEST=101;
 

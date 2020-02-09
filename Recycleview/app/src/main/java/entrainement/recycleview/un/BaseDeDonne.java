@@ -17,7 +17,7 @@ public abstract class BaseDeDonne extends RoomDatabase {  // nom class simple et
     public static synchronized BaseDeDonne getInstance (Context context) {
         if (instance==null){
             instance= Room.databaseBuilder(context.getApplicationContext(),
-                    BaseDeDonne.class,"training8")
+                    BaseDeDonne.class,"training10")
                     .fallbackToDestructiveMigration()
                     .addCallback(callback)
                     .build();
@@ -36,7 +36,7 @@ public abstract class BaseDeDonne extends RoomDatabase {  // nom class simple et
         private requete(BaseDeDonne db) { interfaceDao = db.interfaceDao();}
         @Override
         protected Void doInBackground(Void... voids) {
-            interfaceDao.insert(new ExempleItem("note",1));
+            interfaceDao.insert(new ExempleItem("note","1"));
             return null;
         }
     }

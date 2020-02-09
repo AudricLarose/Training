@@ -2,9 +2,12 @@ package entrainement.recycleview.un;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.RemoteInput;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,11 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
@@ -121,9 +128,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.blue:
                         selectedFragment = new HomeFragment();
                         importantbouton.setVisibility(View.GONE);
+                        exempleAdapter.verify(false, MainActivity.this);
                         break;
                     case R.id.orange:
                         selectedFragment = new ImportantFragment();
+                        exempleAdapter.verify(true,MainActivity.this);
                         importantbouton.setVisibility(View.VISIBLE);
                         importantbouton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -136,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.violet:
                         selectedFragment = new quickFragment();
+                        exempleAdapter.verify(false,MainActivity.this);
                         importantbouton.setVisibility(View.GONE);
 
                         break;
@@ -170,55 +180,56 @@ public class MainActivity extends AppCompatActivity {
         db.collection("notebook")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                         List<String> listeArray=new ArrayList<>();
                         if (task.isSuccessful()) {
                             viewModel.deleteAllData();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String text = document.getString("titre");
+                                listeArray.add(text);
 //                                exempleItems.add(new ExempleItem(text,0));
 //                                exempleAdapter = new ExempleAdapter(exempleItems);
-                                viewModel.insertData(new ExempleItem(text,0));
+                                viewModel.insertData(new ExempleItem(text,"0"));
 //                                mrecycleview.setAdapter(exempleAdapter);
                                 Log.d(TAG, document.getId() + " => " + document.getData());
+                                androidx.core.app.RemoteInput remoteInput= new RemoteInput.Builder("key_text_reply")
+                                        .setLabel("Ajouter").build();
+                                Intent Outintent = new Intent(MainActivity.this, ReceveurMessage.class);
+                                PendingIntent replypendingintent= PendingIntent.getBroadcast(MainActivity.this,0,Outintent,0);
+                                NotificationCompat.Action action =new NotificationCompat.Action.Builder(R.drawable.ic_launcher_background, "Ajouter une tache",replypendingintent)
+                                        .addRemoteInput(remoteInput).build();
+                                Intent intent= new Intent (MainActivity.this,MainActivity.class);
+                                PendingIntent pendingIntent=PendingIntent.getActivity(MainActivity.this,0,intent,0);
+                                NotificationManager notificationManager= (NotificationManager) MainActivity.this.getSystemService(NOTIFICATION_SERVICE);
+                                NotificationChannel notificationChannel= new NotificationChannel("channel1", " Reminder",NotificationManager.IMPORTANCE_LOW);
+                                NotificationCompat.Builder builder=new NotificationCompat.Builder(MainActivity.this,"channel1");
+                                notificationManager.createNotificationChannel(notificationChannel);
+                                builder.setContentTitle("To-Do")
+                                        .setContentText("Acceder a la liste")
+                                        .setStyle(new NotificationCompat.BigTextStyle().bigText(listederoule(0,listeArray)+ " | "+ listederoule(1,listeArray)+ " | "+listederoule(2,listeArray)+ " | "+listederoule(3,listeArray)+ " | "+ listederoule(4,listeArray)+ " | "+listederoule(5,listeArray)))
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(false)
+                                        .setOngoing(true)
+                                        .addAction(action)
+                                        .setSmallIcon(R.mipmap.ic_launcher);
+                                notificationManager.notify(1,builder.build());
                             }
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        final StorageReference reference= storage.getReference()
-//                .child("123.jpg");
-//        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//               // Glide.with(MainActivity.this).load(uri).into(imageview5);
-//            }
-//        });
-//        File localFile = null;
-//        try {
-//            localFile = File.createTempFile("images", "jpg");
-//        } catch (IOException e) {
-//            Toast.makeText(MainActivity.this,"non",Toast.LENGTH_SHORT).show();
-//            e.printStackTrace();
-//        }
-//        reference.getFile(localFile)
-//                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                        String lien= reference.getDownloadUrl().toString();
-//
-//                        Toast.makeText(MainActivity.this,lien,Toast.LENGTH_SHORT).show();
-//                        // ...
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle failed download
-//                // ...
-//            }
-//        });
+
+    }
+    public  String listederoule (int x,List<String> liste){
+        if (x<=liste.size()-1){
+            return   liste.get(x);
+        } else {
+            return " ";
+        }
     }
 
     private void areYousure(RecyclerView.ViewHolder viewHolder) {
@@ -260,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         View view2= getLayoutInflater().from(MainActivity.this).inflate(R.layout.addinflated, null);
         editTextUsername= view2.findViewById(R.id.nom);
         alertDialog.setView(view2)
-                .setTitle("ajouter plan d'action")
+                .setTitle("Ajouter plan d'action")
                 .setPositiveButton("Ajouter", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -271,6 +282,17 @@ public class MainActivity extends AppCompatActivity {
                         String nom = editTextUsername.getText().toString();
                         Map<String, String> note= new HashMap<>();
                         note.put("titre",nom);
+                        note.put("phase1", " ");
+                        note.put("phase2", " ");
+                        note.put("phase3", " ");
+                        note.put("phase4", " ");
+                        note.put("phase5", " ");
+                        note.put("phase6", " ");
+                        note.put("phase7", " ");
+                        note.put("phase8", " ");
+                        note.put("phase9", " ");
+                        note.put("phase10", " ");
+
                         db.collection("important").document(nom)
                                 .set(note)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -283,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         Toast.makeText(MainActivity.this,"Pas de Reseau",Toast.LENGTH_SHORT).show();
-
                                     }
                                 });
                     }
@@ -323,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> voiceInText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String message =voiceInText.get(0);
                     message= message.substring(0,1).toUpperCase()+message.substring(1).toLowerCase();
-                    viewModel.insertData(new ExempleItem(message,1));
+                    viewModel.insertData(new ExempleItem(message,"1"));
                     dataGo(message);
                     Toast.makeText(MainActivity.this,voiceInText.get(0),Toast.LENGTH_LONG);
 
@@ -361,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveNote() {
         String nom = editTextUsername.getText().toString();        // je recupere le nom
-        viewModel.insertData(new ExempleItem(nom, 0));
+        viewModel.insertData(new ExempleItem(nom, "0"));
         exempleAdapter.notifyDataSetChanged();
         dataGo(nom);
     }

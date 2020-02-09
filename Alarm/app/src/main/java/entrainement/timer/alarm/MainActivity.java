@@ -1,6 +1,7 @@
 package entrainement.timer.alarm;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -76,11 +77,12 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         alarm.setText(timeText);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startAlarm (Calendar c){
         AlarmManager alarmManager= (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent= new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent,0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),pendingIntent);
 
     }
 

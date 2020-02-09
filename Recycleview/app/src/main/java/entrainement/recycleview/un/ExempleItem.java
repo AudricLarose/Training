@@ -6,24 +6,22 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 
-@Entity(tableName = "training8")
+@Entity(tableName = "traingin10")
 public class ExempleItem {
     @PrimaryKey (autoGenerate = true)
     private int id;
     private String nom;
-    private int color;
+    private String etape;
 
-
-    public ExempleItem(String nom, int color) {
+    public ExempleItem(String nom, String etape) {
         this.nom = nom;
-        this.color= color;
+        this.etape= etape;
 
     }
 
     public String getNom() {
         return nom;
     }
-
     public int getId() {
         return id;
     }
@@ -36,11 +34,12 @@ public class ExempleItem {
         this.nom = nom;
     }
 
-    public int getColor() {
-        return color;
+    public String getEtape() {
+        return etape;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setEtape(String etape) {
+        this.etape = etape;
     }
+
 }

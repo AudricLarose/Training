@@ -4,19 +4,17 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/RecycleView"
+        android:id="@+id/RecycleViewimportant"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/plusultra"
+        android:background="@drawable/image3"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/card"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true" >
-
-
-
+    
 </androidx.recyclerview.widget.RecyclerView>
 
 

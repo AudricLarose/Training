@@ -3,6 +3,8 @@
     package="entrainement.recycleview.un">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
 
     <application
         android:allowBackup="true"
@@ -10,11 +12,15 @@
         android:label="Data Note"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.NoActionBar">
+        <activity android:name=".Updating"
+            android:screenOrientation="portrait"
+            ></activity>
         <activity
             android:name=".carteDisplay"
             android:label="@string/title_activity_carte_display"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen.NoActionBar" />
 
         <receiver android:name=".mywidgetactivity">
             <intent-filter>
@@ -24,6 +30,13 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/mywidgetactivity_info" />
+        </receiver>
+        <receiver android:name=".ReceveurMessage"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
 
         <activity android:name=".mywidgetactivityConfigureActivity">
@@ -41,5 +54,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>

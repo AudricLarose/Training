@@ -2,7 +2,6 @@ package entrainement.recycleview.un;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,10 +49,8 @@ public class ImportantFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_important, container, false);
         Context context = view.getContext();
         mRecyclerView = (RecyclerView) view;
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
-
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT |ItemTouchHelper.RIGHT ) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -65,15 +62,7 @@ public class ImportantFragment extends Fragment {
                 areYousure(viewHolder);
             }
         }).attachToRecyclerView(mRecyclerView);
-//        textView1=view.findViewById(R.id.TextView1);
-//        textView1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent;
-//                intent = new Intent(this,carteDisplay.class);
-//                startActivity(intent);
-//            }
-//        });
+
         initList();
         return view;
     }
@@ -97,7 +86,7 @@ public class ImportantFragment extends Fragment {
                         ExempleItem task = new ExempleAdapter(mNeighbours).getPositionofTask(viewHolder.getAdapterPosition());
 //                        viewModel.deleteData(task);
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("important").document(task.toString()).delete();
+                        db.collection("important").document(task.getNom()).delete();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -120,7 +109,7 @@ public class ImportantFragment extends Fragment {
 //                            viewModel.deleteAllData();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String text = document.getString("titre");
-                                mNeighbours.add(new ExempleItem(text,0));
+                                mNeighbours.add(new ExempleItem(text,"0"));
                                 mRecyclerView.setAdapter(new ExempleAdapter(mNeighbours));
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }

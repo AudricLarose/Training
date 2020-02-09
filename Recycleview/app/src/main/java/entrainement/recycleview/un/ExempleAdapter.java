@@ -1,5 +1,7 @@
 package entrainement.recycleview.un;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 public class ExempleAdapter extends RecyclerView.Adapter<ExempleAdapter.leHolder> {
     private List<ExempleItem> liste;
     private ExempleItem item;
+    private Context context;
+    public static boolean intentverify=false;
 
 //    public ExempleAdapter(List<ExempleItem> liste, WeakReference<MainActivity> activity) {
 //        this.liste = liste;
@@ -30,6 +36,9 @@ public class ExempleAdapter extends RecyclerView.Adapter<ExempleAdapter.leHolder
 public ExempleAdapter(List<ExempleItem> liste) {
        this.liste = liste;
 }
+
+public void verify(boolean intentverify, Context context) {this.intentverify = intentverify; this.context=context;}
+
 
     public void ConsListe(List<ExempleItem> liste) {
         this.liste = liste;
@@ -41,7 +50,7 @@ public ExempleAdapter(List<ExempleItem> liste) {
     @NonNull
     @Override
     public leHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card, parent , false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card, parent, false);
         leHolder holder = new leHolder(view);
         return holder;
 
@@ -49,38 +58,21 @@ public ExempleAdapter(List<ExempleItem> liste) {
 
     @Override
     public void onBindViewHolder(@NonNull final leHolder holder, int position) {
-       final ExempleItem ligne = liste.get(position);
+        final ExempleItem ligne = liste.get(position);
         holder.nom.setText(ligne.getNom());
-//        holder.nom.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                changeColor(ligne);
-//                notifyDataSetChanged();
-//            }
-//        });
-
-        switch (ligne.getColor()) {
-            case 0:
-                break;
-            case 1:
-                holder.nom.setBackgroundColor(Color.parseColor("#cc33ff"));
-                break;
-            case 2:
-                holder.nom.setBackgroundColor(Color.parseColor("#993366"));
-                break;
-        }
-        if (ligne.getColor()==3){
-            ligne.setColor(0);
-        }
+        holder.nom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (intentverify) {
+                    Intent intent;
+                    intent = new Intent(v.getContext(), carteDisplay.class);
+                    intent.putExtra("layout", ligne.getNom());
+                    v.getContext().startActivity(intent);
+                }
+            }
+        });
     }
-//    public interface moninterface{
-//        public void autremethode ();
-//    }
     private void changeColor(ExempleItem ligne){
-       // this.activity.get().
-//        this.listener.autremethode();
-        int plus = ligne.getColor();
-        ligne.setColor(plus+1);
         notifyDataSetChanged();
     }
 
@@ -97,14 +89,14 @@ public ExempleAdapter(List<ExempleItem> liste) {
         private View cardView;
         private int[] colors;
 
-        public leHolder(@NonNull View itemView) {
+        public leHolder(@NonNull final View itemView) {
             super(itemView);
+            nom= itemView.findViewById(R.id.TextView1);
 //            colors=new int[]{Color.GREEN,Color.BLUE,Color.BLACK,Color.DKGRAY,Color.MAGENTA,Color.YELLOW,
 //                    };
 //            Random random = new Random();
 //            int colorArray = colors.length;
 //            int randomnum= random.nextInt(colorArray);
-            nom= itemView.findViewById(R.id.TextView1);
             cardView= itemView.findViewById(R.id.cardview);
 //            prenom= itemView.findViewById(R.id.TextView2);
 //            appreciation= itemView.findViewById(R.id.TextView3);

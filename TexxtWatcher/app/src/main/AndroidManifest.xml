@@ -5,6 +5,9 @@
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="true"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18"/>
+
 
     <application
         android:allowBackup="true"

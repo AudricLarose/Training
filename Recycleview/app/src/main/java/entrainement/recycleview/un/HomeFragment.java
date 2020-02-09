@@ -1,7 +1,12 @@
 package entrainement.recycleview.un;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.RemoteInput;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,12 +35,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+
+import static android.content.Context.KEYGUARD_SERVICE;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class HomeFragment extends Fragment {
     private ArrayList<ExempleItem> mNeighbours= new ArrayList<>();
     private RecyclerView mRecyclerView;
     private ExempleItem exempleItem;
     private Button Bouton_important;
+    private static final String KEY_TEXT_REPLY = "key_text_reply";
     private static final String TAG = "ImportantFragment";
     private ViewModel viewModel;
     @Nullable
@@ -63,12 +76,12 @@ public class HomeFragment extends Fragment {
      * Init the List of neighbours
      */
     private void areYousure(RecyclerView.ViewHolder viewHolder) {
-        androidx.appcompat.app.AlertDialog alertDialog= surtcheck(viewHolder);
+        AlertDialog alertDialog= surtcheck(viewHolder);
         alertDialog.show();
-
     }
-    private androidx.appcompat.app.AlertDialog surtcheck(final RecyclerView.ViewHolder viewHolder){
-        androidx.appcompat.app.AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
+
+    private AlertDialog surtcheck(final RecyclerView.ViewHolder viewHolder){
+        AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
         View view= getLayoutInflater().from(getContext()).inflate(R.layout.sure, null);
         builder.setView(view)
                 .setTitle("Effacer ?")
@@ -78,7 +91,13 @@ public class HomeFragment extends Fragment {
                         ExempleItem task = new ExempleAdapter(mNeighbours).getPositionofTask(viewHolder.getAdapterPosition());
 //                        viewModel.deleteData(task);
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("notebook").document(task.toString()).delete();
+                        db.collection("notebook").document(task.getNom()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d(TAG, "onComplete: ");
+                            }
+                        });
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -95,20 +114,54 @@ public class HomeFragment extends Fragment {
         db.collection("notebook")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    private List<String> listeArray=new ArrayList<>();
+
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
 //                            viewModel.deleteAllData();
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getId();
                                 String text = document.getString("titre");
-                                mNeighbours.add(new ExempleItem(text,0));
+                                listeArray.add(text);
+                                mNeighbours.add(new ExempleItem(text,"0"));
                                 mRecyclerView.setAdapter(new ExempleAdapter(mNeighbours));
+
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
+                            androidx.core.app.RemoteInput remoteInput= new RemoteInput.Builder("key_text_reply")
+                                    .setLabel("Ajouter").build();
+                            Intent Outintent = new Intent(getContext(), ReceveurMessage.class);
+                            PendingIntent replypendingintent= PendingIntent.getBroadcast(getContext(),0,Outintent,0);
+                            NotificationCompat.Action action =new NotificationCompat.Action.Builder(R.drawable.ic_launcher_background, "Ajouter une tache",replypendingintent)
+                                    .addRemoteInput(remoteInput).build();
+                            Intent intent= new Intent (getContext(),MainActivity.class);
+                            PendingIntent pendingIntent=PendingIntent.getActivity(getContext(),0,intent,0);
+                            NotificationManager notificationManager= (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE);
+                            NotificationChannel notificationChannel= new NotificationChannel("channel1", " Reminder",NotificationManager.IMPORTANCE_LOW);
+                            NotificationCompat.Builder builder=new NotificationCompat.Builder(getContext(),"channel1");
+                            notificationManager.createNotificationChannel(notificationChannel);
+                            builder.setContentTitle("To-Do")
+                                    .setContentText("Acceder a la liste")
+                                    .setStyle(new NotificationCompat.BigTextStyle().bigText(listederoule(0,listeArray)+ " | "+ listederoule(1,listeArray)+ " | "+listederoule(2,listeArray)+ " | "+listederoule(3,listeArray)+ " | "+ listederoule(4,listeArray)+ " | "+listederoule(5,listeArray)))
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(false)
+                                    .setOngoing(true)
+                                    .addAction(action)
+                                    .setSmallIcon(R.mipmap.ic_launcher);
+                            notificationManager.notify(1,builder.build());
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
+    }
+    public  String listederoule (int x,List<String> liste){
+        if (x<=liste.size()-1){
+            return   liste.get(x);
+        } else {
+            return " ";
+        }
     }
 }
