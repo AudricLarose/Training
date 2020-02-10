@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
-    @Query("SELECT * FROM Tache10 ORDER BY Id ASC")
+    @Query("SELECT * FROM bdd ORDER BY Id ASC")
     LiveData<List<Task>> selectAllTask();
 
     @Insert
@@ -27,6 +27,6 @@ public interface TaskDao {
     @Delete
     void DeleteTask(Task task);
 
-    @Query("DELETE FROM Tache10")
+    @Query("DELETE FROM bdd")
     void DeleteAllTask();
 }

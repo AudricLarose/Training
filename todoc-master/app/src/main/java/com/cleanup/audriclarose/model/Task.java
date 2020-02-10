@@ -15,7 +15,7 @@ import java.util.Comparator;
  * @author Gaëtan HERFRAY
  */
 
-@Entity(tableName = "Tache10")
+@Entity(tableName = "bdd")
 public class Task {
     @PrimaryKey(autoGenerate = true)
     private long id;

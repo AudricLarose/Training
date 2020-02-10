@@ -78,23 +78,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private TasksAdapter.TaskViewHolder itemss;
 
     @Override
-    protected void onStart() {
-        adapter.notifyDataSetChanged();
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         adapter.notifyDataSetChanged();
         super.onResume();
     }
-
-    @Override
-    protected void onPause() {
-        adapter.notifyDataSetChanged();
-        super.onPause();
-    }
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,12 +92,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         lblNoTasks = findViewById(R.id.lbl_no_task);
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
-        // adapter.setClicketit(new TasksAdapter.onitemclick() {
-        //    @Override
-        //  public void clickclick(int position) {
-        //    appelShowCase();
-        //}
-        //});
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,11 +102,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             @Override
             public void onChanged( List<Task> task) {
                 Log.d(TAG, "onChanged: "+ task);
-                Toast.makeText(MainActivity.this, "Work!",Toast.LENGTH_LONG).show();
                 adapter.updateTasks(task);
                 tache=task;
                 updateTasks();
-
             }
         });
 
@@ -149,10 +128,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         return true;
     }
 
-    public void appelShowCase() {
-//        Updates updates=new Updates();
-//        updates.show(getSupportFragmentManager(),"Update de la liste");
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -336,12 +311,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         }
 
-        @Override
-        public void clickclick(int position) {
+    @Override
+    public void clickclick(int position) {
 
-        }
+    }
 
-        private enum SortMethod {
+
+    private enum SortMethod {
             /**
              * Sort alphabetical by name
              */
