@@ -60,7 +60,8 @@ public class MainActivityInstrumentedTest {
         MainActivity activity = rule.getActivity();
         TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
         RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
-
+        onView(withId(R.id.action_filter)).perform(click());
+        onView(withText("Tous supprimer")).perform(click());
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("Tâche example"));
         onView(withId(android.R.id.button1)).perform(click());
@@ -154,7 +155,7 @@ public class MainActivityInstrumentedTest {
                 .check(matches(withText("aaa Tâche example")));
     }
     @Test
-    public void toutSupprimer(){
+    public void supprimerTout(){
         MainActivity activity = rule.getActivity();
         TextView lblNoTask = activity.findViewById(R.id.lbl_no_task);
         RecyclerView listTasks = activity.findViewById(R.id.list_tasks);
