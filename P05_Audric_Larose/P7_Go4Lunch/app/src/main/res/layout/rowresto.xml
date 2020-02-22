@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_marginBottom="40dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/photoresto"
+        android:layout_width="115dp"
+        android:layout_height="58dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/nomresto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="nom resto" />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/photoresto"
+        android:text="distance" />
+
+    <TextView
+        android:id="@+id/adresse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nomresto"
+        android:text="adresse" />
+
+    <TextView
+        android:id="@+id/horaire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+android:layout_below="@+id/adresse"
+        android:text="horaire" />
+
+    <TextView
+        android:id="@+id/perso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/distance"
+        android:layout_toLeftOf="@+id/photoresto"
+        android:text="perso" />
+
+    <TextView
+        android:id="@+id/etoile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/perso"
+        android:layout_toLeftOf="@+id/photoresto"
+        android:text="etoile" />
+</RelativeLayout>

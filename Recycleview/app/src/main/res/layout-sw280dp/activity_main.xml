@@ -76,7 +76,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:menu="@menu/menu_inflate"
-
         />
     <Button
         android:id="@+id/ajoutplan"

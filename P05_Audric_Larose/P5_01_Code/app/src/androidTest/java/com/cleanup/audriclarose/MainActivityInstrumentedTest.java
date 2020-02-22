@@ -82,6 +82,7 @@ public class MainActivityInstrumentedTest {
         // Check that recyclerView is not displayed anymore
         assertThat(listTasks.getVisibility(), equalTo(View.GONE));
     }
+
     @Test
     public void getListTask() {
         MainActivity activity = rule.getActivity();

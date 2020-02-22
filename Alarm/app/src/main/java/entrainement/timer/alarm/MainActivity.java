@@ -130,17 +130,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public void onTimeSet(ArrayList<String> voice) {
          listedemots =voice.toArray( new String[voice.size()]);
         String [] listedemotss=listedemots[0].split("h");
-
-//Toast.makeText(MainActivity.this,listedemots[0],Toast.LENGTH_LONG).show();
-
-//          listedemots=heure.split("heure");
-//        String[] heure = listedemots[0].split(" ");
-//        String[] minute = listedemots[1].split(" ");
-//
-//        String[] listedemots3=heure3.split("heure");
-//        String[] heure3 = listedemots3[0].split(" ");
-//        String[] minute3 = listedemots3[1].split(" ");
-
         int heures= Integer.parseInt(listedemotss[0]);
         int minutes= Integer.parseInt(listedemotss[1]);
         Calendar c = Calendar.getInstance();

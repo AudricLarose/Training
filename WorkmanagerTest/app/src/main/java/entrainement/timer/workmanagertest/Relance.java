@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import java.util.Calendar;
+import java.util.Random;
 
 public class Relance {
     private AlarmManager alarmManager;
@@ -20,25 +22,21 @@ public class Relance {
     public Relance(Context context) {
         this.context = context;
     }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void relancetoi(int x) {
-        Toast.makeText(context, "okok", Toast.LENGTH_LONG).show();
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, Alarmreceveur.class);
-        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
- Calendar calendar = Calendar.getInstance();
-////                calendar.setTimeInMillis(System.currentTimeMillis());
-//                calendar.set(Calendar.HOUR_OF_DAY, 1);
-//                calendar.set(Calendar.MINUTE, 12);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+x*60*1000,pendingIntent);
+    public void relancetoi(int hour,int minute) {
+        Vibrator vibrator= (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            final  long [] pattern = {2000,1000};
+            vibrator.vibrate(pattern,-1);
+        Calendar calendar = Calendar.getInstance();
+        final int random = new Random().nextInt(61) + 20; // [0, 60] + 20 => [20, 80]
 
-//                JobScheduler jobScheduler = (JobScheduler)getApplicationContext()
-//                        .getSystemService(JOB_SCHEDULER_SERVICE);
-//                ComponentName componentName = new ComponentName(MainActivity.this,
-//                        jobyjob.class);
-//                JobInfo jobInfoObj = new JobInfo.Builder(1, componentName)
-//                        .setPeriodic(50000).build();
-//                jobScheduler.schedule(jobInfoObj);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        AlarmManager am =(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context ,Alarmreceveur.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                random, intent, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        am.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
     }
 }

@@ -21,6 +21,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,59 +35,34 @@ private AlarmManager alarmManager;
 private PendingIntent pendingIntent;
     private Button bouton;
     private Button bouton2;
+    private int increment =1;
     private Relance relance;
+    private TextView compteur;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        compteur = (TextView) findViewById(R.id.chrono);
         setContentView(R.layout.activity_main);
-
-//        final PeriodicWorkRequest request = new  PeriodicWorkRequest.Builder(Worker_test.class,15,TimeUnit.MINUTES)
-//                .setInitialDelay(10,TimeUnit.SECONDS)
-//                .build();
-
-//        bouton= findViewById(R.id.button);
-//        bouton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                WorkManager.getInstance(MainActivity.this).enqueue(request);
-//            }
-//        });
-relance= new Relance(MainActivity.this);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         bouton2= findViewById(R.id.button2);
-        bouton2.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                relance.relancetoi(1);
-//                Toast.makeText(MainActivity.this,"okok",Toast.LENGTH_LONG).show();
-//alarmManager=(AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//Intent intent= new Intent(MainActivity.this,Alarmreceveur.class);
-//pendingIntent= PendingIntent.getBroadcast(MainActivity.this,0,intent,0);
-//// Calendar calendar = Calendar.getInstance();
-////                calendar.setTimeInMillis(System.currentTimeMillis());
-////                calendar.set(Calendar.HOUR_OF_DAY, 14);
-////                calendar.set(Calendar.MINUTE, 14);
-//                alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,SystemClock.elapsedRealtime()+60*100,pendingIntent);
-
-//                JobScheduler jobScheduler = (JobScheduler)getApplicationContext()
-//                        .getSystemService(JOB_SCHEDULER_SERVICE);
-//                ComponentName componentName = new ComponentName(MainActivity.this,
-//                        jobyjob.class);
-//                JobInfo jobInfoObj = new JobInfo.Builder(1, componentName)
-//                        .setPeriodic(50000).build();
-//                jobScheduler.schedule(jobInfoObj);
-            }
-        });
-
-//        final TextView textView=findViewById(R.id.Textview);
-//        WorkManager.getInstance(MainActivity.this).getWorkInfoByIdLiveData(request.getId())
-//                .observe(this, new Observer<WorkInfo>() {
-//                    @Override
-//                    public void onChanged(WorkInfo workInfo) {
-//                        String status = workInfo.getState().name();
-//                        textView.append(status+"\n");
-//                    }
-//                });
+        relance= new Relance(MainActivity.this);
+        relance.relancetoi(7,30);
+        relance.relancetoi(12,40);
+        relance.relancetoi(18,40);
+        relance.relancetoi(22,40);
     }
+
+//                Context context = getApplicationContext();
+//                AlarmManager am =(AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//                Intent intent = new Intent(MainActivity.this, Alarmreceveur.class);
+//                PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,
+//                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//                calendar.set(Calendar.HOUR_OF_DAY, 13);
+//                calendar.set(Calendar.MINUTE, 33);
+//                am.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+//                increment= increment+1;            }
+
 }

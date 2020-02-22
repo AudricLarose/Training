@@ -127,7 +127,6 @@ public class HomeFragment extends Fragment {
                                 listeArray.add(text);
                                 mNeighbours.add(new ExempleItem(text,"0"));
                                 mRecyclerView.setAdapter(new ExempleAdapter(mNeighbours));
-
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
                             androidx.core.app.RemoteInput remoteInput= new RemoteInput.Builder("key_text_reply")
