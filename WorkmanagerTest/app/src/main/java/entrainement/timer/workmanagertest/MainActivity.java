@@ -43,8 +43,11 @@ private PendingIntent pendingIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compteur = (TextView) findViewById(R.id.chrono);
         setContentView(R.layout.activity_main);
+        Window MyWindow = getWindow();
+        WindowManager.LayoutParams winParams = MyWindow.getAttributes();
+        winParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
+        MyWindow.setAttributes(winParams);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         bouton2= findViewById(R.id.button2);
         relance= new Relance(MainActivity.this);
@@ -53,16 +56,5 @@ private PendingIntent pendingIntent;
         relance.relancetoi(18,40);
         relance.relancetoi(22,40);
     }
-
-//                Context context = getApplicationContext();
-//                AlarmManager am =(AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//                Intent intent = new Intent(MainActivity.this, Alarmreceveur.class);
-//                PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,
-//                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//                calendar.set(Calendar.HOUR_OF_DAY, 13);
-//                calendar.set(Calendar.MINUTE, 33);
-//                am.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
-//                increment= increment+1;            }
 
 }

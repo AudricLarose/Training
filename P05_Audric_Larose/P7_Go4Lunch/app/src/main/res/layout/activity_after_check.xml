@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:openDrawer="start"
     android:id="@+id/drawer_layout"
-    tools:context=".ActivityAfterCheck">
+    tools:context=".Activities.ActivityAfterCheck">
 
     <FrameLayout
         android:id="@+id/fragment_container"

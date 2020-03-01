@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.Collegue;
 
 public class Collegue {
 
@@ -24,6 +24,7 @@ public class Collegue {
         this.nom = nom;
         this.choix = choix;
     }
+
 
     public String getId() {
         return id;

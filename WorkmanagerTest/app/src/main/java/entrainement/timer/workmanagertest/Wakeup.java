@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -21,8 +22,10 @@ public class Wakeup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wakeup);
-        compteur = (TextView) findViewById(R.id.chrono);
-
+        Window MyWindow = getWindow();
+        WindowManager.LayoutParams winParams = MyWindow.getAttributes();
+        winParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
+        MyWindow.setAttributes(winParams);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
@@ -37,9 +40,7 @@ public class Wakeup extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 vibrator.vibrate(pattern,-1);
-                count=count+1;
-                countString= String.valueOf(count);
-                compteur.setText(countString);
+
             }
 
             @Override

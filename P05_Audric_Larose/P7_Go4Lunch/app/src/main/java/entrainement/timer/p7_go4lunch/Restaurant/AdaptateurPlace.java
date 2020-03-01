@@ -1,22 +1,41 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.Restaurant;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHolder> {
-    List<Place> placeList = new ArrayList<>();
+import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
+import entrainement.timer.p7_go4lunch.Collegue.Adaptateur;
+import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.DI;
+import entrainement.timer.p7_go4lunch.R;
 
-    public AdaptateurPlace(List<Place> placeList) {
+public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHolder> {
+    LiveData<List<Place>> placeList;
+    private ExtendedServicePlace servicePlace;
+
+    public AdaptateurPlace(LiveData<List<Place>> placeList, LifecycleOwner owner) {
+
         this.placeList = placeList;
+        this.placeList.observe(owner, new Observer<List<Place>>() {
+            @Override
+            public void onChanged(List<Place> places) {
+                AdaptateurPlace.this.notifyDataSetChanged();
+            }
+        });
     }
 
     @NonNull
@@ -29,23 +48,40 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
 
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
-        Place place= placeList.get(position);
+        servicePlace= DI.getServicePlace();
+        Place place= placeList.getValue().get(position);
         holder.nom.setText(place.getName());
         holder.adresse.setText(place.getAdresse());
         holder.perso.setText(place.getPerso());
+        holder.etoile.setText(place.getEtoile());
         holder.distance.setText(place.getDistance());
         holder.horaire.setText(place.getHoraire());
-//        holder.etoile.setText((int) place.getEtoile());
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ActivityDetails.class);
+                intent.putExtra("id",place.getId());
+                intent.putExtra("nom",place.getName());
+                intent.putExtra("adresse",place.getAdresse());
+                v.getContext().startActivity(intent);
+
+            }
+        });
 //        holder.photo
 
     }
 
     @Override
     public int getItemCount() {
-        return placeList.size();
+        if (placeList.getValue()!=null) {
+            return placeList.getValue().size();
+        } else {
+            return 0;
+        }
     }
 
     public static class LeHolder extends RecyclerView.ViewHolder{
+        private RelativeLayout relativeLayout;
     private TextView nom;
     private TextView adresse;
     private TextView perso;
@@ -63,6 +99,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
             horaire=itemView.findViewById(R.id.horaire);
             etoile=itemView.findViewById(R.id.etoile);
             photo=itemView.findViewById(R.id.photoresto);
+            relativeLayout=itemView.findViewById(R.id.relativeRowPlace);
         }
     }
 }

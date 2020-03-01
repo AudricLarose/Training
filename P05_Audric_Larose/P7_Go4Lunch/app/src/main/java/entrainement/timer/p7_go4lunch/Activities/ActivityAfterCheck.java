@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,11 +11,18 @@ import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import entrainement.timer.p7_go4lunch.Collegue.FragmentContact;
+import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.Restaurant.FragmentResto;
+import entrainement.timer.p7_go4lunch.Restaurant.Fragmentcarte;
+
 public class ActivityAfterCheck extends AppCompatActivity {
     private DrawerLayout drawerLayout;
+    private Fragment[] fragments={new Fragmentcarte(),new FragmentContact(), new FragmentResto()};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +36,8 @@ public class ActivityAfterCheck extends AppCompatActivity {
         ActionBarDrawerToggle toggle= new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new Fragmentcarte()).commit();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragments[0]).commit();
 
     }
 
@@ -45,13 +53,13 @@ public class ActivityAfterCheck extends AppCompatActivity {
                     Fragment selectdFragment=null;
                     switch (menuItem.getItemId()){
                         case R.id.blue:
-                            selectdFragment= new Fragmentcarte();
+                            selectdFragment= fragments[0];
                             break;
                         case R.id.violet:
-                            selectdFragment= new FragmentContact();
+                            selectdFragment= fragments[1];
                             break;
                         case R.id.orange:
-                            selectdFragment= new FragmentResto();
+                            selectdFragment= fragments[2];
                             break;
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectdFragment).commit();

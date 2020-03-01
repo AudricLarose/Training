@@ -27,11 +27,19 @@ public class Alarmreceveur extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        compteur=compteur+1;
-        relance= new Relance(context);
-        Calendar calendar = Calendar.getInstance();
-        Intent intent1= new Intent(context,Wakeup.class);
-        context.startActivity(intent1);
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel= new NotificationChannel("channel1","Good to Go",NotificationManager.IMPORTANCE_LOW);
+            manager.createNotificationChannel(channel);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"channel1");
+            builder.setContentTitle("Good 2 go ").setContentText("Clear !").setSmallIcon(R.mipmap.ic_launcher).setAutoCancel(true).setOngoing(true);
+            manager.notify(0,builder.build());
+            compteur = compteur + 1;
+            relance = new Relance(context);
+            Calendar calendar = Calendar.getInstance();
+            Intent intent1 = new Intent(context, Wakeup.class);
+            context.startActivity(intent1);
 
+        }
     }
 }

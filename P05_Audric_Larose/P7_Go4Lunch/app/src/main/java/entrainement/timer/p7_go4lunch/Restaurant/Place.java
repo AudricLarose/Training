@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.Restaurant;
 
 public class Place {
     private String name;
@@ -7,10 +7,10 @@ public class Place {
     private String distance;
     private String photo;
     private String perso;
-    private double etoile;
-    private int id;
+    private String etoile;
+    private String id;
 
-    public Place(String name, String adresse, String horaire, String distance, String photo, String perso, double etoile) {
+    public Place(String name, String adresse, String horaire, String distance, String photo, String perso, String etoile) {
         this.name = name;
         this.adresse = adresse;
         this.horaire = horaire;
@@ -20,11 +20,13 @@ public class Place {
         this.etoile = etoile;
     }
 
-    public Place(String name, String adresse, String horaire, double etoile) {
+    public Place(String name, String adresse, String horaire, String etoile, String id, String perso) {
         this.name = name;
         this.adresse = adresse;
         this.horaire = horaire;
         this.etoile = etoile;
+        this.perso = perso;
+        this.id=id;
     }
 
     public String getName() {
@@ -75,19 +77,19 @@ public class Place {
         this.perso = perso;
     }
 
-    public double getEtoile() {
+    public String getEtoile() {
         return etoile;
     }
 
-    public void setEtoile(double etoile) {
+    public void setEtoile(String etoile) {
         this.etoile = etoile;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

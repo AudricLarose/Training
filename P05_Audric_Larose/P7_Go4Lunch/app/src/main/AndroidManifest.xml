@@ -4,6 +4,7 @@
     package="entrainement.timer.p7_go4lunch">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -14,8 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityAfterCheck"></activity>
-        <activity android:name=".ActivityDetails" />
+        <activity android:name=".Activities.ActivityAfterCheck"></activity>
+        <activity android:name=".Activities.ActivityDetails" />
         <!--
      The API key for Google Maps-based APIs is defined as a string resource.
      (See the file "res/values/google_maps_api.xml").
@@ -29,7 +30,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="Map">
 
             <intent-filter>

@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.android.volley.RequestQueue;
@@ -22,10 +22,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.DI;
+import entrainement.timer.p7_go4lunch.R;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        service=DI.getService();
+        service= DI.getService();
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -100,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 String collegue = user.getDisplayName();
                 String photo= user.getPhotoUrl().toString();
                 String id= user.getUid().toString();
-                service.addCollegue(MainActivity.this,id,collegue,photo);
+                service.getme(id);
+                service.newCollegue(MainActivity.this,id,collegue,photo);
                 Intent intent= new Intent(MainActivity.this, ActivityAfterCheck.class);
                 startActivity(intent);
                 // ...

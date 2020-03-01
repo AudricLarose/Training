@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_marginTop="50dp"
+    android:id="@+id/relatident"
     android:layout_height="wrap_content">
 
 
@@ -38,6 +39,19 @@
         android:text="is eating at the " />
 
     <TextView
+        android:id="@+id/introducenot"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/name"
+        android:visibility="gone"
+        android:text="not eating yet"  />
+
+
+    <TextView
         android:id="@+id/choice"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -46,5 +60,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/introduce"
-        android:text="choice" />
+        />
 </RelativeLayout>
