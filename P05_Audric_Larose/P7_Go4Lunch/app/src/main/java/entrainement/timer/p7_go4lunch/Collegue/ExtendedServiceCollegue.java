@@ -42,6 +42,8 @@ import entrainement.timer.p7_go4lunch.R;
 
 public class ExtendedServiceCollegue implements InterfaceCollegue {
     private MutableLiveData<List<Collegue>> listLiveData=new MutableLiveData<List<Collegue>>();
+    private MutableLiveData<List<Collegue>> quivient=new MutableLiveData<List<Collegue>>();
+    private List<Collegue> quivient_array= new ArrayList<>();
     private List<Collegue> addMe=new ArrayList<>();
     private static final String TAG = "ExtendedServiceCollegue";
     private RecyclerView.Adapter recyclerView;
@@ -118,12 +120,21 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             }
         });
  }
+
     @Override
-    public void newCollegue(Context context,String id , String collegue,String photo){
+    public MutableLiveData<List<Collegue>> GetQuiVient() {
+        quivient_array.clear();
+        quivient.setValue(quivient_array);
+        return quivient;
+    }
+
+    @Override
+    public void newCollegue(Context context,String id , String collegue,String photo, String mail){
         Me me= new Me();
         me.setMonId(id);
         me.setMonNOm(collegue);
         me.setMaPhoto(photo);
+        me.setMonMail(mail);
 
         Map<String, String> note= new HashMap<>();
         note.put("Nom", collegue);

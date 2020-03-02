@@ -15,13 +15,6 @@
         android:layout_height="match_parent"
         android:text="2" />
 
-    <fragment android:id="@+id/autocomplete_fragment"
-        android:layout_marginTop="70dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        />
-
     <Button
         android:id="@+id/local"
         android:layout_width="wrap_content"

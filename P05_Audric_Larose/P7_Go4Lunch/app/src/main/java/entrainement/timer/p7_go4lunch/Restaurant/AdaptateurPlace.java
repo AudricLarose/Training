@@ -50,10 +50,10 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
         servicePlace= DI.getServicePlace();
         Place place= placeList.getValue().get(position);
-        holder.nom.setText(place.getName());
+        holder.nom.setText(place.getnomPlace());
         holder.adresse.setText(place.getAdresse());
-        holder.perso.setText(place.getPerso());
-        holder.etoile.setText(place.getEtoile());
+        holder.perso.setText(place.getquivient());
+        holder.etoile.setText(place.getnote());
         holder.distance.setText(place.getDistance());
         holder.horaire.setText(place.getHoraire());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +61,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ActivityDetails.class);
                 intent.putExtra("id",place.getId());
-                intent.putExtra("nom",place.getName());
+                intent.putExtra("nom",place.getnomPlace());
                 intent.putExtra("adresse",place.getAdresse());
                 v.getContext().startActivity(intent);
 

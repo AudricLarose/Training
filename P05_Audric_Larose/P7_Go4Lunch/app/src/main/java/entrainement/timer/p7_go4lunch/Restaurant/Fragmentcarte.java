@@ -83,22 +83,22 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
 
         View rootView = inflater.inflate(R.layout.fragment_fragmentcarte, container, false);
         localise=rootView.findViewById(R.id.local);
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+//        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+//                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+//        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
+//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//            @Override
+//            public void onPlaceSelected(Place place) {
+//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+//            }
+//
+//            @Override
+//            public void onError(Status status) {
+//                // TODO: Handle the error.
+//                Log.i(TAG, "An error occurred: " + status);
+//            }
+//        });
         extendedServicePlace= DI.getServicePlace();
 //    localise.setOnClickListener(new View.OnClickListener() {
 //        @RequiresApi(api = Build.VERSION_CODES.M)
@@ -117,6 +117,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
 
         List<Marker> markerList= new ArrayList<>();

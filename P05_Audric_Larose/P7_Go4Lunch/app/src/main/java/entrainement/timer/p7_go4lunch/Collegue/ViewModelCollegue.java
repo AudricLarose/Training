@@ -14,7 +14,7 @@ import entrainement.timer.p7_go4lunch.Restaurant.Place;
 public class ViewModelCollegue extends ViewModel {
     private final MutableLiveData<List<Collegue>> userLiveData = DI.getService().getListCollegue();
     private final MutableLiveData<List<Place>> placeLiveData = DI.getServicePlace().getListOfPlace();
-    private final MutableLiveData<List<Collegue>> whocomeLiveData = DI.getService().getListCollegue();
+    private final MutableLiveData<List<Collegue>> whocomeLiveData = DI.getService().GetQuiVient();
 
     public LiveData<List<Collegue>> getUser() {
         return userLiveData;

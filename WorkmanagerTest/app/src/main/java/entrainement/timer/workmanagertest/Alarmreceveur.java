@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
@@ -27,7 +28,7 @@ public class Alarmreceveur extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        if (Objects.equals(intent.getAction(), "android.intent.action.BOOT_COMPLETED")) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel= new NotificationChannel("channel1","Good to Go",NotificationManager.IMPORTANCE_LOW);
             manager.createNotificationChannel(channel);

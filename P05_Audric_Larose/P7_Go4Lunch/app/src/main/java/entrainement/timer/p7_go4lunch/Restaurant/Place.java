@@ -1,48 +1,51 @@
 package entrainement.timer.p7_go4lunch.Restaurant;
 
 public class Place {
-    private String name;
-    private String adresse;
+    private String nomPlace;
+    private String Adresse;
     private String horaire;
     private String distance;
     private String photo;
-    private String perso;
-    private String etoile;
+    private String quivient;
+    private String note;
     private String id;
 
-    public Place(String name, String adresse, String horaire, String distance, String photo, String perso, String etoile) {
-        this.name = name;
-        this.adresse = adresse;
+    public Place(String nomPlace, String Adresse, String horaire, String distance, String photo, String quivient, String note) {
+        this.nomPlace = nomPlace;
+        this.Adresse = Adresse;
         this.horaire = horaire;
         this.distance = distance;
         this.photo = photo;
-        this.perso = perso;
-        this.etoile = etoile;
+        this.quivient = quivient;
+        this.note = note;
     }
 
-    public Place(String name, String adresse, String horaire, String etoile, String id, String perso) {
-        this.name = name;
-        this.adresse = adresse;
+    public Place(String name, String Adresse, String horaire, String note, String id, String quivient) {
+        this.nomPlace = nomPlace;
+        this.Adresse = Adresse;
         this.horaire = horaire;
-        this.etoile = etoile;
-        this.perso = perso;
+        this.note = note;
+        this.quivient = quivient;
         this.id=id;
     }
 
-    public String getName() {
-        return name;
+    public Place() {
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getnomPlace() {
+        return nomPlace;
+    }
+
+    public void setnomPlace(String nomPlace) {
+        this.nomPlace = nomPlace;
     }
 
     public String getAdresse() {
-        return adresse;
+        return Adresse;
     }
 
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
+    public void setAdresse(String Adresse) {
+        this.Adresse = Adresse;
     }
 
     public String getHoraire() {
@@ -69,20 +72,20 @@ public class Place {
         this.photo = photo;
     }
 
-    public String getPerso() {
-        return perso;
+    public String getquivient() {
+        return quivient;
     }
 
-    public void setPerso(String perso) {
-        this.perso = perso;
+    public void setquivient(String quivient) {
+        this.quivient = quivient;
     }
 
-    public String getEtoile() {
-        return etoile;
+    public String getnote() {
+        return note;
     }
 
-    public void setEtoile(String etoile) {
-        this.etoile = etoile;
+    public void setnote(String note) {
+        this.note = note;
     }
 
     public String getId() {

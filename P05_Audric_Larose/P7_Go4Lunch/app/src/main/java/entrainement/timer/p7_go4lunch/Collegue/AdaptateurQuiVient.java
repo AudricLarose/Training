@@ -8,10 +8,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +23,19 @@ import entrainement.timer.p7_go4lunch.R;
 
 
 public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient.LeHolder> {
-        List<Collegue> quivientliste = new ArrayList<>();
+        LiveData<List<Collegue>> quivientliste;
 
+    public AdaptateurQuiVient(LiveData<List<Collegue>> quivientliste, LifecycleOwner owner) {
+        this.quivientliste = quivientliste;
+        this.quivientliste.observe(owner, new Observer<List<Collegue>>() {
+            @Override
+            public void onChanged(List<Collegue> collegues) {
+                AdaptateurQuiVient.this.notifyDataSetChanged();
+            }
+        });
+    }
 
-        public AdaptateurQuiVient(List<Collegue> quivientliste) {
-            this.quivientliste = quivientliste;
-
-        }
-
-        @NonNull
+    @NonNull
         @Override
         public AdaptateurQuiVient.LeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rowquivient,parent,false);
@@ -37,7 +45,7 @@ public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient
 
         @Override
         public void onBindViewHolder(@NonNull AdaptateurQuiVient.LeHolder holder, int position) {
-            Collegue collegue = quivientliste.get(position);
+            Collegue collegue = quivientliste.getValue().get(position);
             holder.nom.setText(collegue.getNom());
             String photoUri= collegue.getPhoto();
 //            Picasso.get().load(photoUri).into(holder.photo);
@@ -45,7 +53,11 @@ public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient
 
         @Override
         public int getItemCount() {
-            return quivientliste.size();
+        if (quivientliste!=null){
+            return quivientliste.getValue().size();
+        } else {
+            return 0;
+        }
         }
 
       public static class LeHolder extends RecyclerView.ViewHolder {

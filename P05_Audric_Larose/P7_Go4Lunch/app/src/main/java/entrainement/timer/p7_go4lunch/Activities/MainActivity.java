@@ -105,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
                 String collegue = user.getDisplayName();
                 String photo= user.getPhotoUrl().toString();
                 String id= user.getUid().toString();
+                String mail= user.getEmail().toString();
                 service.getme(id);
-                service.newCollegue(MainActivity.this,id,collegue,photo);
+                service.newCollegue(MainActivity.this,id,collegue,photo, mail);
                 Intent intent= new Intent(MainActivity.this, ActivityAfterCheck.class);
                 startActivity(intent);
                 // ...

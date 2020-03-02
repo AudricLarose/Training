@@ -2,6 +2,7 @@ package entrainement.timer.p7_go4lunch.Restaurant;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.GoogleMap;

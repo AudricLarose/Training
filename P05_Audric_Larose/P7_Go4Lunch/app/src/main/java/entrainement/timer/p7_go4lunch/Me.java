@@ -4,8 +4,17 @@ public class Me {
     private static String monId;
     private static String monNOm;
     private static String maPhoto;
+    private static String monMail;
     private static String mon_choix;
     private static String mon_like;
+
+    public String getMonMail() {
+        return monMail;
+    }
+
+    public void setMonMail(String monMail) {
+        this.monMail = monMail;
+    }
 
     public  String getMon_choix() {
         return mon_choix;

@@ -1,6 +1,7 @@
 package entrainement.timer.p7_go4lunch.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import entrainement.timer.p7_go4lunch.Collegue.AdaptateurQuiVient;
 import entrainement.timer.p7_go4lunch.Collegue.Collegue;
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.Collegue.ViewModelCollegue;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.Me;
 import entrainement.timer.p7_go4lunch.R;
@@ -39,6 +41,7 @@ public class ActivityDetails extends AppCompatActivity {
     private ImageView put_me_Out;
     private Button unlikebutton;
     private Me me;
+    private ViewModelCollegue viewModelCollegue;
     private Button like;
 
 
@@ -110,17 +113,14 @@ public class ActivityDetails extends AppCompatActivity {
                 }
             });
         }
+        viewModelCollegue=new ViewModelProvider(ActivityDetails.this).get(ViewModelCollegue.class);
         recyclerView = findViewById(R.id.RecycleGrand);
         recyclerView.setHasFixedSize(true);
-        adapter= new AdaptateurQuiVient(listedecollegues);
+        adapter= new AdaptateurQuiVient(viewModelCollegue.getwhocome(),this);
         layoutManager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        // faire le recycleview
-        // faire liker on click
-        // nombre de personne qui vient dans place
-        // methode lancer notification
 
     }
 

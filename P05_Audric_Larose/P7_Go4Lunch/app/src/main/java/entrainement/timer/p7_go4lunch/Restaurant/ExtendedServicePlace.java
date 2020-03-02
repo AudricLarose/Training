@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.api.ApiException;
@@ -42,11 +43,13 @@ import java.util.Map;
 
 import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
 import entrainement.timer.p7_go4lunch.Collegue.Collegue;
+import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI;
 
 public class ExtendedServicePlace implements InterfacePlace {
     private static final String TAG = "ExtendedServicePlace";
     private ExtendedServicePlace servicePlace;
+    private ExtendedServiceCollegue serviceCollegue=DI.getService();
     private List<Place> listePlace= new ArrayList<>();
     private int increment=0;
     private String liked="0";
@@ -305,7 +308,8 @@ public class ExtendedServicePlace implements InterfacePlace {
     }
     @Override
     public List<Collegue> compareCollegueNPlace(String nomduResto) {
-        List<Collegue> tmp= new ArrayList<>();
+        MutableLiveData <List<Collegue>> liveData= serviceCollegue.GetQuiVient();
+        List<Collegue> tmp = new ArrayList<>();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("collegue")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -324,7 +328,9 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 String photoCollegue= documentSnapshot.getString("photo");
                                 if (choixCollegue.equals(nomduResto)){
                                     tmp.add(new Collegue(nomCollegue,photoCollegue,nomduResto));
+
                                 }
+                                liveData.setValue(tmp);
                             }
                         });
 
