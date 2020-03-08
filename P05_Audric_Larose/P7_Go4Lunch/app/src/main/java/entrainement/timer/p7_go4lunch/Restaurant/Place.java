@@ -10,14 +10,14 @@ public class Place {
     private String note;
     private String id;
 
-    public Place(String nomPlace, String Adresse, String horaire, String distance, String photo, String quivient, String note) {
+    public Place(String nomPlace, String Adresse, String horaire, String distance, String quivient,String note, String idPlace) {
         this.nomPlace = nomPlace;
         this.Adresse = Adresse;
         this.horaire = horaire;
         this.distance = distance;
-        this.photo = photo;
         this.quivient = quivient;
         this.note = note;
+        this.id=idPlace;
     }
 
     public Place(String name, String Adresse, String horaire, String note, String id, String quivient) {

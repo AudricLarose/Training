@@ -10,9 +10,8 @@ import java.util.List;
 public interface InterfaceCollegue {
      MutableLiveData<List<Collegue>> getListCollegue();
      void newCollegue(Context context,String id, String collegue,String photo, String mail);
-     void addmychoice(String id, String resto,String adresse);
      void getme(String id);
      MutableLiveData<List<Collegue>> GetQuiVient();
-
-
+    void updateNotify();
+    void addmychoice(String id, String resto, String adresse, String idRestaurant, String notechoix);
 }

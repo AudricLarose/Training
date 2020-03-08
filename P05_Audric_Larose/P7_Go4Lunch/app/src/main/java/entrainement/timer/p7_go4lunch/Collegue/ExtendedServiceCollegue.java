@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -35,30 +36,33 @@ import java.util.List;
 import java.util.Map;
 
 import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
+import entrainement.timer.p7_go4lunch.Activities.MainActivity;
 import entrainement.timer.p7_go4lunch.Broadcaster;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.Me;
 import entrainement.timer.p7_go4lunch.R;
 
 public class ExtendedServiceCollegue implements InterfaceCollegue {
-    private MutableLiveData<List<Collegue>> listLiveData=new MutableLiveData<List<Collegue>>();
-    private MutableLiveData<List<Collegue>> quivient=new MutableLiveData<List<Collegue>>();
-    private List<Collegue> quivient_array= new ArrayList<>();
-    private List<Collegue> addMe=new ArrayList<>();
+    private MutableLiveData<List<Collegue>> listLiveData = new MutableLiveData<List<Collegue>>();
+    private MutableLiveData<List<Collegue>> quivient = new MutableLiveData<List<Collegue>>();
+    private List<Collegue> quivient_array = new ArrayList<>();
+    private List<Collegue> addMe = new ArrayList<>();
     private static final String TAG = "ExtendedServiceCollegue";
     private RecyclerView.Adapter recyclerView;
+    private Me me = new Me();
+
     @Override
     public MutableLiveData<List<Collegue>> getListCollegue() {
-        FirebaseFirestore firebaseFirestore= FirebaseFirestore.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("collegue")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            List<Collegue> tmp= new ArrayList<>();
-                            for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
-                                String collegueId= documentSnapshot.getString("id");
+                        if (task.isSuccessful()) {
+                            List<Collegue> tmp = new ArrayList<>();
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String collegueId = documentSnapshot.getString("id");
                                 DocumentReference docRef = firebaseFirestore.collection("collegue").document(collegueId);
                                 docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                     @Override
@@ -69,11 +73,11 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                                         }
 
                                         if (documentSnapshot != null && documentSnapshot.exists()) {
-                                            Log.d(TAG, "onEvent: "  + documentSnapshot.getData());
+                                            Log.d(TAG, "onEvent: " + documentSnapshot.getData());
                                             String collegueData = documentSnapshot.getString("Nom");
-                                            String colleguephoto= documentSnapshot.getString("photo");
-                                            String collegueChoix= documentSnapshot.getString("choix");
-                                            tmp.add(new Collegue(collegueData,collegueChoix,colleguephoto));
+                                            String colleguephoto = documentSnapshot.getString("photo");
+                                            String collegueChoix = documentSnapshot.getString("choix");
+                                            tmp.add(new Collegue(collegueData, collegueChoix, colleguephoto));
                                             listLiveData.setValue(tmp);
                                         } else {
                                             System.out.print("Current data: null");
@@ -94,11 +98,10 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     }
 
     @Override
-    public void getme(String id){
+    public void getme(String id) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("collegue").document(id)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            Me me= new Me();
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.getString("choix") != null) {
@@ -110,16 +113,24 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 //                    }
                     if (documentSnapshot.getString("choix").isEmpty()) {
                         me.setMon_choix(" ");
-                    }else {
+                    } else {
                         String choix = documentSnapshot.getString("choix");
+                        String id_choix = documentSnapshot.getString("id_monchoix");
+                        String adresse = documentSnapshot.getString("adresse choix");
+                        String note = documentSnapshot.getString("note_choix");
+                        String benotified = documentSnapshot.getString("beNotified");
                         me.setMon_choix(choix);
+                        me.setId_monchoix(id_choix);
+                        me.setAdressechoix(adresse);
+                        me.setNoteChoix(note);
+                        me.setBeNotified(Boolean.getBoolean(benotified));
                     }
                 } else {
                     me.setMon_choix(" ");
                 }
             }
         });
- }
+    }
 
     @Override
     public MutableLiveData<List<Collegue>> GetQuiVient() {
@@ -129,20 +140,107 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     }
 
     @Override
-    public void newCollegue(Context context,String id , String collegue,String photo, String mail){
-        Me me= new Me();
+    public void newCollegue(Context context, String id, String collegue, String photo, String mail) {
+
+        Me me = new Me();
         me.setMonId(id);
         me.setMonNOm(collegue);
         me.setMaPhoto(photo);
         me.setMonMail(mail);
 
-        Map<String, String> note= new HashMap<>();
+        Map<String, String> note = new HashMap<>();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         note.put("Nom", collegue);
-        note.put("id",id);
-        note.put("photo",photo);
-        note.put("choix"," ");
-        FirebaseFirestore firebaseFirestore= FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("collegue").document(id).set(note)
+        note.put("id", id);
+        note.put("photo", photo);
+
+
+        firebaseFirestore.collection("collegue").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task != null) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.getString("choix") != null) {
+                        if ((!documentSnapshot.getString("choix").isEmpty())) {
+                            note.put("choix", documentSnapshot.getString("choix"));
+                            note.put("adresse choix", documentSnapshot.getString("adresse choix"));
+                            note.put("id_monchoix", documentSnapshot.getString("id_monchoix"));
+                            note.put("note_choix", documentSnapshot.getString("note_choix"));
+                            note.put("beNotified", documentSnapshot.getString("beNotified"));
+                            firebaseFirestore.collection("collegue").document(id).set(note)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+                        } else {
+
+                            note.put("choix", " ");
+                            note.put("adresse_choix", " ");
+                            note.put("id_monchoix", " ");
+                            note.put("note_choix", " ");
+                            note.put("beNotified", " ");
+                        }
+                    } else {
+                        note.put("choix", " ");
+                        note.put("adresse_choix", " ");
+                        note.put("id_monchoix", " ");
+                        note.put("note_choix", " ");
+                        note.put("beNotified", " ");
+                        firebaseFirestore.collection("collegue").document(id).set(note)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+                    }
+                } else {
+                    note.put("choix", " ");
+                    note.put("adresse_choix", " ");
+                    note.put("id_monchoix", " ");
+                    note.put("note_choix", " ");
+                    note.put("beNotified", " ");
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void updateNotify() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        Map<String, Object> note = new HashMap<>();
+        note.put("beNotified", me.getBeNotified().toString());
+        firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);
+    }
+
+
+    @Override
+    public void addmychoice(String id, String resto, String adresse, String idRestaurant, String notechoix) {
+        Me me = new Me();
+        me.setId_monchoix(idRestaurant);
+        MutableLiveData<List<Collegue>> mutableLiveData = DI.getService().getListCollegue();
+        List<Collegue> liste_collegue = new ArrayList<>();
+        Map<String, Object> note = new HashMap<>();
+        note.put("choix", resto);
+        note.put("adresse choix", adresse);
+        note.put("id_monchoix", idRestaurant);
+        note.put("note_choix", notechoix);
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("collegue").document(id).update(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -156,53 +254,38 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                 });
     }
 
-    @Override
-    public void addmychoice(String id, String resto, String adresse) {
-            MutableLiveData<List<Collegue>> mutableLiveData= DI.getService().getListCollegue();
-            List<Collegue> liste_collegue = new ArrayList<>();
-            Map<String, Object> note= new HashMap<>();
-            note.put("choix", resto);
-            note.put("adresse choix",adresse);
-            FirebaseFirestore firebaseFirestore= FirebaseFirestore.getInstance();
-            firebaseFirestore.collection("collegue").document(id).update(note)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void notifyme (String restaurant, String id, Context context){
-        Intent intent  = new Intent(context, ActivityDetails.class);
-        PendingIntent pendingIntent= PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+    public void notifyme(String restaurant, Context context) {
+        Intent intent = new Intent(context, ActivityDetails.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel notificationChannel = new NotificationChannel("channel1", "Rappel",NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel notificationChannel = new NotificationChannel("channel1", "Rappel", NotificationManager.IMPORTANCE_LOW);
         notificationManager.createNotificationChannel(notificationChannel);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"channel1");
-        builder.setContentTitle("Rappel").setContentText("Vous avez rendez vous a"+restaurant+ "ne l'oubliez pas ").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
+        builder.setContentTitle("Rappel").setContentText("Vous avez rendez vous a " + restaurant + ", ne l'oubliez pas ").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+        notificationManager.notify(1, builder.build());
 
     }
 
-    public void whenNotifyme (Context context, Boolean alarm){
-        if (alarm){
+    public void whenNotifyme(Context context, Boolean alarm, String restaurant) {
+        Me me = new Me();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent  = new Intent(context, Broadcaster.class);
-        PendingIntent pendingIntent= PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY,12);
-        calendar.set(Calendar.MINUTE,00);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+
+        Intent intent = new Intent(context, Broadcaster.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        if (alarm) {
+            Boolean isNotified = me.getBeNotified();
+            if (isNotified) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, 00);
+                calendar.set(Calendar.MINUTE, 30);
+                intent.putExtra("restaurant", restaurant);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() * 12000, pendingIntent);
+            }
         } else {
-            // annuler
+            alarmManager.cancel(pendingIntent);
         }
     }
 

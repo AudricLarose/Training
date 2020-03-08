@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">P7Go4Lunch</string>
+    <string name="deconnecte_string" translatable="false">Log Out</string>
+    <string name="eating_at">eating at</string>
+    <string name="local_string">Locate me</string>
+    <string name="searching_string">Search me</string>
+    <string name="parametre_string">Parameter</string>
+    <string name="dont_choose">doesn\'t choose</string>
+    <string name="coming">is coming !</string>
+    <string name="list">ListView</string>
+    <string name="Map">MapView</string>
+    <string name="workmate">WorkMates</string>
+</resources>

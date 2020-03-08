@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@+id/nomRecyGrand"
-        android:text="is coming !" />
+        android:text="@string/coming"/>
 
 
 </RelativeLayout>

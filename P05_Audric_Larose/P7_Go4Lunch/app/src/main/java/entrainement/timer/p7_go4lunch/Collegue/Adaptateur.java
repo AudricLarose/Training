@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ import java.util.List;
 import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
 import entrainement.timer.p7_go4lunch.R;
 
-public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder> {
+public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     LiveData<List<Collegue>> list;
     Context context;
     URL urlWelcome = null;

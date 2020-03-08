@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/photoresto"
-        android:layout_width="115dp"
+        android:layout_width="0dp"
         android:layout_height="58dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -50,11 +50,26 @@ android:layout_below="@+id/adresse"
         android:layout_toLeftOf="@+id/photoresto"
         android:text="perso" />
 
+    <RatingBar
+        android:id="@+id/ratingbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/ratingBarStyleSmall"
+        android:progressBackgroundTint="@android:color/transparent"
+        android:layout_toRightOf="@+id/etoileGrand"
+        android:numStars="3"
+        android:layout_below="@+id/perso"
+        android:layout_toLeftOf="@+id/photoresto"
+        android:progressTint="@android:color/holo_orange_light"
+        android:isIndicator="true"
+        android:stepSize="1.0" />
+
     <TextView
         android:id="@+id/etoile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/perso"
         android:layout_toLeftOf="@+id/photoresto"
+        android:visibility="gone"
         android:text="etoile" />
 </RelativeLayout>

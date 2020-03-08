@@ -13,9 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -32,7 +36,7 @@ import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.R;
 
 
-public class FragmentResto extends Fragment {
+public class FragmentResto extends Fragment  implements Filterable {
     private RecyclerView recyclerView;
     private FirestoreRecyclerAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -42,7 +46,7 @@ public class FragmentResto extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        viewModelCollegue= new ViewModelProvider(requireActivity()).get(ViewModelCollegue.class);
+//        viewModelCollegue= new ViewModelProvider(requireActivity()).get(ViewModelCollegue.class );
 //        service= DI.getServicePlace();
         View view= inflater.inflate(R.layout.fragment_fragment_resto, container, false);
 //        recyclerView.setHasFixedSize(true);
@@ -72,7 +76,8 @@ public class FragmentResto extends Fragment {
                 fireHolder.nom.setText(place.getnomPlace());
                 fireHolder.adresse.setText(place.getAdresse());
                 fireHolder.perso.setText(place.getquivient());
-                fireHolder.etoile.setText(place.getnote());
+                fireHolder.distance.setText(place.getDistance()+ "m");
+                fireHolder.bar.setRating(Integer.parseInt(place.getnote()));
                 fireHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -80,6 +85,7 @@ public class FragmentResto extends Fragment {
                         intent.putExtra("id",place.getId());
                         intent.putExtra("nom",place.getnomPlace());
                         intent.putExtra("adresse",place.getAdresse());
+                        intent.putExtra("etoile",place.getnote());
                         v.getContext().startActivity(intent);
 
                     }
@@ -96,6 +102,33 @@ public class FragmentResto extends Fragment {
         return view;
     }
 
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+private Filter filter = new Filter() {
+    @Override
+    protected FilterResults performFiltering(CharSequence constraint) {
+        List<Place> tmp = new ArrayList<>();
+        if (( constraint==null)||(constraint.length()==0)){
+            tmp.addAll(liste2Place);
+        } else {
+            String filterpattern= constraint.toString().toLowerCase().trim();
+            for (Place place: liste2Place){
+//                if ()
+            }
+
+        }
+        return null;
+    }
+
+    @Override
+    protected void publishResults(CharSequence constraint, FilterResults results) {
+        Toast.makeText(getContext(),"dfdf",Toast.LENGTH_SHORT).show();
+    }
+};
+
     private class FireHolder extends RecyclerView.ViewHolder{
         private RelativeLayout relativeLayout;
         private TextView nom;
@@ -105,6 +138,7 @@ public class FragmentResto extends Fragment {
         private TextView horaire;
         private TextView etoile;
         private ImageView photo;
+        private RatingBar bar;
         public FireHolder(@NonNull View itemView) {
             super(itemView);
             nom=itemView.findViewById(R.id.nomresto);
@@ -115,6 +149,7 @@ public class FragmentResto extends Fragment {
             etoile=itemView.findViewById(R.id.etoile);
             photo=itemView.findViewById(R.id.photoresto);
             relativeLayout=itemView.findViewById(R.id.relativeRowPlace);
+            bar=itemView.findViewById(R.id.ratingbar);
         }
     }
 

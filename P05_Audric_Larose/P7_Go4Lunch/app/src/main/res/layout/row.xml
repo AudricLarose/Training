@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/name"
-        android:text="is eating at the " />
+        android:text="@string/eating_at" />
 
     <TextView
         android:id="@+id/introducenot"
@@ -48,7 +48,7 @@
         android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/name"
         android:visibility="gone"
-        android:text="not eating yet"  />
+        android:text="@string/dont_choose"  />
 
 
     <TextView

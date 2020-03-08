@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,18 +11,55 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+<!--    <fragment-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="150dp"-->
+<!--        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"-->
+<!--        android:id="@+id/autocomplete_fragment">-->
+
+<!--    </fragment>-->
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_query"
+        android:layout_marginTop="50dp"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="2" />
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/msearch"
+        android:layout_marginTop="510dp"
+        android:text="2" />
+
+
     <Button
+        android:id="@+id/buttonplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:layout_below="@+id/edit_query"
+        android:text="@string/searching_string" />
+
+    <ImageButton
         android:id="@+id/local"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="70dp"
-        android:text="Me localiser" />
+        android:layout_marginRight="20dp"
+        android:background="@drawable/round_target0"
+        android:tint="@android:color/black"
+        android:src="@android:drawable/ic_menu_mylocation" />
+
 
 </RelativeLayout>

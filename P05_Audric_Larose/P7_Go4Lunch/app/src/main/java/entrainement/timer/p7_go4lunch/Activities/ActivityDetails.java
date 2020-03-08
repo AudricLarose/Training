@@ -1,16 +1,19 @@
 package entrainement.timer.p7_go4lunch.Activities;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +59,7 @@ public class ActivityDetails extends AppCompatActivity {
         like = findViewById(R.id.likeGrand);
         unlikebutton = findViewById(R.id.likenotGrand);
         put_me_Out = findViewById(R.id.checknotGrand);
+        RatingBar etoiles = (RatingBar) findViewById(R.id.ratingdetails);
 
         Me me = new Me();
         String monId = me.getMonId();
@@ -70,16 +74,26 @@ public class ActivityDetails extends AppCompatActivity {
             String idData=extra.getString("id");
             String nomData = extra.getString("nom");
             String adresseData = extra.getString("adresse");
+            String etoileData = extra.getString("etoile");
+            if (etoileData != null) {
+                etoiles.setRating(Integer.parseInt(etoileData));
+            } else {
+                etoileData="0";
+            }
+
             nom.setText(nomData);
             adresse.setText(adresseData);
             listedecollegues = servicePlace.compareCollegueNPlace(nomData);
+            String finalEtoileData = etoileData;
             buttonImage.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onClick(View v) {
                     servicePlace.saveMyPlace(monNom,idData);
-                    serviceCollegue.addmychoice(monId, nomData, adresseData);
+                    serviceCollegue.addmychoice(monId, nomData, adresseData,idData, finalEtoileData);
                     listedecollegues.add(new Collegue(me.getMonNOm(), "mon choix", me.getMaPhoto()));
                     buttonImage.setVisibility(View.GONE);
+                    serviceCollegue.whenNotifyme(ActivityDetails.this,true,nomData);
                     put_me_Out.setVisibility(View.VISIBLE);
                 }
             });
@@ -87,10 +101,12 @@ public class ActivityDetails extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     servicePlace.unsaveMyPlace(monNom, maPhoto, nomData);
-                    serviceCollegue.addmychoice(monId, nomData, adresseData);
+                    serviceCollegue.addmychoice(monId, nomData, adresseData,idData,finalEtoileData);
                     listedecollegues.remove(new Collegue(me.getMonNOm(), "mon choix", me.getMaPhoto()));
                     put_me_Out.setVisibility(View.GONE);
                     buttonImage.setVisibility(View.VISIBLE);
+                    serviceCollegue.whenNotifyme(ActivityDetails.this,false, nomData);
+
                 }
             });
             like.setOnClickListener(new View.OnClickListener() {

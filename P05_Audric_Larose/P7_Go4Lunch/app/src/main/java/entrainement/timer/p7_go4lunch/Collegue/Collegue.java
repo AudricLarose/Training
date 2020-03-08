@@ -6,6 +6,8 @@ public class Collegue {
     private String nom;
     private String choix;
     private String photo;
+    private String longitude;
+    private String latitude;
 
     public Collegue(String id, String nom, String choix, String photo) {
         this.id = id;
@@ -25,6 +27,21 @@ public class Collegue {
         this.choix = choix;
     }
 
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
     public String getId() {
         return id;

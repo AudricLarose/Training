@@ -17,12 +17,14 @@ public class Broadcaster extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // remarrage du tel{
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            String restaurant=intent.getStringExtra("restaurant");
+//        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        Bundle extra= intent.getExtras();
+
+            String restaurant=extra.getString("restaurant");
             String id=intent.getStringExtra("id");
             service= DI.getService();
-            service.notifyme(restaurant, id , context);
-        }
+            service.notifyme(restaurant, context);
+//        }
     //}
     }
 }

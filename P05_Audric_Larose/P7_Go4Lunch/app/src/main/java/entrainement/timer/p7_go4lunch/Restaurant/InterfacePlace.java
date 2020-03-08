@@ -2,7 +2,6 @@ package entrainement.timer.p7_go4lunch.Restaurant;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +21,7 @@ public interface InterfacePlace {
     void unsaveMyPlace(String nomCollegue, String photoCollegue,String nom_restaurant);
     List<Collegue> getMyPlace(String nom_restaurant);
     String howManyLke(String nom_restaurant);
-    String howManyCome(String nom_restaurant);
+    String howManyCome(String nom_restaurant, String iDrestaurant);
+
     List<Collegue> compareCollegueNPlace (String nomduResto);
 }
