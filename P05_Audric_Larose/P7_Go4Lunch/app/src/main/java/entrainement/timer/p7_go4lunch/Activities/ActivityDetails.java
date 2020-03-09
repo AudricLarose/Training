@@ -76,7 +76,7 @@ public class ActivityDetails extends AppCompatActivity {
             String adresseData = extra.getString("adresse");
             String etoileData = extra.getString("etoile");
             if (etoileData != null) {
-                etoiles.setRating(Integer.parseInt(etoileData));
+                etoiles.setRating(Integer.parseInt(etoileData.trim()));
             } else {
                 etoileData="0";
             }
