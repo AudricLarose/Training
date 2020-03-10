@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void lancetoi() {
-        CountDownTimer zcountDownTimer= new CountDownTimer(180*1000,1000) {
+         zcountDownTimer= new CountDownTimer(180*1000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
