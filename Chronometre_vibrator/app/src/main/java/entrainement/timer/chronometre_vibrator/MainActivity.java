@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
     public void lancetoi() {
         new CountDownTimer(200*1000,2000) {
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 vibrator.vibrate(pattern1,-1);
                 count=count+1;
                 countString= String.valueOf(count);
+
                 compteur.setText(countString);
             }
 

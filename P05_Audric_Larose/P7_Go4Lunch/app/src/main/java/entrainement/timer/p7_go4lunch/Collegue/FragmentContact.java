@@ -2,19 +2,25 @@ package entrainement.timer.p7_go4lunch.Collegue;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+
 import java.util.ArrayList;
 import java.util.List;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.R;
 
-public class FragmentContact extends Fragment {
+public class FragmentContact extends Fragment implements SearchView.OnQueryTextListener {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -48,5 +54,32 @@ public class FragmentContact extends Fragment {
 //        });
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_inflated, menu);
+        MenuItem menuItem= menu.findItem(R.id.search);
+        SearchView searchView=(SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String userInput = newText.toLowerCase();
+        List<String> newList = new ArrayList<>();
+        for (Collegue name :viewModelCollegue.getUser().getValue())
+        {
+            if (name.getNom().toLowerCase().contains(userInput)){
+                newList.add(name.getNom());
+            }
+        }
+        return true;
     }
 }

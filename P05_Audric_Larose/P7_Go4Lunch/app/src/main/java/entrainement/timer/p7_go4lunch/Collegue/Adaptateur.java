@@ -1,7 +1,9 @@
 package entrainement.timer.p7_go4lunch.Collegue;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -26,11 +29,17 @@ import java.util.List;
 import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
 import entrainement.timer.p7_go4lunch.R;
 
+import static entrainement.timer.p7_go4lunch.R.color.quantum_grey300;
+
 public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     LiveData<List<Collegue>> list;
+    List<Collegue> listNew;
     Context context;
     URL urlWelcome = null;
 
+    public Adaptateur(List<Collegue> listNew) {
+        this.listNew = listNew;
+    }
 
     public Adaptateur(LiveData<List<Collegue>> list, LifecycleOwner owner) {
         this.list = list;
@@ -50,14 +59,18 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
         return holder;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
         final Collegue collegue = list.getValue().get(position);
         holder.nom.setText(collegue.getNom());
-        if ((collegue.getChoix() == null) || (collegue.getChoix().isEmpty() || (collegue.getChoix().equals(" ")))) {
+        if ((collegue.getChoix() == null) || (collegue.getChoix().trim().isEmpty())) {
+            holder.nom.setTextColor(Color.parseColor("#979797"));
             holder.choice.setVisibility(View.GONE);
             holder.choixnot.setVisibility(View.VISIBLE);
         } else {
+            holder.choice.setVisibility(View.VISIBLE);
+            holder.choixnot.setVisibility(View.GONE);
             holder.choix.setText(collegue.getChoix());
             holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,7 +100,7 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
         private TextView nom;
         private TextView choix;
         private TextView choice;
-        private ImageView photo;
+        private CircularImageView photo;
         private TextView choixnot;
         private RelativeLayout relativeLayout;
 
@@ -100,5 +113,11 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
             photo = itemView.findViewById(R.id.photo);
             relativeLayout = itemView.findViewById(R.id.relatident);
         }
+    }
+    public void updateList( List<Collegue> listSearch){
+        listNew= new ArrayList<>();
+        listNew.addAll(listSearch);
+
+
     }
 }

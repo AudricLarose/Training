@@ -13,15 +13,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 // Your IDE likely can auto-import these classes, but there are several
 // different implementations so we list them here to disambiguate.
-import android.Manifest
-import android.content.pm.PackageManager
-import android.util.Size
-import android.graphics.Matrix
-import android.view.TextureView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import java.util.concurrent.TimeUnit
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.util.Size;
+import android.graphics.Matrix;
+import android.view.TextureView;
+import android.widget.Toast;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import java.util.concurrent.TimeUnit;
 
 // This is an arbitrary number we are using to keep track of the permission
 // request. Where an app has multiple context for requesting permission,

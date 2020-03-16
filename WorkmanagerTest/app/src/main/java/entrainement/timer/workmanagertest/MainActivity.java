@@ -39,7 +39,6 @@ private PendingIntent pendingIntent;
     private Relance relance;
     private TextView compteur;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +47,9 @@ private PendingIntent pendingIntent;
         WindowManager.LayoutParams winParams = MyWindow.getAttributes();
         winParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
         MyWindow.setAttributes(winParams);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        bouton2= findViewById(R.id.button2);
         relance= new Relance(MainActivity.this);
         relance.relancetoi(7,30);
-        relance.relancetoi(12,40);
+        relance.relancetoi(9,30);
         relance.relancetoi(18,40);
         relance.relancetoi(22,40);
     }

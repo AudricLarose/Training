@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -21,11 +23,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -37,6 +41,7 @@ import java.util.Map;
 
 import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
 import entrainement.timer.p7_go4lunch.Activities.MainActivity;
+import entrainement.timer.p7_go4lunch.BroadCaster_24h;
 import entrainement.timer.p7_go4lunch.Broadcaster;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.Me;
@@ -50,12 +55,15 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     private static final String TAG = "ExtendedServiceCollegue";
     private RecyclerView.Adapter recyclerView;
     private Me me = new Me();
+    private  FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
 
     @Override
     public MutableLiveData<List<Collegue>> getListCollegue() {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("collegue")
-                .get()
+        CollectionReference idsRef = firebaseFirestore.collection("collegue");
+        Query query = idsRef.orderBy("date", Query.Direction.DESCENDING);
+        query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -131,7 +139,22 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             }
         });
     }
-
+    public void updateMyLikes(){
+        List<String> likes= new ArrayList<>();
+        DocumentReference reference= firebaseFirestore.collection("collegue").document(me.getMonId());
+        reference.collection("ilike").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    @Override
+    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            for (DocumentSnapshot documentSnapshot: task.getResult()){
+                String like = documentSnapshot.getString("id_restaurant");
+                likes.add(like);
+                me.setMyLikes(likes);
+            }
+        }
+    }
+});
+    }
     @Override
     public MutableLiveData<List<Collegue>> GetQuiVient() {
         quivient_array.clear();
@@ -167,6 +190,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                             note.put("id_monchoix", documentSnapshot.getString("id_monchoix"));
                             note.put("note_choix", documentSnapshot.getString("note_choix"));
                             note.put("beNotified", documentSnapshot.getString("beNotified"));
+                            note.put("date", documentSnapshot.getString("date"));
                             firebaseFirestore.collection("collegue").document(id).set(note)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -186,6 +210,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                             note.put("id_monchoix", " ");
                             note.put("note_choix", " ");
                             note.put("beNotified", " ");
+                            note.put("date","0");
                         }
                     } else {
                         note.put("choix", " ");
@@ -193,6 +218,8 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                         note.put("id_monchoix", " ");
                         note.put("note_choix", " ");
                         note.put("beNotified", " ");
+                        note.put("date","0");
+
                         firebaseFirestore.collection("collegue").document(id).set(note)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -212,6 +239,8 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                     note.put("id_monchoix", " ");
                     note.put("note_choix", " ");
                     note.put("beNotified", " ");
+                    note.put("date","0");
+
                 }
             }
         });
@@ -219,6 +248,28 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
     }
 
+ List<String> getcoworker(String restaurant){
+        List<String> liste_who_come_with_me=new ArrayList<>();
+        FirebaseFirestore firebaseFirestore= FirebaseFirestore.getInstance();
+firebaseFirestore.collection("restaurant")
+        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    @Override
+    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()){
+            for (DocumentSnapshot documentSnapshot: task.getResult()){
+                if (documentSnapshot.exists()){
+                    if (documentSnapshot.getString("choix").equals(restaurant)) {
+                        liste_who_come_with_me.add(documentSnapshot.getString("Nom"));
+                    }
+                }
+            }
+        }
+
+    }
+});
+return liste_who_come_with_me;
+
+    }
     @Override
     public void updateNotify() {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -229,17 +280,23 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
 
     @Override
-    public void addmychoice(String id, String resto, String adresse, String idRestaurant, String notechoix) {
+    public void addmychoice(String id, String resto, String adresse, String idRestaurant, String notechoix, String idAncienResto) {
+        if (idAncienResto!=null) {
+            reset_my_Old_Choice(idAncienResto);
+        }
+        Calendar calendar=Calendar.getInstance();
+        String date= String.valueOf(SystemClock.elapsedRealtime());
         Me me = new Me();
         me.setId_monchoix(idRestaurant);
         MutableLiveData<List<Collegue>> mutableLiveData = DI.getService().getListCollegue();
         List<Collegue> liste_collegue = new ArrayList<>();
         Map<String, Object> note = new HashMap<>();
+        note.put("date",date);
         note.put("choix", resto);
         note.put("adresse choix", adresse);
         note.put("id_monchoix", idRestaurant);
         note.put("note_choix", notechoix);
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        me.setMon_choix(resto);
         firebaseFirestore.collection("collegue").document(id).update(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -254,16 +311,57 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                 });
     }
 
+    @Override
+    public void twentyFourHourLast(Context context, boolean b) {
+        if (b) {
+            Intent intent = new Intent(context, BroadCaster_24h.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager= (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()* 864*100000, pendingIntent);
+            Toast.makeText(context, "Cette commande s'effacera dans 24h", Toast.LENGTH_SHORT).show();
+            }
+    }
+
+    private void reset_my_Old_Choice(String idrestaurant) {
+        Me me = new Me();
+        Map<String,Object>note = new HashMap<>();
+        firebaseFirestore.collection("restaurant")
+                .document(me.getMonId())
+                .collection("Myplace")
+                .document(idrestaurant)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().getString("quivient")!=null) {
+                    int quivient= Integer.parseInt(task.getResult().getString("quivient"));
+                    quivient=quivient-1;
+                    note.put("quivient",String.valueOf(quivient));
+                    firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idrestaurant).update(note);
+                }
+            }
+        });
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void notifyme(String restaurant, Context context) {
+        List<String> names=new ArrayList<>();
+        names=getcoworker(restaurant);
         Intent intent = new Intent(context, ActivityDetails.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel notificationChannel = new NotificationChannel("channel1", "Rappel", NotificationManager.IMPORTANCE_LOW);
+        NotificationChannel notificationChannel = new NotificationChannel("channel1", "Rappel", NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(notificationChannel);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
-        builder.setContentTitle("Rappel").setContentText("Vous avez rendez vous a " + restaurant + ", ne l'oubliez pas ").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+        if (!names.isEmpty()) {
+            builder.setContentTitle("Rappel").setContentText("Vous avez rendez vous a " + restaurant +  " avec " + names+ ", ne l'oubliez pas ").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+        } else {
+            builder.setContentTitle("Rappel").setContentText("Vous avez rendez vous a " + restaurant +  " ne l'oubliez pas ").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+
+        }
         notificationManager.notify(1, builder.build());
 
     }
@@ -273,16 +371,18 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, Broadcaster.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarm) {
             Boolean isNotified = me.getBeNotified();
             if (isNotified) {
+
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.HOUR_OF_DAY, 00);
-                calendar.set(Calendar.MINUTE, 30);
+                calendar.set(Calendar.HOUR_OF_DAY, 12);
+                calendar.set(Calendar.MINUTE, 00);
                 intent.putExtra("restaurant", restaurant);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() * 12000, pendingIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                Toast.makeText(context, "Votre rendez-vous vous sera rappelé demain midi", Toast.LENGTH_SHORT).show();
             }
         } else {
             alarmManager.cancel(pendingIntent);

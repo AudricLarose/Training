@@ -49,8 +49,9 @@ import entrainement.timer.p7_go4lunch.Restaurant.Fragmentcarte;
 public class ActivityAfterCheck extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private Fragment[] fragments={new Fragmentcarte(),new FragmentContact(), new FragmentResto()};
-    private   Switch switchmode;
-    private                     Me me = new Me();
+    private Switch switchmode;
+    private Me me = new Me();
+    private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
 
 
@@ -112,8 +113,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
         toggle.syncState();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragments[0]).commit();
-
-
     }
 
     private void parametreNotification() {
@@ -157,33 +156,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
         MenuInflater inflater;
         getMenuInflater().inflate(R.menu.search,menu);
         MenuItem menuItem= menu.findItem(R.id.search);
-        SearchView searchView= (SearchView) menuItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Fragmentcarte fragmentcarte = new Fragmentcarte();
-                fragmentcarte.filterSearch(ActivityAfterCheck.this,query);
-//                Toast.makeText(ActivityAfterCheck.this,"ok",Toast.LENGTH_SHORT).show();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return false;
-            }
-        });
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
+        searchView= (SearchView) menuItem.getActionView();
         return true;
     }
 
@@ -195,6 +168,22 @@ public class ActivityAfterCheck extends AppCompatActivity {
                     switch (menuItem.getItemId()){
                         case R.id.blue:
                             selectdFragment= fragments[0];
+                            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                @Override
+                                public boolean onQueryTextSubmit(String query) {
+                                    Fragmentcarte fragmentcarte = new Fragmentcarte();
+                                    fragmentcarte.filterSearch(ActivityAfterCheck.this,query);
+//                Toast.makeText(ActivityAfterCheck.this,"ok",Toast.LENGTH_SHORT).show();
+                                    return true;
+                                }
+
+                                @Override
+                                public boolean onQueryTextChange(String newText) {
+
+                                    return false;
+                                }
+                            });
+
                             break;
                         case R.id.violet:
                             selectdFragment= fragments[1];

@@ -2,6 +2,8 @@ package entrainement.timer.p7_go4lunch;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
+
 public class Me {
     private static String monId;
     private static String monNOm;
@@ -16,6 +18,15 @@ public class Me {
     private static LatLng latlng_me;
     private static Boolean beNotified;
     private static String NoteChoix;
+    private static List<String> myLikes;
+
+    public List<String> getMyLikes() {
+        return myLikes;
+    }
+
+    public void setMyLikes(List<String> myLikes) {
+        Me.myLikes = myLikes;
+    }
 
     public  String getNoteChoix() {
         return NoteChoix;

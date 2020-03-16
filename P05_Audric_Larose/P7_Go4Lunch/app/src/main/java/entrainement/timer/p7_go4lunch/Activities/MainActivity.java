@@ -2,6 +2,7 @@ package entrainement.timer.p7_go4lunch.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.location.LocationListener;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private Button button;
     private ExtendedServiceCollegue service;
+    private CardView cardF;
+    private CardView cardG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +61,26 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
 
         button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        cardF=findViewById(R.id.cardF);
+        cardG=findViewById(R.id.cardG);
+        cardF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut();
+                createSignInIntent(1);
             }
         });
-        createSignInIntent();
-
+        cardG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createSignInIntent(0);
+            }
+        });
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signOut();
+//            }
+//        });
     }
 
     @Override
@@ -73,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public void createSignInIntent( ) {
+    public void createSignInIntent(int i) {
         // [START auth_fui_create_intent]
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -84,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
+                        .setAvailableProviders(Collections.singletonList(providers.get(i)))
                         .build(),
                 RC_SIGN_IN);
         // [END auth_fui_create_intent]

@@ -7,14 +7,18 @@
     android:id="@+id/relatident"
     android:layout_height="wrap_content">
 
-
-    <ImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/photo"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:civ_border_width="4dp"/>
+
+<!--    <ImageView-->
+<!--        android:layout_width="70dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        tools:srcCompat="@tools:sample/avatars" />-->
 
     <TextView
         android:id="@+id/name"
@@ -47,7 +51,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/name"
-        android:visibility="gone"
+        android:textColor="@color/colorGray"
+        android:visibility="visible"
         android:text="@string/dont_choose"  />
 
 
