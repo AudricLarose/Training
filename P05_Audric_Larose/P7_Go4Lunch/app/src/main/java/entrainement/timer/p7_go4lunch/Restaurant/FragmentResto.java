@@ -64,6 +64,8 @@ public class FragmentResto extends Fragment {
                 @SuppressLint("SetTextI18n")
                 @Override
                 protected void onBindViewHolder(@NonNull FireHolder fireHolder, int i, @NonNull Place place) {
+                    service= DI.getServicePlace();
+                    service.compareCollegueNPlace(place.getnomPlace(),place.getId());
                     final String name_restaurant = place.getnomPlace();
                     fireHolder.nom.setText(name_restaurant);
                     fireHolder.adresse.setText(place.getAdresse());
@@ -84,6 +86,7 @@ public class FragmentResto extends Fragment {
                             v.getContext().startActivity(intent);
                         }
                     });
+
                 }
             };
             layoutManager= new LinearLayoutManager(view.getContext());

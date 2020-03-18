@@ -96,7 +96,7 @@ public class ActivityDetails extends AppCompatActivity {
             like.setVisibility(View.GONE);
             unlikebutton.setVisibility(View.VISIBLE);
         }
-                List<String> note= servicePlace.getPlaceInfo(nomData);
+//                List<String> note= servicePlace.getPlaceInfo(nomData);
                 String adresseData = extra.getString("adresse");
                 if (extra.getString("etoile") != null) {
                      etoileData = extra.getString("etoile");

@@ -49,6 +49,7 @@ import entrainement.timer.p7_go4lunch.Collegue.Collegue;
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.Me;
+import entrainement.timer.p7_go4lunch.R;
 
 public class ExtendedServicePlace implements InterfacePlace {
     private static final String TAG = "ExtendedServicePlace";
@@ -122,7 +123,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                 }
             }
         });
-//        listePlace.add(new Place("hey","tornado","0626445243",3));
         return listePlace;
     }
 
@@ -163,25 +163,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                                             context.startActivity(intent);
                                     }
                                 });
-//                                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//                                    @Override
-//                                    public boolean onMarkerClick(Marker marker) {
-//
-//
-//////                                        try {
-////                                        Intent intent = new Intent(context, ActivityDetails.class);
-////                                        Geocoder geocoder=new Geocoder(context,Locale.getDefault());
-//////                                            List<Address> adressMarker=geocoder.getFromLocation(marker.getPosition().latitude,marker.getPosition().longitude,1);
-//////                                            intent.putExtra("id", marker.getTitle());
-//////                                            intent.putExtra("nom",nomPlace);
-//////                                            intent.putExtra("adresse", adressMarker.get(0).getMaxAddressLineIndex());
-//////                                            context.startActivity(intent);
-//////                                        } catch (IOException e) {
-//////                                            e.printStackTrace();
-//////                                        }
-//                                        return false;
-//                                    }
-//                                });
                                 DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id);
 
                                 doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -190,10 +171,10 @@ public class ExtendedServicePlace implements InterfacePlace {
                                         String whocome = documentSnapshot2.getString("quivient");
                                             if (whocome != null) {
                                                 if (Integer.parseInt(whocome) >= 1) {
-                                                    marker= mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                                    marker= mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
                                                     mMarker.put(marker.getId(),id);
                                                 } else {
-                                                     marker=  mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                                                     marker=  mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
                                                     mMarker.put(marker.getId(),id);
 
                                                 }
@@ -641,15 +622,13 @@ public class ExtendedServicePlace implements InterfacePlace {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             if (documentSnapshot.exists()) {
-                                if (documentSnapshot.getString("increment") != null) {
-                                    increment = Integer.parseInt(documentSnapshot.getString("increment"));
+                                if (documentSnapshot.getString("note") != null) {
+                                    increment = Integer.parseInt(documentSnapshot.getString("note"));
                                     increment = increment - 1;
                                     String stringincrement = String.valueOf(increment);
                                     Map<String, Object> note = new HashMap<>();
-                                    note.put("increment", stringincrement);
+                                    note.put("note", stringincrement);
                                     firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(resto).update(note);
-                                } else {
-                                    increment = 0;
                                 }
                             }
                         }

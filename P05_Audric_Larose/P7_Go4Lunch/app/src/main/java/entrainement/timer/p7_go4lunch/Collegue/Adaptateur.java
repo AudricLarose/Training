@@ -51,6 +51,14 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
         });
     }
 
+    public Adaptateur() {
+    }
+
+    public void updateList( List<Collegue> listSearch){
+        listNew= new ArrayList<>();
+        listNew.addAll(listSearch);
+    }
+
     @NonNull
     @Override
     public LeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -114,10 +122,6 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
             relativeLayout = itemView.findViewById(R.id.relatident);
         }
     }
-    public void updateList( List<Collegue> listSearch){
-        listNew= new ArrayList<>();
-        listNew.addAll(listSearch);
 
 
-    }
 }

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class FragmentContact extends Fragment implements SearchView.OnQueryTextL
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
+
 //        viewModelCollegue.getUser().observe(getViewLifecycleOwner(), new Observer<List<Collegue>>() {
 //            @Override
 //            public void onChanged(List<Collegue> collegues) {
@@ -55,7 +57,6 @@ public class FragmentContact extends Fragment implements SearchView.OnQueryTextL
 
         return view;
     }
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_inflated, menu);
@@ -72,6 +73,7 @@ public class FragmentContact extends Fragment implements SearchView.OnQueryTextL
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        Toast.makeText(getContext(), "yes", Toast.LENGTH_SHORT).show();
         String userInput = newText.toLowerCase();
         List<String> newList = new ArrayList<>();
         for (Collegue name :viewModelCollegue.getUser().getValue())
@@ -80,6 +82,7 @@ public class FragmentContact extends Fragment implements SearchView.OnQueryTextL
                 newList.add(name.getNom());
             }
         }
+
         return true;
     }
 }

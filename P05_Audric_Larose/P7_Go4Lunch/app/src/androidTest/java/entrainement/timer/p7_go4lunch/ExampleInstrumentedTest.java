@@ -24,4 +24,5 @@ public class ExampleInstrumentedTest {
 
         assertEquals("entrainement.timer.p7_go4lunch", appContext.getPackageName());
     }
+
 }

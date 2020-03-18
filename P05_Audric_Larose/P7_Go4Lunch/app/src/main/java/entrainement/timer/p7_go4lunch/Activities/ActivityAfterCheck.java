@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Adapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -35,11 +37,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import entrainement.timer.p7_go4lunch.Collegue.Adaptateur;
+import entrainement.timer.p7_go4lunch.Collegue.Collegue;
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.Collegue.FragmentContact;
+import entrainement.timer.p7_go4lunch.Collegue.ViewModelCollegue;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.Me;
 import entrainement.timer.p7_go4lunch.R;
@@ -53,6 +60,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private Me me = new Me();
     private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
+    private ViewModelCollegue viewModelCollegue;
 
 
     @Override
@@ -69,6 +77,8 @@ public class ActivityAfterCheck extends AppCompatActivity {
         Picasso.get().load(me.getMaPhoto()).into(photoSide);
         nomSide.setText(me.getMonNOm());
         mailSide.setText(me.getMonMail());
+        viewModelCollegue= new ViewModelProvider(this).get(ViewModelCollegue.class);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -187,9 +197,46 @@ public class ActivityAfterCheck extends AppCompatActivity {
                             break;
                         case R.id.violet:
                             selectdFragment= fragments[1];
+                            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                @Override
+                                public boolean onQueryTextSubmit(String query) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onQueryTextChange(String newText) {
+                                    Toast.makeText(ActivityAfterCheck.this, "yes", Toast.LENGTH_SHORT).show();
+                                    String userInput = newText.toLowerCase();
+                                    List<String> newList = new ArrayList<>();
+                                    RecyclerView.Adapter adapter = new Adaptateur();
+                                    for (Collegue name :viewModelCollegue.getUser().getValue())
+                                    {
+                                        if (name.getNom().toLowerCase().contains(userInput)){
+                                            newList.add(name.getNom());
+                                        }
+                                    }
+//                                    ((Adaptateur) adapter).updateList(newList);
+                                    return true;                                }
+                            });
+
+
                             break;
                         case R.id.orange:
                             selectdFragment= fragments[2];
+                            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                @Override
+                                public boolean onQueryTextSubmit(String query) {
+                                    Fragmentcarte fragmentcarte = new Fragmentcarte();
+                                    fragmentcarte.filterSearch(ActivityAfterCheck.this,query);
+                                    return true;
+                                }
+
+                                @Override
+                                public boolean onQueryTextChange(String newText) {
+
+                                    return false;
+                                }
+                            });
                             break;
                     }
                     drawerLayout.closeDrawer(GravityCompat.START);

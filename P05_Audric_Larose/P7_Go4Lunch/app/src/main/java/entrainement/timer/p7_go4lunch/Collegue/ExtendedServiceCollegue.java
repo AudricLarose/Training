@@ -79,7 +79,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                                             System.err.println("Listen failed: " + e);
                                             return;
                                         }
-
                                         if (documentSnapshot != null && documentSnapshot.exists()) {
                                             Log.d(TAG, "onEvent: " + documentSnapshot.getData());
                                             String collegueData = documentSnapshot.getString("Nom");
