@@ -61,6 +61,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
     private ViewModelCollegue viewModelCollegue;
+    private Adaptateur adapter;
 
 
     @Override
@@ -197,27 +198,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                             break;
                         case R.id.violet:
                             selectdFragment= fragments[1];
-                            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                                @Override
-                                public boolean onQueryTextSubmit(String query) {
-                                    return false;
-                                }
 
-                                @Override
-                                public boolean onQueryTextChange(String newText) {
-                                    Toast.makeText(ActivityAfterCheck.this, "yes", Toast.LENGTH_SHORT).show();
-                                    String userInput = newText.toLowerCase();
-                                    List<String> newList = new ArrayList<>();
-                                    RecyclerView.Adapter adapter = new Adaptateur();
-                                    for (Collegue name :viewModelCollegue.getUser().getValue())
-                                    {
-                                        if (name.getNom().toLowerCase().contains(userInput)){
-                                            newList.add(name.getNom());
-                                        }
-                                    }
-//                                    ((Adaptateur) adapter).updateList(newList);
-                                    return true;                                }
-                            });
 
 
                             break;

@@ -19,24 +19,36 @@ import java.util.List;
 
 import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
 import entrainement.timer.p7_go4lunch.Collegue.Adaptateur;
+import entrainement.timer.p7_go4lunch.Collegue.Collegue;
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.R;
 
 public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHolder> {
-    LiveData<List<Place>> placeList;
+//    LiveData<List<Place>> placeList;
     private ExtendedServicePlace servicePlace;
+    List<Place> listedeplaces;
 
-    public AdaptateurPlace(LiveData<List<Place>> placeList, LifecycleOwner owner) {
-
-        this.placeList = placeList;
-        this.placeList.observe(owner, new Observer<List<Place>>() {
-            @Override
-            public void onChanged(List<Place> places) {
-                AdaptateurPlace.this.notifyDataSetChanged();
-            }
-        });
+    public AdaptateurPlace(List<Place> listedeplaces) {
+        this.listedeplaces = listedeplaces;
+        notifyDataSetChanged();
     }
+
+    void updatelistplace(List<Place> liste){
+        listedeplaces=new ArrayList<>();
+        listedeplaces.addAll(liste);
+    }
+
+    //    public AdaptateurPlace(LiveData<List<Place>> placeList, LifecycleOwner owner) {
+//
+//        this.placeList = placeList;
+//        this.placeList.observe(owner, new Observer<List<Place>>() {
+//            @Override
+//            public void onChanged(List<Place> places) {
+//                AdaptateurPlace.this.notifyDataSetChanged();
+//            }
+//        });
+//    }
 
     @NonNull
     @Override
@@ -49,7 +61,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
         servicePlace= DI.getServicePlace();
-        Place place= placeList.getValue().get(position);
+        Place place= listedeplaces.get(position);
         holder.nom.setText(place.getnomPlace());
         holder.adresse.setText(place.getAdresse());
         holder.perso.setText(place.getquivient());
@@ -73,8 +85,8 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
 
     @Override
     public int getItemCount() {
-        if (placeList.getValue()!=null) {
-            return placeList.getValue().size();
+        if (listedeplaces!=null) {
+            return listedeplaces.size();
         } else {
             return 0;
         }

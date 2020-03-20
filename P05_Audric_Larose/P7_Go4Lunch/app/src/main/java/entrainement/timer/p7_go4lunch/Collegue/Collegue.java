@@ -8,12 +8,26 @@ public class Collegue {
     private String photo;
     private String longitude;
     private String latitude;
+    private String id_monchoix;
 
-    public Collegue(String id, String nom, String choix, String photo) {
-        this.id = id;
+    public Collegue(String nom) {
+        this.nom=nom;
+    }
+
+    public String getId_monchoix() {
+        return id_monchoix;
+    }
+
+    public void setId_monchoix(String id_monchoix) {
+        this.id_monchoix = id_monchoix;
+    }
+
+    public Collegue(String nom, String choix, String photo,String id_monchoix) {
+
         this.nom = nom;
         this.choix = choix;
         this.photo = photo;
+        this.id_monchoix= id_monchoix;
     }
 
     public Collegue(String nom, String choix, String photo) {

@@ -53,10 +53,14 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     private List<Collegue> quivient_array = new ArrayList<>();
     private List<Collegue> addMe = new ArrayList<>();
     private static final String TAG = "ExtendedServiceCollegue";
+    private List<Collegue> collegues= ListCollegueGenerator.generateNeighbours();
     private RecyclerView.Adapter recyclerView;
     private Me me = new Me();
     private  FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
+    public List<Collegue> generateListCollegue(){
+        return collegues;
+    }
 
     @Override
     public MutableLiveData<List<Collegue>> getListCollegue() {
@@ -68,6 +72,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            collegues.clear();
                             List<Collegue> tmp = new ArrayList<>();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String collegueId = documentSnapshot.getString("id");
@@ -84,7 +89,9 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                                             String collegueData = documentSnapshot.getString("Nom");
                                             String colleguephoto = documentSnapshot.getString("photo");
                                             String collegueChoix = documentSnapshot.getString("choix");
-                                            tmp.add(new Collegue(collegueData, collegueChoix, colleguephoto));
+                                            String idmonchoix= documentSnapshot.getString("id_monchoix");
+                                            collegues.add(new Collegue(collegueData, collegueChoix, colleguephoto,idmonchoix));
+                                            tmp.add(new Collegue(collegueData, collegueChoix, colleguephoto,idmonchoix));
                                             listLiveData.setValue(tmp);
                                         } else {
                                             System.out.print("Current data: null");

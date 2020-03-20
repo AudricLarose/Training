@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.api.ApiException;
@@ -66,7 +67,7 @@ public class ExtendedServicePlace implements InterfacePlace {
     float[] result = new float[1];
     private List<com.google.android.libraries.places.api.model.Place.Type> type;
     private Map<String, String> mMarker = new HashMap<>();
-
+    private List<Place> liste2place=ListPlaceGenerator.generatePlace();
 
 
     @Override
@@ -137,56 +138,65 @@ public class ExtendedServicePlace implements InterfacePlace {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            progressBar.setVisibility(View.GONE);
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                String id = documentSnapshot.getString("id");
-                                double latitude = 0;
-                                double longitude = 0;
-                                if (documentSnapshot.getString("latitude")!=null) {
-                                    latitude = Double.parseDouble(documentSnapshot.getString("latitude"));
-                                    longitude = Double.parseDouble(documentSnapshot.getString("longitude"));
-                                }
-                                LatLng latlongPlace = new LatLng(latitude, longitude);
-                                String nomPlace = documentSnapshot.getString("nomPlace");
-                                String adressePlace = documentSnapshot.getString("Adresse");
-                                String notes = documentSnapshot.getString("note");
-                                note.put(adressePlace,notes);
-                                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                    @Override
-                                    public void onInfoWindowClick(Marker marker) {
-                                        Toast.makeText(context, mMarker.get(marker.getId()), Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(context, ActivityDetails.class);
-                                            intent.putExtra("id", mMarker.get(marker.getId()));
-                                            intent.putExtra("nom",marker.getTitle());
-                                            intent.putExtra("adresse",marker.getSnippet());
-                                            intent.putExtra("etoile",note.get(marker.getSnippet()));
-                                            context.startActivity(intent);
-                                    }
-                                });
-                                DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id);
-
-                                doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot2, @Nullable FirebaseFirestoreException e) {
-                                        String whocome = documentSnapshot2.getString("quivient");
-                                            if (whocome != null) {
-                                                if (Integer.parseInt(whocome) >= 1) {
-                                                    marker= mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
-                                                    mMarker.put(marker.getId(),id);
-                                                } else {
-                                                     marker=  mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
-                                                    mMarker.put(marker.getId(),id);
-
-                                                }
-                                            }
-
-                                    }
-                                });
-                            }
+                            successPlace(task, progressBar, note, mMap, context, firebaseFirestore);
                         }
                     }
                 });
 
+    }
+
+    @VisibleForTesting
+    public void successPlace(@NonNull Task<QuerySnapshot> task, ProgressBar progressBar, Map<String, String> note, GoogleMap mMap, Context context, FirebaseFirestore firebaseFirestore) {
+        progressBar.setVisibility(View.GONE);
+        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+            String id = documentSnapshot.getString("id");
+            double latitude = 0;
+            double longitude = 0;
+            if (documentSnapshot.getString("latitude")!=null) {
+                latitude = Double.parseDouble(documentSnapshot.getString("latitude"));
+                longitude = Double.parseDouble(documentSnapshot.getString("longitude"));
+            }
+            LatLng latlongPlace = new LatLng(latitude, longitude);
+            String nomPlace = documentSnapshot.getString("nomPlace");
+            String adressePlace = documentSnapshot.getString("Adresse");
+            String notes = documentSnapshot.getString("note");
+            note.put(adressePlace,notes);
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Toast.makeText(context, mMarker.get(marker.getId()), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ActivityDetails.class);
+                        intent.putExtra("id", mMarker.get(marker.getId()));
+                        intent.putExtra("nom",marker.getTitle());
+                        intent.putExtra("adresse",marker.getSnippet());
+                        intent.putExtra("etoile",note.get(marker.getSnippet()));
+                        context.startActivity(intent);
+                }
+            });
+            DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id);
+
+            doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot2, @Nullable FirebaseFirestoreException e) {
+                    eventPlace(documentSnapshot2, mMap, latlongPlace, nomPlace, adressePlace, id);
+
+                }
+            });
+        }
+    }
+
+    private void eventPlace(@Nullable DocumentSnapshot documentSnapshot2, GoogleMap mMap, LatLng latlongPlace, String nomPlace, String adressePlace, String id) {
+        String whocome = documentSnapshot2.getString("quivient");
+        if (whocome != null) {
+            if (Integer.parseInt(whocome) >= 1) {
+                marker= mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
+                mMarker.put(marker.getId(),id);
+            } else {
+                 marker=  mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
+                mMarker.put(marker.getId(),id);
+
+            }
+        }
     }
 
     public List<String> getPlaceInfo(String name){
@@ -286,6 +296,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            liste2place.clear();
                             List<Place> tmp = new ArrayList<>();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String idplace = documentSnapshot.getString("id");
@@ -304,6 +315,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                                                 String idplace = documentSnapshot.getString("id");
                                                 String quivient = documentSnapshot.getString("quivient");
                                                 String distance = documentSnapshot.getString("distance");
+                                                liste2place.add(new Place(nomPlace,adresse,"15:00",distance,quivient,note,idplace));
                                                 tmp.add(new Place(nomPlace, adresse, "15:00", distance, quivient, note, idplace));
                                                 liste_de_place.setValue(tmp);
                                             }
@@ -597,7 +609,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                     .document(me.getMonNOm())
                     .set(note);
         }
-
         if (like) {
             Map<String,Object> note2 = new HashMap<>();
             note2.put("iLike","true");
@@ -643,4 +654,7 @@ public class ExtendedServicePlace implements InterfacePlace {
     }
 
 
+    public List<Place> generateListPlace() {
+        return liste2place;
+    }
 }

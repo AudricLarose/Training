@@ -33,31 +33,37 @@ import static entrainement.timer.p7_go4lunch.R.color.quantum_grey300;
 
 public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     LiveData<List<Collegue>> list;
-    List<Collegue> listNew;
     Context context;
+    List<Collegue> liste ;
     URL urlWelcome = null;
 
-    public Adaptateur(List<Collegue> listNew) {
-        this.listNew = listNew;
+//    public Adaptateur(LiveData<List<Collegue>> list, LifecycleOwner owner) {
+//        this.list = list;
+//        this.list.observe(owner, new Observer<List<Collegue>>() {
+//            @Override
+//            public void onChanged(List<Collegue> collegues) {
+//                Adaptateur.this.notifyDataSetChanged();
+//            }
+//        });
+//    }
+
+
+    public Adaptateur(List<Collegue> liste) {
+        this.liste = liste;
+        notifyDataSetChanged();
     }
 
-    public Adaptateur(LiveData<List<Collegue>> list, LifecycleOwner owner) {
-        this.list = list;
-        this.list.observe(owner, new Observer<List<Collegue>>() {
-            @Override
-            public void onChanged(List<Collegue> collegues) {
-                Adaptateur.this.notifyDataSetChanged();
-            }
-        });
+//    public void updateList(List<Collegue> listSearch){
+//        list.getValue().clear();
+//        list.getValue().addAll(listSearch);
+//    }
+
+    public void updateList(List<Collegue> listSearch){
+        liste=new ArrayList<>();
+        liste.addAll(listSearch);
+        notifyDataSetChanged();
     }
 
-    public Adaptateur() {
-    }
-
-    public void updateList( List<Collegue> listSearch){
-        listNew= new ArrayList<>();
-        listNew.addAll(listSearch);
-    }
 
     @NonNull
     @Override
@@ -70,7 +76,9 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
-        final Collegue collegue = list.getValue().get(position);
+//        final Collegue collegue = list.getValue().get(position);
+          final Collegue collegue = liste.get(position);
+
         holder.nom.setText(collegue.getNom());
         if ((collegue.getChoix() == null) || (collegue.getChoix().trim().isEmpty())) {
             holder.nom.setTextColor(Color.parseColor("#979797"));
@@ -84,6 +92,7 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), ActivityDetails.class);
+                    intent.putExtra("id",collegue.getId_monchoix());
                     intent.putExtra("nom", collegue.getChoix());
                     intent.putExtra("adresse", " ");
                     v.getContext().startActivity(intent);
@@ -97,8 +106,9 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
 
     @Override
     public int getItemCount() {
-        if (list.getValue()!=null) {
-            return list.getValue().size();
+        if (liste!=null) {
+//            return list.getValue().size();
+            return liste.size();
         } else {
             return 0;
         }
