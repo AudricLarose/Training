@@ -29,6 +29,7 @@ import java.util.List;
 
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI;
+import entrainement.timer.p7_go4lunch.Other;
 import entrainement.timer.p7_go4lunch.R;
 
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private ExtendedServiceCollegue service;
     private CardView cardF;
     private CardView cardG;
+    private Other other=new Other();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +69,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createSignInIntent(1);
+                other.internetVerify(MainActivity.this);
             }
         });
         cardG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createSignInIntent(0);
+                other.internetVerify(MainActivity.this);
+
             }
         });
 //        button.setOnClickListener(new View.OnClickListener() {
@@ -81,12 +86,9 @@ public class MainActivity extends AppCompatActivity {
 //                signOut();
 //            }
 //        });
+        other.internetVerify(MainActivity.this);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     public void createSignInIntent(int i) {
         // [START auth_fui_create_intent]

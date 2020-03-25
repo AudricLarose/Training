@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -65,9 +66,12 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
         holder.nom.setText(place.getnomPlace());
         holder.adresse.setText(place.getAdresse());
         holder.perso.setText(place.getquivient());
-        holder.etoile.setText(place.getnote());
+//        holder.etoile.setText(place.getnote());
         holder.distance.setText(place.getDistance());
         holder.horaire.setText(place.getHoraire());
+        if (place.getnote()!=null) {
+            holder.bar.setRating(Float.parseFloat(place.getnote()));
+        }
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +79,9 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
                 intent.putExtra("id",place.getId());
                 intent.putExtra("nom",place.getnomPlace());
                 intent.putExtra("adresse",place.getAdresse());
+                intent.putExtra("phone",place.getTel());
+                intent.putExtra("site",place.getSite());
+                intent.putExtra("etoile",place.getnote());
                 v.getContext().startActivity(intent);
 
             }
@@ -101,6 +108,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
     private TextView horaire;
     private TextView etoile;
     private ImageView photo;
+    private RatingBar bar;
 
         public LeHolder(@NonNull View itemView) {
             super(itemView);
@@ -112,6 +120,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
             etoile=itemView.findViewById(R.id.etoile);
             photo=itemView.findViewById(R.id.photoresto);
             relativeLayout=itemView.findViewById(R.id.relativeRowPlace);
+            bar=itemView.findViewById(R.id.ratingbar);
         }
     }
 }

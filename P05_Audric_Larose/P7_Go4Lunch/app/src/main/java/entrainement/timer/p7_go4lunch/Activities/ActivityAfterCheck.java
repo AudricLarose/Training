@@ -10,20 +10,18 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Adapter;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Switch;
@@ -37,18 +35,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import entrainement.timer.p7_go4lunch.Collegue.Adaptateur;
-import entrainement.timer.p7_go4lunch.Collegue.Collegue;
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.Collegue.FragmentContact;
 import entrainement.timer.p7_go4lunch.Collegue.ViewModelCollegue;
 import entrainement.timer.p7_go4lunch.DI;
 import entrainement.timer.p7_go4lunch.Me;
+import entrainement.timer.p7_go4lunch.Other;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.Restaurant.FragmentResto;
 import entrainement.timer.p7_go4lunch.Restaurant.Fragmentcarte;
@@ -61,41 +54,45 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
     private ViewModelCollegue viewModelCollegue;
+    private boolean pressed;
     private Adaptateur adapter;
-
+    private Other other= new Other();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_after_check);
         Me me = new Me();
-        BottomNavigationView bottomNavigationView= findViewById(R.id.bottom_nav);
-        NavigationView navigationView= findViewById(R.id.nav_view);
-        View headerview= navigationView.getHeaderView(0);
-        TextView nomSide= headerview.findViewById(R.id.nomSide);
-        TextView mailSide= headerview.findViewById(R.id.mailSide);
-        ImageView photoSide= headerview.findViewById(R.id.photoidenti);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerview = navigationView.getHeaderView(0);
+        TextView nomSide = headerview.findViewById(R.id.nomSide);
+        TextView mailSide = headerview.findViewById(R.id.mailSide);
+        ImageView photoSide = headerview.findViewById(R.id.photoidenti);
         Picasso.get().load(me.getMaPhoto()).into(photoSide);
         nomSide.setText(me.getMonNOm());
         mailSide.setText(me.getMonMail());
-        viewModelCollegue= new ViewModelProvider(this).get(ViewModelCollegue.class);
-
+        viewModelCollegue = new ViewModelProvider(this).get(ViewModelCollegue.class);
+        other.internetVerify(ActivityAfterCheck.this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.yourlunch:
-                                Map<String,String> ash=new HashMap<>();
                                 Me me = new Me();
                                 String id_rest=me.getId_monchoix();
-                                ash= DI.getServicePlace().Oneplace(id_rest);
                                 Intent intent= new Intent(ActivityAfterCheck.this,ActivityDetails.class);
                                 String name_lunch=me.getMon_choix();
-                                intent.putExtra("nom",name_lunch);
-                                intent.putExtra("adresse",me.getAdressechoix());
-                                intent.putExtra("id",me.getId_monchoix());
-                                intent.putExtra("etoile",me.getNoteChoix());
-                                startActivity(intent);
+
+                                if (name_lunch!=null && !name_lunch.trim().isEmpty()) {
+                                    intent.putExtra("nom",name_lunch);
+                                    intent.putExtra("adresse",me.getAdressechoix());
+                                    intent.putExtra("id",me.getId_monchoix());
+                                    intent.putExtra("etoile",me.getNoteChoix());
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(ActivityAfterCheck.this, "Il n'y a pas de rendez vous encore enregistrez a votre nom", Toast.LENGTH_LONG).show();
+                                }
                                 break;
                             case R.id.nav_param:
                                 parametreNotification();
@@ -131,6 +128,34 @@ public class ActivityAfterCheck extends AppCompatActivity {
         alertDialog.show();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        iPressed();
+
+    }
+
+    private void iPressed(){
+        AlertDialog alertDialog=backpressed();
+        alertDialog.show();
+    }
+    private AlertDialog backpressed(){
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        View view= getLayoutInflater().from(this).inflate(R.layout.backpressed,null);
+        builder.setView(view).setTitle("Etes vous sûr ?").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(ActivityAfterCheck.this, "You stay !", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return builder.create();
+    }
     private AlertDialog NotificactionAction(){
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);

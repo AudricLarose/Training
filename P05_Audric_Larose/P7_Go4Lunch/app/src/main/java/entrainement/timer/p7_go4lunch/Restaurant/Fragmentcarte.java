@@ -241,7 +241,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                             double latitude =location.getLatitude();
                             double longitude =location.getLongitude();
                             LatLng latLng= new LatLng(latitude,longitude);
-                            mMap.addMarker(new MarkerOptions().position(latLng).title("Here !").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location_black_24dp)));
+                            mMap.addMarker(new MarkerOptions().position(latLng).title("Here !").icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
 
                         }
@@ -277,7 +277,6 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                 getContext().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED ){
             ActivityCompat.requestPermissions(getActivity(),new String[]{ACCESS_FINE_LOCATION},1);
         } else {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
             extendedServicePlace.getPlace(getContext(),request,placesClient, mMap, progressBar);
         }
 
@@ -295,7 +294,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                     me.setLatlng_me(latLng);
                     me.setMy_latitude(latitude);
                     me.setMy_longitude(longitude);
-                    mMap.addMarker(new MarkerOptions().position(latLng).title("here!").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("Here !").icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                 }
             }

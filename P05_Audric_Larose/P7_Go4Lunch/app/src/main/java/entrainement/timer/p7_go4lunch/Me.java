@@ -19,6 +19,15 @@ public class Me {
     private static Boolean beNotified;
     private static String NoteChoix;
     private static List<String> myLikes;
+    private static List<String> getCoworker;
+
+    public  List<String> getGetCoworker() {
+        return getCoworker;
+    }
+
+    public  void setGetCoworker(List<String> getCoworker) {
+        Me.getCoworker = getCoworker;
+    }
 
     public List<String> getMyLikes() {
         return myLikes;

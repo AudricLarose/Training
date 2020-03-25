@@ -6,10 +6,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,20 +47,37 @@ public class FragmentResto extends Fragment {
     private SearchView.OnQueryTextListener queryTextListener;
     private AdaptateurPlace adapter=new AdaptateurPlace(liste2Place);;
     private static final String TAG = "FragmentContact";
+    private CoordinatorLayout coordinatorLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         liste2Place = servicePlace.generateListPlace();
         View view = inflater.inflate(R.layout.fragment_fragment_resto, container, false);
-        recyclerView = (RecyclerView) view;
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycleContact);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(view.getContext());
+        coordinatorLayout= view.findViewById(R.id.coordinate);
+        swipeRefreshLayout= view.findViewById(R.id.swipedem);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(view.getContext(), "Votre liste est mise a jour maintenant", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 //        adapter= new Adaptateur(viewModelCollegue.getUser(), this);
         return view;
     }
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,14 +118,18 @@ public class FragmentResto extends Fragment {
                             newList.add(name);
                         }
                     }
-
                     adapter.updatelistplace(newList);
                     recyclerView.setAdapter(adapter);
-
                     return true;
                 }
 
             });
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
 }

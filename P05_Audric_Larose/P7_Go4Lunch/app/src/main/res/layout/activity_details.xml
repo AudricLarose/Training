@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinate2"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.ActivityDetails">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imageGrand"
@@ -17,13 +21,13 @@
     <RelativeLayout
         android:id="@+id/relativeGrand"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/imageGrand"
         android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/nomGrand"
-            android:layout_width="wrap_content"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Le nom"
@@ -162,6 +166,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/wesiteGrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_rowWeight="1"
@@ -173,6 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center">
+
                 <ImageView
                     android:id="@+id/imageView4"
                     android:layout_width="40dp"
@@ -180,7 +186,6 @@
                     app:srcCompat="@drawable/ic_earth_orange_24dp" />
 
                 <TextView
-                    android:id="@+id/wesiteGrand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -239,6 +244,6 @@
                 app:srcCompat="@drawable/fui_ic_check_circle_black_128dp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 
-
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

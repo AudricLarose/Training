@@ -9,8 +9,10 @@ public class Place {
     private String quivient;
     private String note;
     private String id;
+    private String site;
+    private String tel;
 
-    public Place(String nomPlace, String Adresse, String horaire, String distance, String quivient,String note, String idPlace) {
+    public Place(String nomPlace, String Adresse, String horaire, String distance, String quivient,String note, String idPlace,String tel,String site ) {
         this.nomPlace = nomPlace;
         this.Adresse = Adresse;
         this.horaire = horaire;
@@ -30,6 +32,22 @@ public class Place {
     }
 
     public Place() {
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public String getnomPlace() {

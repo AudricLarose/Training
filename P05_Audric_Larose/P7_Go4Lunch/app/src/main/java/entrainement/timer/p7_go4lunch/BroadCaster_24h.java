@@ -7,11 +7,8 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
-
-import entrainement.timer.p7_go4lunch.Me;
 
 public class BroadCaster_24h extends BroadcastReceiver {
     private Me me=new Me();
@@ -25,7 +22,11 @@ public class BroadCaster_24h extends BroadcastReceiver {
             note.put("note_choix","");
             Toast.makeText(context, "Choix, effacé !", Toast.LENGTH_SHORT).show();
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);
+            if (me.getMonId()!=null){
+                firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);
+
+            }
    //     }
+
     }
 }

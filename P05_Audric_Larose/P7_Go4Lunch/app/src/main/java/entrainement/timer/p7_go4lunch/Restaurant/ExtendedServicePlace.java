@@ -35,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -67,7 +68,8 @@ public class ExtendedServicePlace implements InterfacePlace {
     float[] result = new float[1];
     private List<com.google.android.libraries.places.api.model.Place.Type> type;
     private Map<String, String> mMarker = new HashMap<>();
-    private List<Place> liste2place=ListPlaceGenerator.generatePlace();
+    private List<Place> liste2place = ListPlaceGenerator.generatePlace();
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -92,6 +94,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                             String phonePlace = addressList.get(0).getPhone();
                             String horairePlace = addressList.get(0).getThoroughfare();
                             List photoPlace = placeLikelihood.getPlace().getPhotoMetadatas();
+                            String website = String.valueOf(placeLikelihood.getPlace().getWebsiteUri());
                             double latitude = addressList.get(0).getLatitude();
                             double longitude = addressList.get(0).getLongitude();
                             String idPlace = String.valueOf(latitude) + String.valueOf(longitude);
@@ -107,14 +110,14 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 Location.distanceBetween(me.getMy_latitude(), me.getMy_longitude(), latitude, longitude, result);
                             }
                             String distance = String.valueOf(Math.round(result[0]));
-                            String whocome = howManyCome(nomPlace, idPlace);
-                            servicePlace.addPlace(nomPlace, adressePlace, quivient,note, idPlace, longitude, latitude, distance,typePlace);
+                            //  String whocome = howManyCome(nomPlace, idPlace);
+                            servicePlace.addPlace(nomPlace, adressePlace, quivient, note, idPlace, longitude, latitude, distance, typePlace, horairePlace, website, phonePlace);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                PlacethePlace(context, mMap,progressBar);
+                PlacethePlace(context, mMap, progressBar);
 
                 Exception exception = task.getException();
                 if (exception instanceof ApiException) {
@@ -149,10 +152,12 @@ public class ExtendedServicePlace implements InterfacePlace {
     public void successPlace(@NonNull Task<QuerySnapshot> task, ProgressBar progressBar, Map<String, String> note, GoogleMap mMap, Context context, FirebaseFirestore firebaseFirestore) {
         progressBar.setVisibility(View.GONE);
         for (DocumentSnapshot documentSnapshot : task.getResult()) {
+
             String id = documentSnapshot.getString("id");
+
             double latitude = 0;
             double longitude = 0;
-            if (documentSnapshot.getString("latitude")!=null) {
+            if (documentSnapshot.getString("latitude") != null) {
                 latitude = Double.parseDouble(documentSnapshot.getString("latitude"));
                 longitude = Double.parseDouble(documentSnapshot.getString("longitude"));
             }
@@ -160,28 +165,30 @@ public class ExtendedServicePlace implements InterfacePlace {
             String nomPlace = documentSnapshot.getString("nomPlace");
             String adressePlace = documentSnapshot.getString("Adresse");
             String notes = documentSnapshot.getString("note");
-            note.put(adressePlace,notes);
+            note.put(adressePlace, notes);
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
                     Toast.makeText(context, mMarker.get(marker.getId()), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ActivityDetails.class);
-                        intent.putExtra("id", mMarker.get(marker.getId()));
-                        intent.putExtra("nom",marker.getTitle());
-                        intent.putExtra("adresse",marker.getSnippet());
-                        intent.putExtra("etoile",note.get(marker.getSnippet()));
-                        context.startActivity(intent);
+                    intent.putExtra("id", mMarker.get(marker.getId()));
+                    intent.putExtra("nom", marker.getTitle());
+                    intent.putExtra("adresse", marker.getSnippet());
+                    intent.putExtra("etoile", note.get(marker.getSnippet()));
+                    context.startActivity(intent);
                 }
             });
-            DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id);
+            if (id != null) {
+                DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id);
+                doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot2, @Nullable FirebaseFirestoreException e) {
+                        eventPlace(documentSnapshot2, mMap, latlongPlace, nomPlace, adressePlace, id);
 
-            doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot documentSnapshot2, @Nullable FirebaseFirestoreException e) {
-                    eventPlace(documentSnapshot2, mMap, latlongPlace, nomPlace, adressePlace, id);
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -189,27 +196,27 @@ public class ExtendedServicePlace implements InterfacePlace {
         String whocome = documentSnapshot2.getString("quivient");
         if (whocome != null) {
             if (Integer.parseInt(whocome) >= 1) {
-                marker= mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
-                mMarker.put(marker.getId(),id);
+                marker = mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
+                mMarker.put(marker.getId(), id);
             } else {
-                 marker=  mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
-                mMarker.put(marker.getId(),id);
+                marker = mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_orange)));
+                mMarker.put(marker.getId(), id);
 
             }
         }
     }
 
-    public List<String> getPlaceInfo(String name){
-        List<String> infoPlace=new ArrayList<>();
-        FirebaseFirestore firebaseFirestore= FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("restaurant").whereEqualTo("nomPlace",name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public List<String> getPlaceInfo(String name) {
+        List<String> infoPlace = new ArrayList<>();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("restaurant").whereEqualTo("nomPlace", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
-                        String etoile= documentSnapshot.getString("note");
-                        String note= documentSnapshot.getString("quivient");
-                        String id= documentSnapshot.getString("id");
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        String etoile = documentSnapshot.getString("note");
+                        String note = documentSnapshot.getString("quivient");
+                        String id = documentSnapshot.getString("id");
                         infoPlace.add(etoile);
                         infoPlace.add(note);
                         infoPlace.add(id);
@@ -230,16 +237,21 @@ public class ExtendedServicePlace implements InterfacePlace {
                         if (task.isSuccessful()) {
                             List<Place> tmp = new ArrayList<>();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                String idplace = documentSnapshot.getString("id");
+                                String idplace = documentSnapshot.getId();
                                 String quivient = documentSnapshot.getString("quivient");
                                 String like = documentSnapshot.getString("note");
-                                String distance= documentSnapshot.getString("distance");
-                                if ((quivient != null) || (like != null) ||(distance!=null) ) {
-                                    if ((Integer.parseInt(quivient) != 0) || (Integer.parseInt(like) != 0) ) {
-
+                                String distance = documentSnapshot.getString("distance");
+                                if ((quivient != null) || (like != null)) {
+                                    if ((distance != null) || (distance.equals(0))) {
+                                        if ((Integer.parseInt(quivient) != 0) || (Integer.parseInt(like) != 0)) {
+                                        } else {
+                                            firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace).delete();
+                                        }
                                     } else {
                                         firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace).delete();
                                     }
+                                } else {
+                                    firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace).delete();
                                 }
                             }
                         }
@@ -247,7 +259,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                 });
     }
 
-    void addPlace(String nomplace, String adresse, String quivient, String note, String id, double longitude, double latitude, String distance, String type) {
+    void addPlace(String nomplace, String adresse, String quivient, String note, String id, double longitude, double latitude, String distance, String type, String horairePlace, String website, String phonePlace) {
         Me me = new Me();
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
 
@@ -260,37 +272,42 @@ public class ExtendedServicePlace implements InterfacePlace {
         listeplacemap.put("latitude", String.valueOf(latitude));
         listeplacemap.put("longitude", String.valueOf(longitude));
         listeplacemap.put("distance", String.valueOf(distance));
+        listeplacemap.put("horaire", horairePlace);
+        listeplacemap.put("phone", phonePlace);
+        listeplacemap.put("site", website);
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-            if (task.isSuccessful()) {
-            DocumentSnapshot documentSnapshot =task.getResult();
-            String idresto= documentSnapshot.getString("id");
-                if (idresto==null) {
-                    if (Integer.parseInt(distance)<300){
-                        if (type.contains("FOOD")) {
-                            firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id).set(listeplacemap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    String idresto = documentSnapshot.getString("id");
+                    if (idresto == null) {
+                        if (distance != null) {
+                            if (Integer.parseInt(distance) < 300) {
+                                if (type.contains("FOOD")) {
+                                    firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id).set(listeplacemap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                        }
+                                    });
                                 }
-                            });
+                            }
                         }
                     }
                 }
+
             }
-
-    }
-});
-
+        });
 
 
     }
+
 
     @Override
     public MutableLiveData<List<Place>> getListOfPlace() {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        CollectionReference reference =firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace");
+        CollectionReference reference = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace");
         reference.orderBy("quivient").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -300,27 +317,30 @@ public class ExtendedServicePlace implements InterfacePlace {
                             List<Place> tmp = new ArrayList<>();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String idplace = documentSnapshot.getString("id");
-
-                                if (idplace!=null) {
-                                    DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace);
-                                    doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                            if (documentSnapshot != null && documentSnapshot.exists()) {
-
-                                                Log.d(TAG, "onEvent: " + documentSnapshot.getData());
-                                                String nomPlace = documentSnapshot.getString("nomPlace");
-                                                String adresse = documentSnapshot.getString("Adresse");
-                                                String note = documentSnapshot.getString("note");
-                                                String idplace = documentSnapshot.getString("id");
-                                                String quivient = documentSnapshot.getString("quivient");
-                                                String distance = documentSnapshot.getString("distance");
-                                                liste2place.add(new Place(nomPlace,adresse,"15:00",distance,quivient,note,idplace));
-                                                tmp.add(new Place(nomPlace, adresse, "15:00", distance, quivient, note, idplace));
-                                                liste_de_place.setValue(tmp);
+                                String nomPlace = documentSnapshot.getString("nomPlace");
+                                String adresse = documentSnapshot.getString("Adresse");
+                                String note = documentSnapshot.getString("note");
+                                String quivient = documentSnapshot.getString("quivient");
+                                String distance = documentSnapshot.getString("distance");
+                                String phone = documentSnapshot.getString("distance");
+                                String horaire = documentSnapshot.getString("horaire");
+                                String website = documentSnapshot.getString("site");
+//                                liste2place.add(new Place(nomPlace,adresse,"15:00",distance,quivient,note,idplace));
+                                if (distance != null && nomPlace != null && adresse != null) {
+                                    tmp.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
+                                    liste_de_place.setValue(tmp);
+                                    if (idplace != null) {
+                                        DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace);
+                                        doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                if (documentSnapshot != null && documentSnapshot.exists()) {
+                                                    Log.d(TAG, "onEvent: " + documentSnapshot.getData());
+                                                    cleanNDisplay();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
 
                             }
@@ -330,8 +350,33 @@ public class ExtendedServicePlace implements InterfacePlace {
         return liste_de_place;
     }
 
+    public void cleanNDisplay() {
+        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            liste2place.clear();
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                String idplace = documentSnapshot.getString("id");
+                                String nomPlace = documentSnapshot.getString("nomPlace");
+                                String adresse = documentSnapshot.getString("Adresse");
+                                String note = documentSnapshot.getString("note");
+                                String quivient = documentSnapshot.getString("quivient");
+                                String distance = documentSnapshot.getString("distance");
+                                String phone = documentSnapshot.getString("phone");
+                                String horaire = documentSnapshot.getString("horaire");
+                                String website = documentSnapshot.getString("site");
+                                liste2place.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
+                            }
+                        }
+                    }
+                });
+    }
+
     @Override
     public void saveMyPlace(String nom_restaurant, String id) {
+        me.setMon_choix(nom_restaurant);
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(id).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -341,7 +386,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             if (documentSnapshot.exists()) {
                                 if (documentSnapshot.getString("quivient") != null) {
-                                    increment = Integer.parseInt(documentSnapshot.getString("note"));
+                                    increment = Integer.parseInt(documentSnapshot.getString("quivient"));
                                 } else {
                                     increment = 0;
                                 }
@@ -368,18 +413,18 @@ public class ExtendedServicePlace implements InterfacePlace {
     }
 
     @Override
-    public void unsaveMyPlace(String nomCollegue, String photoCollegue, String nom_restaurant) {
+    public void unsaveMyPlace(String id) {
+        me.setMon_choix(" ");
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         Map<String, Object> note = new HashMap<>();
-        note.put("nomCollegue", "");
-        note.put("photoCollegue", "");
+        note.put("choix", " ");
         firebaseFirestore
-                .collection("restaurant").document(me.getMonId()).collection("Myplace")
-                .document(nom_restaurant)
+                .collection("collegue").document(me.getMonId())
                 .update(note)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+
 
                     }
                 });
@@ -387,30 +432,29 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     @Override
     public List<String> getMyPlace(String id) {
-        List<String> myplace=new ArrayList<>();
+        List<String> myplace = new ArrayList<>();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        DocumentReference documentReference= firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace")
+        DocumentReference documentReference = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace")
                 .document(id);
-                documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
-                        String nomPlace = documentSnapshot.getString("nomPlace");
-                        String Adresse = documentSnapshot.getString("Adresse");
-                        String note = documentSnapshot.getString("note");
-                        String quivient = documentSnapshot.getString("quivient");
-                        myplace.add(0, nomPlace);
-                        myplace.add(1, Adresse);
-                        myplace.add(2, note);
-                        myplace.add(3, quivient);
-                    }
-                                });
-
+                String nomPlace = documentSnapshot.getString("nomPlace");
+                String Adresse = documentSnapshot.getString("Adresse");
+                String note = documentSnapshot.getString("note");
+                String quivient = documentSnapshot.getString("quivient");
+                myplace.add(0, nomPlace);
+                myplace.add(1, Adresse);
+                myplace.add(2, note);
+                myplace.add(3, quivient);
+            }
+        });
         return myplace;
     }
 
     @Override
-    public String howManyLke(String nom_restaurant,String iDrestaurant) {
+    public String howManyLke(String nom_restaurant, String iDrestaurant) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("collegue")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -431,7 +475,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                                     listedeCollegueSizer.add(new Collegue(nomCollegue, photoCollegue, nom_restaurant));
                                     Map<String, Object> note = new HashMap<>();
                                     note.put("quivient", String.valueOf(listedeCollegueSizer.size()));
-                                    firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(iDrestaurant).update(note);
+                                    //   firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(iDrestaurant).update(note);
                                 }
                             }
                         });
@@ -478,7 +522,7 @@ public class ExtendedServicePlace implements InterfacePlace {
     }
 
     @Override
-    public List<Collegue> compareCollegueNPlace(String nomduResto, String idData) {
+    public List<Collegue> compareCollegueNPlace(String nomduResto, String idData, Context context) {
         MutableLiveData<List<Collegue>> liveData = serviceCollegue.GetQuiVient();
         List<Collegue> tmp = new ArrayList<>();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -500,21 +544,19 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 if (choixCollegue.equals(nomduResto)) {
                                     tmp.add(new Collegue(nomCollegue, photoCollegue, nomduResto));
                                 }
-                                Map<String,Object> note= new HashMap<>();
+                                serviceCollegue.getcoworker(nomduResto);
+                                Map<String, Object> note = new HashMap<>();
                                 int size = tmp.size();
-                                note.put("quivient",String.valueOf(size));
-                                firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idData.trim()).update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "onSuccess: ");
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "onFailure: ");
-                                    }
-                                });
-
+                                note.put("quivient", String.valueOf(size));
+//                                syncMyPlace(idData, String.valueOf(size));
+                                if (idData != null) {
+                                    firebaseFirestore.collection("restaurant")
+                                            .document(me.getMonId())
+                                            .collection("Myplace")
+                                            .document(idData.trim())
+                                            .update(note);
+                                }
+//                                Toast.makeText(context, me.getMonNOm()+" va au " + me.getMon_choix(), Toast.LENGTH_SHORT).show();
                                 liveData.setValue(tmp);
                             }
                         });
@@ -527,29 +569,141 @@ public class ExtendedServicePlace implements InterfacePlace {
         return tmp;
     }
 
-   // public int number_Of_collegue(String name_restaurant){
-        //return compareCollegueNPlace(name_restaurant).size();
-   // }
-
-    public Map<String, String> Oneplace(String id) {
-        Map<String, String> note = new HashMap<>();
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace")
-                .document(id)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            note.put("nom", task.getResult().getString("nomPlace"));
-                            note.put("adresse", task.getResult().getString("Adresse"));
-                            note.put("note", task.getResult().getString("note"));
-                            note.put("quivient", task.getResult().getString("quivient"));
-                        }
+    public void syncMyPlace (String idRestaurant, String quivient){
+        Map<String,Object> note = new HashMap<>();
+        note.put("quivient",quivient);
+        firebaseFirestore.collection("collegue") .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (DocumentSnapshot documentSnapshot : task.getResult()){
+                        String idCollegue= documentSnapshot.getString("id");
+                        firebaseFirestore.collection("restaurant").document(idCollegue).collection("Myplace").document(idRestaurant).update(note);
                     }
-                });
-        return note;
+                }
+            }
+        });
     }
+//
+//    public void upadtingList(){
+//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+//        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()){
+//                            for (DocumentSnapshot documentSnapshot : task.getResult()){
+//                                String idplace = documentSnapshot.getString("id");
+//                                String nomPlace = documentSnapshot.getString("nomPlace");
+//                                firebaseFirestore.collection("Collegue").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                        if (task.isSuccessful()) {
+//                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+//                                                String idCollegue = documentSnapshot.getString("id");
+//                                                DocumentReference documentReference = firebaseFirestore.collection("collegue").document(idCollegue);
+//                                            }
+//                                        }
+//                                    }
+//                                });
+//
+//                            }
+//                        }
+//                    }
+//                });
+//    }
+//
+//    public void certainCheck (String nomduResto,String idData){
+//        List<Collegue> tmp = new ArrayList<>();
+//        firebaseFirestore.collection("Collegue").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()){
+//                    tmp.clear();
+//                    for (DocumentSnapshot documentSnapshot: task.getResult()){
+//                        String nomCollegue = documentSnapshot.getString("Nom");
+//                        String choixCollegue = documentSnapshot.getString("choix");
+//                        if (choixCollegue.equals(nomduResto)) {
+//                            tmp.add(new Collegue(nomCollegue,  nomduResto));
+//                        }
+//                        Map<String,Object> note= new HashMap<>();
+//                        int size = tmp.size();
+//                        note.put("quivient",String.valueOf(size));
+//                        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idData.trim()).update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                Log.d(TAG, "onSuccess: ");
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.d(TAG, "onFailure: ");
+//                            }
+//                        });
+//
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+//    public String idrestaurant(){
+//        List<Collegue> tmp = new ArrayList<>();
+//        firebaseFirestore.collection("resua").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()){
+//                    tmp.clear();
+//                    for (DocumentSnapshot documentSnapshot: task.getResult()){
+//                        String nomCollegue = documentSnapshot.getString("Nom");
+//                        String choixCollegue = documentSnapshot.getString("choix");
+//                        if (choixCollegue.equals(nomduResto)) {
+//                            tmp.add(new Collegue(nomCollegue,  nomduResto));
+//                        }
+//                        Map<String,Object> note= new HashMap<>();
+//                        int size = tmp.size();
+//                        note.put("quivient",String.valueOf(size));
+//                        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idData.trim()).update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                Log.d(TAG, "onSuccess: ");
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.d(TAG, "onFailure: ");
+//                            }
+//                        });
+//
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+    // public int number_Of_collegue(String name_restaurant){
+    //return compareCollegueNPlace(name_restaurant).size();
+    // }
+//
+//    public Map<String, String> Oneplace(String id) {
+//        Map<String, String> note = new HashMap<>();
+//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+//        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace")
+//                .document(id)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            note.put("nom", task.getResult().getString("nomPlace"));
+//                            note.put("adresse", task.getResult().getString("Adresse"));
+//                            note.put("note", task.getResult().getString("note"));
+//                            note.put("quivient", task.getResult().getString("quivient"));
+//                        }
+//                    }
+//                });
+//        return note;
+//    }
 
     @Override
     public void ilike(String idresto) {
@@ -595,12 +749,41 @@ public class ExtendedServicePlace implements InterfacePlace {
             }
         });
     }
-    public  void addMyChoice(String idrestaurant,Boolean come, Boolean like){
-        Map<String,Object> note= null;
+
+    public void oldRestaurantErase(String idOldRestau) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    if (come) {
+        firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idOldRestau).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                if (documentSnapshot.getString("quivient") != null) {
+                                    increment = Integer.parseInt(documentSnapshot.getString("quivient"));
+                                }
+                                increment = increment - 1;
+                                String stringincrement = String.valueOf(increment);
+                                Map<String, Object> note = new HashMap<>();
+                                note.put("quivient", stringincrement);
+                                firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idOldRestau).update(note);
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    public void addMyChoice(String idrestaurant, Boolean come, Boolean like) {
+        Map<String, Object> note = null;
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        if (come) {
             note = new HashMap<>();
-            note.put("iCome","true");
+            note.put("iCome", "true");
             firebaseFirestore.collection("restaurant")
                     .document(me.getMonId())
                     .collection("Myplace")
@@ -610,8 +793,8 @@ public class ExtendedServicePlace implements InterfacePlace {
                     .set(note);
         }
         if (like) {
-            Map<String,Object> note2 = new HashMap<>();
-            note2.put("iLike","true");
+            Map<String, Object> note2 = new HashMap<>();
+            note2.put("iLike", "true");
             firebaseFirestore.collection("restaurant")
                     .document(me.getMonId())
                     .collection("Myplace")
@@ -624,6 +807,7 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     @Override
     public void unlike(String resto, String id) {
+//        serviceCollegue.nbrlikes();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("collegue").document(me.getMonId()).collection("ilike").document(resto).delete();
         firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(resto).get()

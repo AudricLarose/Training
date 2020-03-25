@@ -22,7 +22,7 @@ public class Broadcaster extends BroadcastReceiver {
             String restaurant=extra.getString("restaurant");
             String id=intent.getStringExtra("id");
             service= DI.getService();
-            service.notifyme(restaurant, context);
+            service.notifyme(context);
      // }
     //}
     }
