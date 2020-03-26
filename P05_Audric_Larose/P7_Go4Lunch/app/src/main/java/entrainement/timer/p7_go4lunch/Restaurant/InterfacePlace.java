@@ -28,9 +28,9 @@ public interface InterfacePlace {
     void unlike(String resto, String id);
     void saveMyPlace(String nom_restaurant, String id);
     void unsaveMyPlace(String id);
-    List<String> getMyPlace(String nom_restaurant);
-
-    String howManyLke(String nom_restaurant, String iDrestaurant);
-
-    String howManyCome(String nom_restaurant, String iDrestaurant);
+//    List<String> getMyPlace(String nom_restaurant);
+//
+//    String howManyLke(String nom_restaurant, String iDrestaurant);
+//
+//    String howManyCome(String nom_restaurant, String iDrestaurant);
 }

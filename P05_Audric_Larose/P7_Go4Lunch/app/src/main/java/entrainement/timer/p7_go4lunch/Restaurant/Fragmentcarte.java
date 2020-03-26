@@ -204,6 +204,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                     double latitude =location.getLatitude();
                     double longitude =location.getLongitude();
                     LatLng latLng= new LatLng(latitude,longitude);
+                    Log.d(TAG, "coordonnées: "+latLng.toString());
                     me.setLatlng_me(latLng);
                     me.setMy_latitude(latitude);
                     me.setMy_longitude(longitude);

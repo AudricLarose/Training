@@ -19,7 +19,6 @@
     <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
     <string name="twentyfourhourcommand">Cette commande s\'effacera dans 24h</string>
     <string name="rendezvous1">Bonjour, vous avez rendez vous a</string>
-    <string name="with">avec</string>
     <string name="dontforget">, ne l\'oubliez pas</string>
     <string name="rendezvous">Hello, vous avez rendez vous a</string>
     <string name="dontforgetit1">ne l\'oubliez pas</string>
@@ -49,5 +48,6 @@
     <string name="listtoday">Votre liste est mise a jour maintenant</string>
     <string name="choice">Choix, effacé !</string>
     <string name="experience">Vous devez avoir une connexion internet pour pouvoir bennifier d\'une bonne experience</string>
+    <string name="benotified">Se notifier ?</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

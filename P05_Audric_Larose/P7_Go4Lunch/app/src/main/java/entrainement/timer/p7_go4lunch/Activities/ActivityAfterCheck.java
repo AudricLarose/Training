@@ -10,12 +10,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,11 +34,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import entrainement.timer.p7_go4lunch.Collegue.Adaptateur;
 import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.Collegue.FragmentContact;
 import entrainement.timer.p7_go4lunch.Collegue.ViewModelCollegue;
 import entrainement.timer.p7_go4lunch.DI;
+import entrainement.timer.p7_go4lunch.Fragment_Slide;
 import entrainement.timer.p7_go4lunch.Me;
 import entrainement.timer.p7_go4lunch.Other;
 import entrainement.timer.p7_go4lunch.R;
@@ -55,7 +54,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
     private ViewModelCollegue viewModelCollegue;
     private boolean pressed;
-    private Adaptateur adapter;
     private Other other= new Other();
 
     @Override
@@ -74,6 +72,9 @@ public class ActivityAfterCheck extends AppCompatActivity {
         mailSide.setText(me.getMonMail());
         viewModelCollegue = new ViewModelProvider(this).get(ViewModelCollegue.class);
         other.internetVerify(ActivityAfterCheck.this);
+        ViewPager pagerAdapter= (ViewPager) findViewById(R.id.pager123);
+
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -164,7 +165,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
         Boolean beNotified = me.getBeNotified();
         switchmode.setChecked(beNotified);
         alertDialog.setView(view);
-        alertDialog.setTitle("Se notifier ?").setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(getString( R.string.benotified)).setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(switchmode.isChecked()){
@@ -176,7 +177,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
                     Toast.makeText(ActivityAfterCheck.this, R.string.nonotif, Toast.LENGTH_SHORT).show();
                     serviceCollegue.whenNotifyme(getApplicationContext(),false,"");
                     serviceCollegue.updateNotify();
-
                 }
             }
         });
@@ -215,7 +215,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
 
                                 @Override
                                 public boolean onQueryTextChange(String newText) {
-
                                     return false;
                                 }
                             });
