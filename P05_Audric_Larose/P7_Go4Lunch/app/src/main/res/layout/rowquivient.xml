@@ -8,14 +8,12 @@
     android:layout_height="wrap_content"
     android:id="@+id/relativeRecyGrand"
     >
-    <ImageView
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/photoRecyGrand"
-        android:layout_width="61dp"
-        android:layout_height="61dp"
 
-        tools:srcCompat="@tools:sample/avatars" />
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/photoRecyGrand"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:civ_border_width="4dp"/>
 
     <TextView
         android:id="@+id/nomRecyGrand"

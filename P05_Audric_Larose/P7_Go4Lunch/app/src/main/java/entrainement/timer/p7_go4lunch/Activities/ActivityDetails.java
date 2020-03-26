@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,8 @@ public class ActivityDetails extends AppCompatActivity {
         internet = findViewById(R.id.wesiteGrand);
         unlikebutton = findViewById(R.id.likenotGrand);
         put_me_Out = findViewById(R.id.checknotGrand);
+        image = findViewById(R.id.imageGrand);
+
         other.internetVerify(ActivityDetails.this);
         RatingBar etoiles = (RatingBar) findViewById(R.id.ratingdetails);
         Me me = new Me();
@@ -119,6 +122,12 @@ public class ActivityDetails extends AppCompatActivity {
             adresse.setText(adresseData);
             site = extra.getString("site");
             phone = extra.getString("phone");
+            String photo = extra.getString("photo");
+            if (photo!=null) {
+                Picasso.get().load(photo).into(image);
+            }
+
+
         }
         if (phone == null) {
                tel.setEnabled(false);

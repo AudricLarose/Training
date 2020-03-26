@@ -129,10 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 // ...
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
             }
         }
     }
@@ -181,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void privacyAndTerms() {
         List<AuthUI.IdpConfig> providers = Collections.emptyList();
-        // [START auth_fui_pp_tos]
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -191,39 +186,6 @@ public class MainActivity extends AppCompatActivity {
                                 "https://example.com/privacy.html")
                         .build(),
                 RC_SIGN_IN);
-        // [END auth_fui_pp_tos]
-    }//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//        BottomNavigationView bottomNavigationView= findViewById(R.id.bottom_nav);
-//        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-//
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
-//
-//    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener=
-//            new BottomNavigationView.OnNavigationItemSelectedListener() {
-//                @Override
-//                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-//                    Fragment selectdFragment=null;
-//                    switch (menuItem.getItemId()){
-//                        case R.id.blue:
-//                            selectdFragment= new Fragmentcarte();
-//                            break;
-//                        case R.id.violet:
-//                            selectdFragment= new FragmentContact();
-//                            break;
-//                        case R.id.orange:
-//                            selectdFragment= new FragmentResto();
-//                            break;
-//                    }
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectdFragment).commit();
-//                    return true;
-//                }
-//            };
+    }
 
 }

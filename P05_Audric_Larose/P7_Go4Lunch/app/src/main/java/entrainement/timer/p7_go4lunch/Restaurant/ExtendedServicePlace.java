@@ -180,7 +180,7 @@ public class ExtendedServicePlace implements InterfacePlace {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                        if ((documentSnapshot.getString("latitude") != null) && documentSnapshot.getString("longitude")!=null) {
+                        if ((documentSnapshot.getString("latitude") != null) && documentSnapshot.getString("longitude")!=null && (me.getMy_longitude()!= null) &&(me.getMy_latitude()!= null)) {
                             Double latitude = Double.valueOf(documentSnapshot.getString("latitude"));
                             Double longitude = Double.valueOf(documentSnapshot.getString("longitude"));
                             float[] result = ExtendedServicePlace.this.result;
@@ -357,7 +357,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 String horaire = documentSnapshot.getString("horaire");
                                 String website = documentSnapshot.getString("site");
                                 if (distance != null && nomPlace != null && adresse != null) {
-                                    if (Integer.valueOf(distance)<600) {
                                         tmp.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
                                         liste_de_place.setValue(tmp);
                                         if (idplace != null) {
@@ -372,7 +371,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                                                 }
                                             });
                                         }
-                                    }
+
                                 }
 
                             }
@@ -475,9 +474,9 @@ public class ExtendedServicePlace implements InterfacePlace {
                             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                                 String nomCollegue = documentSnapshot.getString("Nom");
                                 String choixCollegue = documentSnapshot.getString("choix");
-                                String photoCollegue = documentSnapshot.getString("photo");
+                                String  photoCollegue = documentSnapshot.getString("photo");
                                 if (choixCollegue.equals(nomduResto)) {
-                                    tmp.add(new Collegue(nomCollegue, photoCollegue, nomduResto));
+                                    tmp.add(new Collegue(nomCollegue,nomduResto,photoCollegue));
                                 }
                                 serviceCollegue.getcoworker(nomduResto);
                                 Map<String, Object> note = new HashMap<>();

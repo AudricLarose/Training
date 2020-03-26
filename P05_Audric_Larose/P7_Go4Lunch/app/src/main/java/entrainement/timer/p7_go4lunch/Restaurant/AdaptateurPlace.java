@@ -82,6 +82,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
                 intent.putExtra("phone",place.getTel());
                 intent.putExtra("site",place.getSite());
                 intent.putExtra("etoile",place.getnote());
+                intent.putExtra("photo",place.getPhoto());
                 v.getContext().startActivity(intent);
 
             }

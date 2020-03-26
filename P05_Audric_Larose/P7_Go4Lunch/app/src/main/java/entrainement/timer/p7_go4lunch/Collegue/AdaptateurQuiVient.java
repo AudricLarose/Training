@@ -13,12 +13,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import entrainement.timer.p7_go4lunch.R;
 
 
@@ -48,7 +50,7 @@ public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient
             Collegue collegue = quivientliste.getValue().get(position);
             holder.nom.setText(collegue.getNom());
             String photoUri= collegue.getPhoto();
-//            Picasso.get().load(photoUri).into(holder.photo);
+            Picasso.get().load(photoUri).into(holder.photo);
         }
 
         @Override
@@ -64,7 +66,7 @@ public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient
             private RelativeLayout relativeLayout;
             private TextView nom;
             private TextView choix;
-            private ImageView photo;
+            private CircularImageView photo;
 
             public LeHolder(@NonNull View itemView) {
                 super(itemView);
