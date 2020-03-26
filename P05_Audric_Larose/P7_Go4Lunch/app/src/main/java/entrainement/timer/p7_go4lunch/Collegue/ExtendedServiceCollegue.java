@@ -58,7 +58,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     private Me me = new Me();
     private int nbrlikes;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private DocumentReference reference = firebaseFirestore.collection("collegue").document(me.getMonId());
 
 
     public List<Collegue> generateListCollegue() {
@@ -159,6 +158,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
     public void updateMyLikes() {
         List<String> likes = new ArrayList<>();
+        DocumentReference reference = firebaseFirestore.collection("collegue").document(me.getMonId());
         reference.collection("ilike").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
