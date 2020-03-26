@@ -74,7 +74,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
         other.internetVerify(ActivityAfterCheck.this);
         ViewPager pagerAdapter= (ViewPager) findViewById(R.id.pager123);
 
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -131,9 +130,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         iPressed();
-
     }
 
     private void iPressed(){
@@ -218,13 +215,9 @@ public class ActivityAfterCheck extends AppCompatActivity {
                                     return false;
                                 }
                             });
-
                             break;
                         case R.id.violet:
                             selectdFragment= fragments[1];
-
-
-
                             break;
                         case R.id.orange:
                             selectdFragment= fragments[2];

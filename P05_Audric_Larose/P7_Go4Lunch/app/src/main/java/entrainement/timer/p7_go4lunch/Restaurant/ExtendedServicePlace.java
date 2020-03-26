@@ -110,15 +110,17 @@ public class ExtendedServicePlace implements InterfacePlace {
                             if (me.getMy_latitude() != null) {
                                 Location.distanceBetween(me.getMy_latitude(), me.getMy_longitude(), latitude, longitude, result);
                             }
-                            String distance = String.valueOf(Math.round(result[0] / 10));
+                            String distance = String.valueOf(Math.round(result[0]));
                             //  String whocome = howManyCome(nomPlace, idPlace);
                             servicePlace.addPlace(nomPlace, adressePlace, quivient, note, idPlace, longitude, latitude, distance, typePlace, horairePlace, website, phonePlace);
+                            progressBar.setVisibility(View.GONE);
+
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                PlacethePlace(context, mMap, progressBar);
+                PlacethePlace(context, mMap);
 
                 Exception exception = task.getException();
                 if (exception instanceof ApiException) {
@@ -129,6 +131,36 @@ public class ExtendedServicePlace implements InterfacePlace {
             }
         });
         return listePlace;
+    }
+    public void put_first_available_place_in_db(GoogleMap mMap, Context context){
+        PlacethePlace(context,mMap);
+        setTheDistance();
+        call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot documentSnapshot:task.getResult()) {
+                        String idplace = documentSnapshot.getString("id");
+                        String nomPlace = documentSnapshot.getString("nomPlace");
+                        String adresse = documentSnapshot.getString("Adresse");
+                        String note = documentSnapshot.getString("note");
+                        String quivient = documentSnapshot.getString("quivient");
+                        String distance = documentSnapshot.getString("distance");
+                        String longitude = documentSnapshot.getString("latitude");
+                        String latitude = documentSnapshot.getString("longitude");
+                        LatLng latLng=new LatLng(Double.valueOf(longitude),Double.valueOf(latitude)) ;
+                        String phone = documentSnapshot.getString("distance");
+                        String horaire = documentSnapshot.getString("horaire");
+                        String website = documentSnapshot.getString("site");
+                        if (!distance.trim().isEmpty()&&distance!=null) {
+                            if (Integer.valueOf(distance)<600) {
+                                eventPlace(quivient , mMap,latLng,nomPlace,adresse,idplace);
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
    public Task<QuerySnapshot> call_all_retaurant(){
          CollectionReference db_my_restaurants=firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace");
@@ -148,13 +180,14 @@ public class ExtendedServicePlace implements InterfacePlace {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                        if (documentSnapshot.getString("latitude") != null) {
+                        if ((documentSnapshot.getString("latitude") != null) && documentSnapshot.getString("longitude")!=null) {
                             Double latitude = Double.valueOf(documentSnapshot.getString("latitude"));
                             Double longitude = Double.valueOf(documentSnapshot.getString("longitude"));
-                            String idRestaurant = documentSnapshot.getString("id");
                             float[] result = ExtendedServicePlace.this.result;
                             Location.distanceBetween(me.getMy_latitude(), me.getMy_longitude(), latitude, longitude, result);
-                            String distance = String.valueOf(Math.round(result[0] / 10));
+                            String distance = String.valueOf(Math.round(result[0]));
+                            String idRestaurant = documentSnapshot.getString("id");
+
                             note.put("distance", distance);
                             firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idRestaurant).update(note);
                         }
@@ -164,14 +197,12 @@ public class ExtendedServicePlace implements InterfacePlace {
         });
     }
 
-    void PlacethePlace(Context context, GoogleMap mMap, ProgressBar progressBar) {
-        Map<String, String> note = new HashMap<>();
-        progressBar.setVisibility(View.VISIBLE);
+    void PlacethePlace(Context context, GoogleMap mMap) {
         call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            successPlace(task, progressBar, note, mMap, context, firebaseFirestore);
+                            successPlace(task, mMap, context, firebaseFirestore);
                         }
                     }
                 });
@@ -179,8 +210,8 @@ public class ExtendedServicePlace implements InterfacePlace {
     }
 
     @VisibleForTesting
-    public void successPlace(@NonNull Task<QuerySnapshot> task, ProgressBar progressBar, Map<String, String> note, GoogleMap mMap, Context context, FirebaseFirestore firebaseFirestore) {
-        progressBar.setVisibility(View.GONE);
+    public void successPlace(@NonNull Task<QuerySnapshot> task, GoogleMap mMap, Context context, FirebaseFirestore firebaseFirestore) {
+        Map<String, String> note = new HashMap<>();
         for (DocumentSnapshot documentSnapshot : task.getResult()) {
 
             String id = documentSnapshot.getString("id");
@@ -191,11 +222,12 @@ public class ExtendedServicePlace implements InterfacePlace {
                 String nomPlace = documentSnapshot.getString("nomPlace");
                 String adressePlace = documentSnapshot.getString("Adresse");
                 String notes = documentSnapshot.getString("note");
+                String whocome = documentSnapshot.getString("quivient");
+
                 note.put(adressePlace, notes);
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        Toast.makeText(context, mMarker.get(marker.getId()), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, ActivityDetails.class);
                         intent.putExtra("id", mMarker.get(marker.getId()));
                         intent.putExtra("nom", marker.getTitle());
@@ -209,7 +241,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                     doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(@Nullable DocumentSnapshot documentSnapshot2, @Nullable FirebaseFirestoreException e) {
-                            eventPlace(documentSnapshot2, mMap, latlongPlace, nomPlace, adressePlace, id);
+//                            eventPlace(whocome, mMap, latlongPlace, nomPlace, adressePlace, id);
                         }
                     });
                 }
@@ -217,9 +249,7 @@ public class ExtendedServicePlace implements InterfacePlace {
         }
     }
 
-    private void eventPlace(@Nullable DocumentSnapshot documentSnapshot2, GoogleMap mMap, LatLng latlongPlace, String nomPlace, String adressePlace, String id) {
-        String whocome = documentSnapshot2.getString("quivient");
-        if (whocome != null) {
+    private void eventPlace(String whocome, GoogleMap mMap, LatLng latlongPlace, String nomPlace, String adressePlace, String id) {
             if (Integer.parseInt(whocome) >= 1) {
                 marker = mMap.addMarker(new MarkerOptions().position(latlongPlace).title(nomPlace).snippet(adressePlace).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
                 mMarker.put(marker.getId(), id);
@@ -229,13 +259,14 @@ public class ExtendedServicePlace implements InterfacePlace {
 
             }
         }
-    }
+
 
     void SortPlaceDB() {
         Task<QuerySnapshot> db=call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            setTheDistance();
                             List<Place> tmp = new ArrayList<>();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String idplace = documentSnapshot.getId();
@@ -243,8 +274,9 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 String like = documentSnapshot.getString("note");
                                 String distance = documentSnapshot.getString("distance");
                                 if ((quivient != null) || (like != null)) {
-                                    if ((distance != null) || (distance.equals(0))) {
-                                        if ((Integer.parseInt(quivient) != 0) || (Integer.parseInt(like) != 0)) {
+                                    if (distance != null) {
+                                        if (Integer.valueOf(distance)<600) {
+                                        } else if (Integer.valueOf(quivient)>=1) {
                                         } else {
                                             firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace).delete();
                                         }
@@ -270,10 +302,10 @@ public class ExtendedServicePlace implements InterfacePlace {
         listeplacemap.put("note", note);
         listeplacemap.put("latitude", String.valueOf(latitude));
         listeplacemap.put("longitude", String.valueOf(longitude));
-//        listeplacemap.put("distance", String.valueOf(distance));
         listeplacemap.put("horaire", horairePlace);
         listeplacemap.put("phone", phonePlace);
         listeplacemap.put("site", website);
+        listeplacemap.put("distance", distance);
         call_this_restaurant(id).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -304,7 +336,7 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     @Override
     public MutableLiveData<List<Place>> getListOfPlace() {
-        setTheDistance();
+//        setTheDistance();
                     call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -318,24 +350,28 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 String note = documentSnapshot.getString("note");
                                 String quivient = documentSnapshot.getString("quivient");
                                 String distance = documentSnapshot.getString("distance");
+                                String latitude = documentSnapshot.getString("latitude");
+                                String longitude = documentSnapshot.getString("longitude");
+                                LatLng latLng=new LatLng(Double.valueOf(longitude),Double.valueOf(latitude)) ;
                                 String phone = documentSnapshot.getString("distance");
                                 String horaire = documentSnapshot.getString("horaire");
                                 String website = documentSnapshot.getString("site");
-//                                liste2place.add(new Place(nomPlace,adresse,"15:00",distance,quivient,note,idplace));
                                 if (distance != null && nomPlace != null && adresse != null) {
-                                    tmp.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
-                                    liste_de_place.setValue(tmp);
-                                    if (idplace != null) {
-                                        DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace);
-                                        doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                                if (documentSnapshot != null && documentSnapshot.exists()) {
-                                                    Log.d(TAG, "onEvent: " + documentSnapshot.getData());
-                                                    cleanNDisplay();
+                                    if (Integer.valueOf(distance)<600) {
+                                        tmp.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
+                                        liste_de_place.setValue(tmp);
+                                        if (idplace != null) {
+                                            DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace);
+                                            doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                                                        Log.d(TAG, "onEvent: " + documentSnapshot.getData());
+                                                        cleanNDisplay();
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
                                 }
 

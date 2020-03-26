@@ -158,13 +158,13 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
         Places.initialize(getContext(), getString(R.string.pswd));
         PlacesClient placesClient = Places.createClient(getContext());
 //        List<Place.Field> placeFields = Collections.singletonList(Place.Field.NAME);
-
         List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.TYPES);
         request =FindCurrentPlaceRequest.newInstance(placeFields);
 
         mMap = googleMap;
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        extendedServicePlace.put_first_available_place_in_db(mMap,getContext());
         mylocation();
 
         localise.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +177,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                             double latitude =location.getLatitude();
                             double longitude =location.getLongitude();
                             LatLng latLng= new LatLng(latitude,longitude);
+                            Log.d(TAG, "coordonnées: "+latLng.toString());
                             mMap.addMarker(new MarkerOptions().position(latLng).title(getString( R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
 
@@ -191,6 +192,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
             ActivityCompat.requestPermissions(getActivity(),new String[]{ACCESS_FINE_LOCATION},1);
         } else {
             extendedServicePlace.getPlace(getContext(),request,placesClient, mMap, progressBar);
+
         }
 
 

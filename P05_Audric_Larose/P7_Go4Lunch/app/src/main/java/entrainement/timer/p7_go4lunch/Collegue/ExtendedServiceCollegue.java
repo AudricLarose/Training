@@ -127,12 +127,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.getString("choix") != null) {
-//                    if (documentSnapshot.getString("note_choix").isEmpty()) {
-//                        me.setMon_like("0");
-//                    } else {
-//                        String like = documentSnapshot.getString("note");
-//                        me.setMon_like(like);
-//                    }
                     if (documentSnapshot.getString("choix").isEmpty()) {
                         me.setMon_choix(" ");
                     } else {
@@ -151,7 +145,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                 } else {
                     me.setMon_choix(" ");
                 }
-//                 nbrlikes();
             }
         });
     }
@@ -333,24 +326,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             Toast.makeText(context, R.string.twentyfourhourcommand, Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void reset_my_Old_Choice(String idrestaurant) {
-        Me me = new Me();
-        Map<String, Object> note = new HashMap<>();
-        call_this_collegue(idrestaurant)
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.getResult().getString("quivient") != null) {
-                            int quivient = Integer.parseInt(task.getResult().getString("quivient"));
-                            quivient = quivient - 1;
-                            note.put("quivient", String.valueOf(quivient));
-                            firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idrestaurant).update(note);
-                        }
-                    }
-                });
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void notifyme(Context context) {
