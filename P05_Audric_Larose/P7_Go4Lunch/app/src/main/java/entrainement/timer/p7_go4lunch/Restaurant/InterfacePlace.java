@@ -3,8 +3,6 @@ package entrainement.timer.p7_go4lunch.Restaurant;
 import android.content.Context;
 import android.widget.ProgressBar;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -18,7 +16,7 @@ public interface InterfacePlace {
 
     List<Place> getPlace(Context context, FindCurrentPlaceRequest request, PlacesClient placesClient, GoogleMap mMap, ProgressBar progressBar);
 
-    MutableLiveData<List<Place>> getListOfPlace();
+    void getListOfPlace();
 
 //    List<Collegue> compareCollegueNPlace(String nomduResto, String idData);
 

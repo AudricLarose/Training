@@ -42,6 +42,7 @@ import entrainement.timer.p7_go4lunch.Fragment_Slide;
 import entrainement.timer.p7_go4lunch.Me;
 import entrainement.timer.p7_go4lunch.Other;
 import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.Restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.Restaurant.FragmentResto;
 import entrainement.timer.p7_go4lunch.Restaurant.Fragmentcarte;
 
@@ -52,6 +53,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private Me me = new Me();
     private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
+    private ExtendedServicePlace servicePlace= DI.getServicePlace();
     private ViewModelCollegue viewModelCollegue;
     private boolean pressed;
     private Other other= new Other();
@@ -70,6 +72,8 @@ public class ActivityAfterCheck extends AppCompatActivity {
         Picasso.get().load(me.getMaPhoto()).into(photoSide);
         nomSide.setText(me.getMonNOm());
         mailSide.setText(me.getMonMail());
+        servicePlace.getListOfPlace();
+
         viewModelCollegue = new ViewModelProvider(this).get(ViewModelCollegue.class);
         other.internetVerify(ActivityAfterCheck.this);
         ViewPager pagerAdapter= (ViewPager) findViewById(R.id.pager123);

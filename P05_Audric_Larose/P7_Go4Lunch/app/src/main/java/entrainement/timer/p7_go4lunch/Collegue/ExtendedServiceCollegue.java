@@ -250,8 +250,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                 }
             }
         });
-
-
     }
 
     public List<String> getcoworker(String restaurant) {
@@ -313,7 +311,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                     }
                 });
     }
-
     @Override
     public void twentyFourHourLast(Context context, boolean b) {
         if (b) {
@@ -352,9 +349,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                     .setContentText(context.getString(R.string.rendezvous3)).setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
         }
         notificationManager.notify(1, builder.build());
-
     }
-
     public void whenNotifyme(Context context, Boolean alarm, String restaurant) {
         Me me = new Me();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

@@ -8,7 +8,6 @@ import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -163,10 +162,16 @@ public class ExtendedServicePlace implements InterfacePlace {
         });
     }
    public Task<QuerySnapshot> call_all_retaurant(){
-         CollectionReference db_my_restaurants=firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace");
+         Query db_my_restaurants=firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").orderBy("quivient", Query.Direction.DESCENDING);
          Task<QuerySnapshot> query_my_restaurant = db_my_restaurants.get();
          return query_my_restaurant;
     }
+    public Task<QuerySnapshot> sorted_list_of_restaurant(String sorted){
+        Query db_my_restaurants=firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").orderBy(sorted, Query.Direction.DESCENDING);
+        Task<QuerySnapshot> query_my_restaurant = db_my_restaurants.get();
+        return query_my_restaurant;
+    }
+
     public Task<DocumentSnapshot> call_this_restaurant(String idRestaurant){
         CollectionReference db_my_restaurants=firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace");
         Task<DocumentSnapshot> query_my_restaurant = db_my_restaurants.document(idRestaurant).get();
@@ -335,12 +340,13 @@ public class ExtendedServicePlace implements InterfacePlace {
 
 
     @Override
-    public MutableLiveData<List<Place>> getListOfPlace() {
+    public void getListOfPlace() {
 //        setTheDistance();
                     call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+
                             liste2place.clear();
                             List<Place> tmp = new ArrayList<>();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
@@ -358,7 +364,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 String website = documentSnapshot.getString("site");
                                 if (distance != null && nomPlace != null && adresse != null) {
                                         tmp.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
-                                        liste_de_place.setValue(tmp);
                                         if (idplace != null) {
                                             DocumentReference doc = firebaseFirestore.collection("restaurant").document(me.getMonId()).collection("Myplace").document(idplace);
                                             doc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -378,7 +383,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                         }
                     }
                 });
-        return liste_de_place;
     }
 
     public void cleanNDisplay() {
