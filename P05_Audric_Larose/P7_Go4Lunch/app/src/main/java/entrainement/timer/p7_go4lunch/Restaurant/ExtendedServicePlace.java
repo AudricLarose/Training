@@ -426,7 +426,7 @@ public class ExtendedServicePlace implements InterfacePlace {
     public List<Collegue> compareCollegueNPlace(String nomduResto, String idData, Context context) {
         MutableLiveData<List<Collegue>> liveData = serviceCollegue.GetQuiVient();
         List<Collegue> tmp = new ArrayList<>();
-        call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        serviceCollegue.call_all_collegue().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -468,9 +468,26 @@ public class ExtendedServicePlace implements InterfacePlace {
         return tmp;
     }
 
+    public void syncMyPlace(String idRestaurant, String quivient) {
+        Map<String, Object> note = new HashMap<>();
+        note.put("quivient", quivient);
+        serviceCollegue.call_all_collegue().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                        String idCollegue = documentSnapshot.getString("id");
+                        firebaseFirestore.collection("restaurant").document(idCollegue).collection("Myplace").document(idRestaurant).update(note);
+                    }
+                }
+            }
+        });
+    }
+
+
     @Override
     public void ilike(String idresto) {
-      call_this_restaurant(idresto).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+       call_this_restaurant(idresto).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
