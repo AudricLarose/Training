@@ -11,4 +11,36 @@
     <string name="list">ListView</string>
     <string name="Map">MapView</string>
     <string name="workmate">WorkMates</string>
+    <string name="call">calling !</string>
+    <string name="choice">No choice</string>
+    <string name="deconnection">deconnection</string>
+    <string name="dontforget">, don\'t forget it</string>
+    <string name="dontforget1">, don\'t forget it</string>
+    <string name="dontforgetit1">don\'t forget it</string>
+    <string name="dontlike">you doen\'t like it</string>
+    <string name="experience">You muist have a connection</string>
+    <string name="here">here !</string>
+    <string name="listtoday">Your list is update</string>
+    <string name="mychoice">my choice</string>
+    <string name="navigation_drawer_close" translatable="false">closed</string>
+    <string name="navigation_drawer_open" translatable="false">opened</string>
+    <string name="notlike">no like !</string>
+    <string name="nonotif">you won\'t have notification</string>
+    <string name="nordv">"There is no rendez vous here "</string>
+    <string name="notified">You will receive your notifications</string>
+    <string name="rdv1">Hello , you have a rendez vous</string>
+    <string name="redirection">Redirection in a minutes</string>
+    <string name="reminder">Reminder</string>
+    <string name="rendezvous">Hello , you have rendez vous at</string>
+    <string name="rendezvous1">Hello , you have rendez vous at</string>
+    <string name="rendezvous2">Your rendez vous will be reminded !</string>
+    <string name="rendezvous3">Your rendez vous at midday</string>
+    <string name="retired">You are not here anymore</string>
+    <string name="send">Send</string>
+    <string name="twentyfourhourcommand">This commande will be erased in 24h</string>
+    <string name="with">with</string>
+    <string name="youlike">You liked !</string>
+    <string name="youstay">You stay</string>
+    <string name="areyousur">Are you sur ?</string>
+    <string name="no">No</string>
 </resources>

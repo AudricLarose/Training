@@ -42,7 +42,7 @@ public class FragmentContact extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+        Bundle savedInstanceState) {
         viewModelCollegue = new ViewModelProvider(requireActivity()).get(ViewModelCollegue.class);
         liste2collegue = service.generateListCollegue();
         View view = inflater.inflate(R.layout.fragment_fragment_contact, container, false);

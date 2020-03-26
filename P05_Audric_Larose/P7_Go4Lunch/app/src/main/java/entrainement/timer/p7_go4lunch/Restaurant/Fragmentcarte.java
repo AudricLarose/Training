@@ -96,86 +96,22 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
         progressBar=(ProgressBar)rootView.findViewById(R.id.progress_bar);
         extendedServicePlace= DI.getServicePlace();
         extendedServicePlace.SortPlaceDB();
-        Places.initialize(getContext(), "AIzaSyApIPM8WUg0LDig8wUeSY8vvz3dj8mbgTc");
+        Places.initialize(getContext(),getString(R.string.pswd));
         placesClient = Places.createClient(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         serviceCollegue.updateMyLikes();
-
-
-//        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-//                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-//        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-//            }
-//
-//            @Override
-//            public void onError(Status status) {
-//                // TODO: Handle the error.
-//                Log.i(TAG, "An error occurred: " + status);
-//            }
-//        });
         extendedServicePlace= DI.getServicePlace();
-//    localise.setOnClickListener(new View.OnClickListener() {
-//        @RequiresApi(api = Build.VERSION_CODES.M)
-//        @Override
-//        public void onClick(View v) {
-
-//            }
-
-//
-//    });
-        // Inflate the layout for this fragment
-
-//        search.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                filterSearch(v.getContext(),query.getText().toString());
-////                Places.initialize(v.getContext(), "AIzaSyApIPM8WUg0LDig8wUeSY8vvz3dj8mbgTc");
-////                placesClient = Places.createClient(v.getContext());
-////                Toast.makeText(v.getContext(), query.getText().toString(), Toast.LENGTH_SHORT).show();
-////                AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-////
-////                FindAutocompletePredictionsRequest request1 = FindAutocompletePredictionsRequest.builder()
-////                        .setSessionToken(token)
-////                        .setQuery(query.getText().toString())
-////                        .build();
-////
-////                placesClient.findAutocompletePredictions(request1).addOnSuccessListener((response) -> {
-////                    for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-////                        String hint=prediction.getFullText(null).toString();
-////                        Log.i(TAG, "filterSearch: "+ prediction.getPlaceId());
-////
-////                    }
-////                }).addOnFailureListener((exception) -> {
-////                    if (exception instanceof ApiException) {
-////                        ApiException apiException = (ApiException) exception;
-////                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-////                    }
-////                });
-//
-//            }
-//        });
-
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         return rootView;
     }
     public void filterSearch(Context context, String query){
         if (query!=null) {
-            Places.initialize(context, "AIzaSyApIPM8WUg0LDig8wUeSY8vvz3dj8mbgTc");
+            Places.initialize(context,getString(R.string.pswd));
             placesClient = Places.createClient(context);
             Toast.makeText(context, query, Toast.LENGTH_SHORT).show();
             AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-            RectangularBounds bounds = RectangularBounds.newInstance(
-                    new LatLng(48.82843, 2.398178),
-                    new LatLng(48.875373804191334, 2.296692));
-
             FindAutocompletePredictionsRequest request1 = FindAutocompletePredictionsRequest.builder()
                     .setSessionToken(token)
                     .setQuery(query)
@@ -219,7 +155,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         List<Marker> markerList= new ArrayList<>();
-        Places.initialize(getContext(), "AIzaSyApIPM8WUg0LDig8wUeSY8vvz3dj8mbgTc");
+        Places.initialize(getContext(), getString(R.string.pswd));
         PlacesClient placesClient = Places.createClient(getContext());
 //        List<Place.Field> placeFields = Collections.singletonList(Place.Field.NAME);
 
@@ -241,7 +177,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                             double latitude =location.getLatitude();
                             double longitude =location.getLongitude();
                             LatLng latLng= new LatLng(latitude,longitude);
-                            mMap.addMarker(new MarkerOptions().position(latLng).title("Here !").icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
+                            mMap.addMarker(new MarkerOptions().position(latLng).title(getString( R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
 
                         }
@@ -250,29 +186,6 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                 mylocation();
             }
         });
-//        locationManager= (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-//        locationListener= new LocationListener() {
-//            @Override
-//            public void onLocationChanged(Location location) {
-//                Log.d(TAG, "onStatusChanged: " + location.toString() );
-//                LatLng me = new LatLng(location.getLatitude(), location.getLongitude());
-//                if (mMap!=null) {
-//                    mMap.addMarker(new MarkerOptions().position(me).title("C'est Créteil !").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(me, 14));
-//                }
-//                extendedServicePlace.getPlace(getContext(),request,placesClient,mMap);
-//            }
-//            @Override
-//            public void onStatusChanged(String provider, int status, Bundle extras) {}
-//            @Override
-//            public void onProviderEnabled(String provider) {}
-//            @Override
-//            public void onProviderDisabled(String provider) {}
-//        };
-
-
-
-
         if (getContext().checkSelfPermission(ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED &&
                 getContext().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED ){
             ActivityCompat.requestPermissions(getActivity(),new String[]{ACCESS_FINE_LOCATION},1);
@@ -294,7 +207,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                     me.setLatlng_me(latLng);
                     me.setMy_latitude(latitude);
                     me.setMy_longitude(longitude);
-                    mMap.addMarker(new MarkerOptions().position(latLng).title("Here !").icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                 }
             }

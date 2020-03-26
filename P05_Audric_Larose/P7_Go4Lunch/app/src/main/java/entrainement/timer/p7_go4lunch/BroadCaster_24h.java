@@ -20,7 +20,7 @@ public class BroadCaster_24h extends BroadcastReceiver {
             note.put("adresse choix","");
             note.put("id_choix","");
             note.put("note_choix","");
-            Toast.makeText(context, "Choix, effacé !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.choice, Toast.LENGTH_SHORT).show();
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
             if (me.getMonId()!=null){
                 firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);

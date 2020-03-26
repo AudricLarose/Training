@@ -68,7 +68,7 @@ public class FragmentResto extends Fragment {
             public void onRefresh() {
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(view.getContext(), "Votre liste est mise a jour maintenant", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(),R.string.listtoday, Toast.LENGTH_SHORT).show();
             }
         });
 

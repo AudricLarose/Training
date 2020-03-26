@@ -17,7 +17,7 @@ public class Other {
             connected = true;
         } else {
             connected = false;
-            Toast.makeText(context, "Vous devez avoir une connexion internet pour pouvoir bennifier d'une bonne experience", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,R.string.experience, Toast.LENGTH_LONG).show();
         }
     }
 }

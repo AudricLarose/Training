@@ -353,7 +353,7 @@ return liste_who_come_with_me;
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()* 864*100000, pendingIntent);
-            Toast.makeText(context, "Cette commande s'effacera dans 24h", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.twentyfourhourcommand, Toast.LENGTH_SHORT).show();
             }
     }
 
@@ -390,19 +390,18 @@ return liste_who_come_with_me;
         Intent intent = new Intent(context, ActivityDetails.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel notificationChannel = new NotificationChannel ("channel1", "Rappel", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel notificationChannel = new NotificationChannel ("channel1", context.getString(R.string.reminder), NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(notificationChannel);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
         if (!names.isEmpty() && names!=null)  {
-            builder.setContentTitle("Rappel")
-                    .setContentText("Bonjour, vous avez rendez vous a " + restaurant_name +  " avec " + names+ ", ne l'oubliez pas ")
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText("Bonjour, vous avez rendez vous a " + restaurant_name +  " avec " + names+ ", ne l'oubliez pas "))
+            builder.setContentTitle(context.getString(R.string.reminder))
+                    .setContentText(context.getString(R.string.rendezvous1) + restaurant_name +  context.getString(R.string.with) + names+ context.getString(R.string.dontforget))
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1) + restaurant_name +  context.getString(R.string.with) + names+ context.getString(R.string.dontforget1)))
                     .setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
         } else {
-            builder.setContentTitle("Rappel")
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText("Hello, vous avez rendez vous a " + restaurant_name +  " ne l'oubliez pas "))
-                    .setContentText("Votre rendez vous a midi").setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
-
+            builder.setContentTitle(context.getString(R.string.reminder))
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + restaurant_name +  context.getString(R.string.dontforgetit1)))
+                    .setContentText(context.getString(R.string.rendezvous3)).setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
         }
         notificationManager.notify(1, builder.build());
 
@@ -416,7 +415,7 @@ return liste_who_come_with_me;
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarm) {
             Boolean isNotified = me.getBeNotified();
-//            if (isNotified) {
+            if (isNotified) {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
@@ -424,8 +423,8 @@ return liste_who_come_with_me;
 //                calendar.set(Calendar.MINUTE, 00);
                 intent.putExtra("restaurant", restaurant);
                 alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+1000, pendingIntent);
-                Toast.makeText(context, "Votre rendez-vous vous sera rappelé demain midi", Toast.LENGTH_SHORT).show();
-//            }
+                Toast.makeText(context, R.string.rendezvous2, Toast.LENGTH_SHORT).show();
+            }
         } else {
             alarmManager.cancel(pendingIntent);
         }

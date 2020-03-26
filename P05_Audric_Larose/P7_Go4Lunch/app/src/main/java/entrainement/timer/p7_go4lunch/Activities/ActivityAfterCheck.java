@@ -91,7 +91,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                                     intent.putExtra("etoile",me.getNoteChoix());
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(ActivityAfterCheck.this, "Il n'y a pas de rendez vous encore enregistrez a votre nom", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ActivityAfterCheck.this,R.string.nordv, Toast.LENGTH_LONG).show();
                                 }
                                 break;
                             case R.id.nav_param:
@@ -102,7 +102,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                                         .signOut(ActivityAfterCheck.this)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             public void onComplete(@NonNull Task<Void> task) {
-                           Toast.makeText(ActivityAfterCheck.this, "Deconnection", Toast.LENGTH_LONG).show();
+                           Toast.makeText(ActivityAfterCheck.this, R.string.deconnection, Toast.LENGTH_LONG).show();
                            finish();
                                             }
                                         });
@@ -142,16 +142,16 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private AlertDialog backpressed(){
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
         View view= getLayoutInflater().from(this).inflate(R.layout.backpressed,null);
-        builder.setView(view).setTitle("Etes vous sûr ?").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setView(view).setTitle(getString(R.string.areyousur)).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
-        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ActivityAfterCheck.this, "You stay !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityAfterCheck.this, R.string.youstay, Toast.LENGTH_SHORT).show();
             }
         });
         return builder.create();
@@ -164,16 +164,16 @@ public class ActivityAfterCheck extends AppCompatActivity {
         Boolean beNotified = me.getBeNotified();
         switchmode.setChecked(beNotified);
         alertDialog.setView(view);
-        alertDialog.setTitle("Se notifier ?").setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle("Se notifier ?").setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(switchmode.isChecked()){
                     me.setBeNotified(true);
-                    Toast.makeText(ActivityAfterCheck.this, "Vous recevrez bien vos notifications", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityAfterCheck.this, R.string.notified, Toast.LENGTH_SHORT).show();
                     serviceCollegue.updateNotify();
                 } else {
                     me.setBeNotified(false);
-                    Toast.makeText(ActivityAfterCheck.this, "Vous ne recevrez plus de Notifications", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityAfterCheck.this, R.string.nonotif, Toast.LENGTH_SHORT).show();
                     serviceCollegue.whenNotifyme(getApplicationContext(),false,"");
                     serviceCollegue.updateNotify();
 

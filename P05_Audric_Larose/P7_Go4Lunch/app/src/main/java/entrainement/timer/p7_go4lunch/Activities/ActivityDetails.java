@@ -172,9 +172,10 @@ public class ActivityDetails extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                Snackbar.make(coordinatorLayout,"Appelle en cours",Snackbar.LENGTH_LONG).show();
+                Snackbar.make(coordinatorLayout,getString(R.string.call),Snackbar.LENGTH_LONG).show();
                 Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:0626932452"));
+                String phone1= "tel:"+phone;
+                intent.setData(Uri.parse(phone1));
                 if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                           ActivityCompat.requestPermissions(ActivityDetails.this,new String[]{CALL_PHONE},1);
                 } else {
@@ -185,18 +186,18 @@ public class ActivityDetails extends AppCompatActivity {
         internet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(coordinatorLayout,"redirection dans quelques instants",Snackbar.LENGTH_LONG).show();
-                Intent intent= new Intent(Intent.ACTION_VIEW,Uri.parse("http://google.com"));
+                Snackbar.make(coordinatorLayout,getString(R.string.redirection),Snackbar.LENGTH_LONG).show();
+                Intent intent= new Intent(Intent.ACTION_VIEW,Uri.parse(site));
                 startActivity(intent);
             }
         });
                 put_me_Out.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Snackbar.make(coordinatorLayout,"Vous venez de vous retirer",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(coordinatorLayout,getString(R.string.retired),Snackbar.LENGTH_LONG).show();
                         servicePlace.unsaveMyPlace(idData);
                         listedecollegues = servicePlace.compareCollegueNPlace(nomData, ActivityDetails.this.idData,ActivityDetails.this);
-                        listedecollegues.remove(new Collegue(me.getMonNOm(), "mon choix", me.getMaPhoto()));
+                        listedecollegues.remove(new Collegue(me.getMonNOm(), getString(R.string.mychoice), me.getMaPhoto()));
                         put_me_Out.setVisibility(View.GONE);
                         buttonImage.setVisibility(View.VISIBLE);
                         serviceCollegue.whenNotifyme(ActivityDetails.this,false, nomData);
@@ -206,7 +207,7 @@ public class ActivityDetails extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         servicePlace.ilike(ActivityDetails.this.idData);
-                        Snackbar.make(coordinatorLayout,"Vous aimez !",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(coordinatorLayout,getString(R.string.youlike),Snackbar.LENGTH_LONG).show();
                         like.setVisibility(View.GONE);
                         unlikebutton.setVisibility(View.VISIBLE);
                         servicePlace.addMyChoice(ActivityDetails.this.idData, false,true);
@@ -218,10 +219,10 @@ public class ActivityDetails extends AppCompatActivity {
                 unlikebutton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Snackbar.make(coordinatorLayout,"Vous n'aimez plus !",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(coordinatorLayout,getString(R.string.dontlike),Snackbar.LENGTH_LONG).show();
 
                         servicePlace.unlike(idData, nomData);
-                        Toast.makeText(ActivityDetails.this, "Like enlevé !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityDetails.this,R.string.notlike, Toast.LENGTH_SHORT).show();
                         unlikebutton.setVisibility(View.GONE);
                         like.setVisibility(View.VISIBLE);
                         myLikes.remove(idData);
