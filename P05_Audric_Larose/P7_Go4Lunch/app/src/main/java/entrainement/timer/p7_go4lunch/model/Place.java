@@ -1,25 +1,42 @@
-package entrainement.timer.p7_go4lunch.Restaurant;
+package entrainement.timer.p7_go4lunch.model;
 
 public class Place {
+    private String id;
     private String nomPlace;
     private String Adresse;
-    private String horaire;
-    private String distance;
     private String photo;
-    private String quivient;
     private String note;
-    private String id;
+    private String quivient;
+    private String distance;
+    private String latitude;
+    private String longitude;
+    private String phone;
+    private String horaire;
     private String site;
-    private String tel;
 
-    public Place(String nomPlace, String Adresse, String horaire, String distance, String quivient,String note, String idPlace,String tel,String site ) {
+    public Place(String id, String nomPlace, String adresse, String photo, String note, String quivient, String distance, String latitude, String longitude, String phone, String horaire, String site) {
+        this.id = id;
+        this.nomPlace = nomPlace;
+        Adresse = adresse;
+        this.photo = photo;
+        this.note = note;
+        this.quivient = quivient;
+        this.distance = distance;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.phone = phone;
+        this.horaire = horaire;
+        this.site = site;
+    }
+
+    public Place(String nomPlace, String Adresse, String horaire, String distance, String quivient, String note, String idPlace, String phone, String site) {
         this.nomPlace = nomPlace;
         this.Adresse = Adresse;
         this.horaire = horaire;
         this.distance = distance;
         this.quivient = quivient;
         this.note = note;
-        this.id=idPlace;
+        this.id = idPlace;
     }
 
     public Place(String name, String Adresse, String horaire, String note, String id, String quivient) {
@@ -28,7 +45,7 @@ public class Place {
         this.horaire = horaire;
         this.note = note;
         this.quivient = quivient;
-        this.id=id;
+        this.id = id;
     }
 
     public Place() {
@@ -42,12 +59,12 @@ public class Place {
         this.site = site;
     }
 
-    public String getTel() {
-        return tel;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getnomPlace() {

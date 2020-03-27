@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.Collegue;
+package entrainement.timer.p7_go4lunch.api.collegue;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -11,14 +11,11 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,7 +26,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -39,24 +35,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
-import entrainement.timer.p7_go4lunch.Activities.MainActivity;
-import entrainement.timer.p7_go4lunch.BroadCaster_24h;
-import entrainement.timer.p7_go4lunch.Broadcaster;
-import entrainement.timer.p7_go4lunch.DI;
-import entrainement.timer.p7_go4lunch.Me;
+import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
+import entrainement.timer.p7_go4lunch.utils.BroadCaster_24h;
+import entrainement.timer.p7_go4lunch.utils.Broadcaster;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.model.Collegue;
+import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.R;
 
 public class ExtendedServiceCollegue implements InterfaceCollegue {
     private MutableLiveData<List<Collegue>> listLiveData = new MutableLiveData<List<Collegue>>();
     private MutableLiveData<List<Collegue>> quivient = new MutableLiveData<List<Collegue>>();
     private List<Collegue> quivient_array = new ArrayList<>();
-    private List<Collegue> addMe = new ArrayList<>();
     private static final String TAG = "ExtendedServiceCollegue";
     private List<Collegue> collegues = ListCollegueGenerator.generateNeighbours();
-    private RecyclerView.Adapter recyclerView;
     private Me me = new Me();
-    private int nbrlikes;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
 

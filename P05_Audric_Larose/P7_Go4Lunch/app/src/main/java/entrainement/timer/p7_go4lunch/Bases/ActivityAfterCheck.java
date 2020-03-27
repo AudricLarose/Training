@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.Activities;
+package entrainement.timer.p7_go4lunch.Bases;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,7 +10,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.DialogInterface;
@@ -34,17 +33,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.Collegue.FragmentContact;
-import entrainement.timer.p7_go4lunch.Collegue.ViewModelCollegue;
-import entrainement.timer.p7_go4lunch.DI;
-import entrainement.timer.p7_go4lunch.Fragment_Slide;
-import entrainement.timer.p7_go4lunch.Me;
-import entrainement.timer.p7_go4lunch.Other;
+import butterknife.BindView;
+import entrainement.timer.p7_go4lunch.api.ViewModelApi;
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.utils.collegue.FragmentContact;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.model.Me;
+import entrainement.timer.p7_go4lunch.utils.Other;
 import entrainement.timer.p7_go4lunch.R;
-import entrainement.timer.p7_go4lunch.Restaurant.ExtendedServicePlace;
-import entrainement.timer.p7_go4lunch.Restaurant.FragmentResto;
-import entrainement.timer.p7_go4lunch.Restaurant.Fragmentcarte;
+import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.utils.restaurant.FragmentResto;
+import entrainement.timer.p7_go4lunch.utils.restaurant.Fragmentcarte;
 
 public class ActivityAfterCheck extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -54,8 +53,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
     private ExtendedServicePlace servicePlace= DI.getServicePlace();
-    private ViewModelCollegue viewModelCollegue;
-    private boolean pressed;
+    private ViewModelApi viewModelApi;
     private Other other= new Other();
 
     @Override
@@ -74,7 +72,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
         mailSide.setText(me.getMonMail());
         servicePlace.getListOfPlace();
 
-        viewModelCollegue = new ViewModelProvider(this).get(ViewModelCollegue.class);
+        viewModelApi = new ViewModelProvider(this).get(ViewModelApi.class);
         other.internetVerify(ActivityAfterCheck.this);
         ViewPager pagerAdapter= (ViewPager) findViewById(R.id.pager123);
 

@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.Restaurant;
+package entrainement.timer.p7_go4lunch.utils.restaurant;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,20 +10,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
-import entrainement.timer.p7_go4lunch.Collegue.Adaptateur;
-import entrainement.timer.p7_go4lunch.Collegue.Collegue;
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.DI;
+import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
+import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.model.Place;
 
 public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHolder> {
 //    LiveData<List<Place>> placeList;
@@ -66,7 +62,6 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
         holder.nom.setText(place.getnomPlace());
         holder.adresse.setText(place.getAdresse());
         holder.perso.setText(place.getquivient());
-//        holder.etoile.setText(place.getnote());
         holder.distance.setText(place.getDistance());
         holder.horaire.setText(place.getHoraire());
         if (place.getnote()!=null) {
@@ -79,7 +74,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
                 intent.putExtra("id",place.getId());
                 intent.putExtra("nom",place.getnomPlace());
                 intent.putExtra("adresse",place.getAdresse());
-                intent.putExtra("phone",place.getTel());
+                intent.putExtra("phone",place.getPhone());
                 intent.putExtra("site",place.getSite());
                 intent.putExtra("etoile",place.getnote());
                 intent.putExtra("photo",place.getPhoto());

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@layout/rowresto"
-    tools:context=".Restaurant.FragmentResto">
+    tools:context=".utils.restaurant.FragmentResto">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"

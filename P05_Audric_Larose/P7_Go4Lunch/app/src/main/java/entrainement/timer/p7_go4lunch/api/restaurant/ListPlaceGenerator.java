@@ -1,10 +1,10 @@
-package entrainement.timer.p7_go4lunch.Restaurant;
+package entrainement.timer.p7_go4lunch.api.restaurant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Collegue.Collegue;
+import entrainement.timer.p7_go4lunch.model.Place;
 
 public  abstract class ListPlaceGenerator {
 

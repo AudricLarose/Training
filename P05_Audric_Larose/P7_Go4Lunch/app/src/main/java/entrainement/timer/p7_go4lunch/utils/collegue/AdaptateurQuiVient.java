@@ -1,9 +1,8 @@
-package entrainement.timer.p7_go4lunch.Collegue;
+package entrainement.timer.p7_go4lunch.utils.collegue;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,12 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import java.security.acl.Owner;
-import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.model.Collegue;
 
 
 public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient.LeHolder> {

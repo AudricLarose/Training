@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.Restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 
 public class Broadcaster extends BroadcastReceiver {
     private ExtendedServiceCollegue service;
@@ -18,9 +18,6 @@ public class Broadcaster extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // remarrage du tel{
      // if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-        Bundle extra= intent.getExtras();
-            String restaurant=extra.getString("restaurant");
-            String id=intent.getStringExtra("id");
             service= DI.getService();
             service.notifyme(context);
      // }

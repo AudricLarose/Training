@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.Collegue;
+package entrainement.timer.p7_go4lunch.model;
 
 public class Collegue {
 

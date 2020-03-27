@@ -8,7 +8,7 @@
     android:orientation="vertical"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     tools:listitem="@layout/row"
-    tools:context=".Collegue.FragmentContact">
+    tools:context=".utils.collegue.FragmentContact">
 
 
 </androidx.recyclerview.widget.RecyclerView>

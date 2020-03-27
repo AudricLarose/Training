@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Activities.MainActivity"
+    tools:context=".Bases.MainActivity"
     android:background="@drawable/lunch_at_works"
     tools:openDrawer="start">
     <TextView

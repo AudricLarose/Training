@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.model;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -49,5 +49,9 @@
     <string name="choice">Choix, effacé !</string>
     <string name="experience">Vous devez avoir une connexion internet pour pouvoir bennifier d\'une bonne experience</string>
     <string name="benotified">Se notifier ?</string>
+    <string name="parfavoris">Par Favoris</string>
+    <string name="people">Par personne</string>
+    <string name="proximity">Par proximité</string>
+    <string name="newPlace">Place ajouté !</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

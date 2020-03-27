@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,11 +10,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.model.Me;
+
 public class BroadCaster_24h extends BroadcastReceiver {
     private Me me=new Me();
     @Override
     public void onReceive(Context context, Intent intent) {
-//        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             Map<String,Object> note= new HashMap<>();
             note.put("choix","");
             note.put("adresse choix","");
@@ -26,7 +29,7 @@ public class BroadCaster_24h extends BroadcastReceiver {
                 firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);
 
             }
-   //     }
+        }
 
     }
 }

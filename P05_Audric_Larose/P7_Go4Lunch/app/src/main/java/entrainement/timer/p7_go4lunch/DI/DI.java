@@ -1,7 +1,7 @@
-package entrainement.timer.p7_go4lunch;
+package entrainement.timer.p7_go4lunch.DI;
 
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.Restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 
 public class DI {
     private static ExtendedServiceCollegue extendedServiceCollegue = new ExtendedServiceCollegue();

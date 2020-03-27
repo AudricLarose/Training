@@ -23,19 +23,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.Restaurant.ExtendedServicePlace;
-import entrainement.timer.p7_go4lunch.Restaurant.Place;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.model.Place;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+
 public class ExampleUnitTest {
     private List<Place> liste_de_place = new ArrayList<>();
     private Map<String,Object> updateMap = new HashMap();

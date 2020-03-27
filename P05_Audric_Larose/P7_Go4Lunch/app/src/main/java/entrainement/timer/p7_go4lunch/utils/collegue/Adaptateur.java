@@ -1,51 +1,29 @@
-package entrainement.timer.p7_go4lunch.Collegue;
+package entrainement.timer.p7_go4lunch.utils.collegue;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
+import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.R;
-
-import static entrainement.timer.p7_go4lunch.R.color.quantum_grey300;
+import entrainement.timer.p7_go4lunch.model.Collegue;
 
 public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
-    LiveData<List<Collegue>> list;
-    Context context;
     List<Collegue> liste ;
-    URL urlWelcome = null;
-
-//    public Adaptateur(LiveData<List<Collegue>> list, LifecycleOwner owner) {
-//        this.list = list;
-//        this.list.observe(owner, new Observer<List<Collegue>>() {
-//            @Override
-//            public void onChanged(List<Collegue> collegues) {
-//                Adaptateur.this.notifyDataSetChanged();
-//            }
-//        });
-//    }
 
 
     public Adaptateur(List<Collegue> liste) {
@@ -53,10 +31,6 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
         notifyDataSetChanged();
     }
 
-//    public void updateList(List<Collegue> listSearch){
-//        list.getValue().clear();
-//        list.getValue().addAll(listSearch);
-//    }
 
     public void updateList(List<Collegue> listSearch){
         liste=new ArrayList<>();
@@ -76,7 +50,6 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
-//        final Collegue collegue = list.getValue().get(position);
           final Collegue collegue = liste.get(position);
 
         holder.nom.setText(collegue.getNom());
@@ -107,7 +80,6 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     @Override
     public int getItemCount() {
         if (liste!=null) {
-//            return list.getValue().size();
             return liste.size();
         } else {
             return 0;

@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.Restaurant;
+package entrainement.timer.p7_go4lunch.utils.restaurant;
 
 import android.Manifest;
 import android.content.Context;
@@ -17,13 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,7 +37,6 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
@@ -50,9 +46,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.DI;
-import entrainement.timer.p7_go4lunch.Me;
+import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -60,18 +57,8 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsActivity";
     private GoogleMap mMap;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private ExtendedServicePlace extendedServicePlace;
-    private Marker Loca1;
-    private Marker Loca2;
-    private Marker Loca3;
-    private Marker Loca4;
-    private EditText query;
-    private RequestQueue queue;
-    private Marker meU;
     private ImageButton localise;
-    private Button search;
     private  PlacesClient placesClient;
     private FindCurrentPlaceRequest request;
     private ProgressBar progressBar;
@@ -91,8 +78,6 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
 
         View rootView = inflater.inflate(R.layout.fragment_fragmentcarte, container, false);
         localise=rootView.findViewById(R.id.local);
-//        query=rootView.findViewById(R.id.edit_query);
-//        search=rootView.findViewById(R.id.buttonplay);
         progressBar=(ProgressBar)rootView.findViewById(R.id.progress_bar);
         extendedServicePlace= DI.getServicePlace();
         extendedServicePlace.SortPlaceDB();
@@ -100,7 +85,6 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
         placesClient = Places.createClient(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         serviceCollegue.updateMyLikes();
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         extendedServicePlace= DI.getServicePlace();
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -128,7 +112,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                         Log.i(TAG, "Place found: " + place.getLatLng());
                         LatLng place_found=new LatLng(place.getLatLng().longitude,place.getLatLng().latitude);
                         mMap.addMarker(new MarkerOptions().position(place_found).title(place.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),3));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),16));
 
                     }).addOnFailureListener((exception) -> {
                         if (exception instanceof ApiException) {
@@ -179,7 +163,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                             LatLng latLng= new LatLng(latitude,longitude);
                             Log.d(TAG, "coordonnées: "+latLng.toString());
                             mMap.addMarker(new MarkerOptions().position(latLng).title(getString( R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,16));
 
                         }
                     }
@@ -211,7 +195,7 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                     me.setMy_latitude(latitude);
                     me.setMy_longitude(longitude);
                     mMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
                 }
             }
         });
@@ -222,6 +206,8 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0]
                 == PackageManager.PERMISSION_GRANTED) {
+            LocationManager locationManager = null;
+            LocationListener locationListener = null;
             if (ContextCompat.checkSelfPermission(getContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED)

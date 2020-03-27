@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.Restaurant;
+package entrainement.timer.p7_go4lunch.api.restaurant;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,12 +45,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
-import entrainement.timer.p7_go4lunch.Collegue.Collegue;
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.DI;
-import entrainement.timer.p7_go4lunch.Me;
+import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.model.Collegue;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.model.Place;
+import entrainement.timer.p7_go4lunch.utils.Other;
 
 public class ExtendedServicePlace implements InterfacePlace {
     private static final String TAG = "ExtendedServicePlace";
@@ -58,22 +60,16 @@ public class ExtendedServicePlace implements InterfacePlace {
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private List<Place> listePlace = new ArrayList<>();
     private int increment = 0;
-    private String liked = "0";
-    private MutableLiveData<List<Place>> liste_de_place = new MutableLiveData<List<Place>>();
-    private List<Collegue> listedeCollegue = new ArrayList<>();
-    private List<Collegue> listedeCollegueSizer = new ArrayList<>();
     private Me me = new Me();
     private Marker marker;
     float[] result = new float[1];
-    private List<com.google.android.libraries.places.api.model.Place.Type> type;
     private Map<String, String> mMarker = new HashMap<>();
     private List<Place> liste2place = ListPlaceGenerator.generatePlace();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-//    private DocumentReference documentReference =firebaseFirestore.collection("restaurant").
-
 
     @Override
     public List<Place> getPlace(Context context, FindCurrentPlaceRequest request, PlacesClient placesClient, GoogleMap mMap, ProgressBar progressBar) {
+
         Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
         placeResponse.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -90,6 +86,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                             if (addressList.get(0).getSubLocality() != null) {
                                 fulladress += addressList.get(0).getSubLocality();
                             }
+                            List<com.google.android.libraries.places.api.model.Place.Type> type;
                             String adressePlace = placeLikelihood.getPlace().getAddress();
                             String phonePlace = addressList.get(0).getPhone();
                             String horairePlace = addressList.get(0).getThoroughfare();
@@ -142,15 +139,11 @@ public class ExtendedServicePlace implements InterfacePlace {
                         String idplace = documentSnapshot.getString("id");
                         String nomPlace = documentSnapshot.getString("nomPlace");
                         String adresse = documentSnapshot.getString("Adresse");
-                        String note = documentSnapshot.getString("note");
                         String quivient = documentSnapshot.getString("quivient");
                         String distance = documentSnapshot.getString("distance");
                         String longitude = documentSnapshot.getString("latitude");
                         String latitude = documentSnapshot.getString("longitude");
                         LatLng latLng=new LatLng(Double.valueOf(longitude),Double.valueOf(latitude)) ;
-                        String phone = documentSnapshot.getString("distance");
-                        String horaire = documentSnapshot.getString("horaire");
-                        String website = documentSnapshot.getString("site");
                         if (!distance.trim().isEmpty()&&distance!=null) {
                             if (Integer.valueOf(distance)<600) {
                                 eventPlace(quivient , mMap,latLng,nomPlace,adresse,idplace);
@@ -213,6 +206,15 @@ public class ExtendedServicePlace implements InterfacePlace {
                 });
 
     }
+    void cleanNDisplay(){
+        Place place= new Place();
+        Other.dbconexion(Place.class, "Restaurant", new Other.Callback() {
+            @Override
+            public void onFinish(Object object) {
+                liste2place.add((Place) object);
+            }
+        });
+    }
 
     @VisibleForTesting
     public void successPlace(@NonNull Task<QuerySnapshot> task, GoogleMap mMap, Context context, FirebaseFirestore firebaseFirestore) {
@@ -266,7 +268,7 @@ public class ExtendedServicePlace implements InterfacePlace {
         }
 
 
-    void SortPlaceDB() {
+    public void SortPlaceDB() {
         Task<QuerySnapshot> db=call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -359,7 +361,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                                 String latitude = documentSnapshot.getString("latitude");
                                 String longitude = documentSnapshot.getString("longitude");
                                 LatLng latLng=new LatLng(Double.valueOf(longitude),Double.valueOf(latitude)) ;
-                                String phone = documentSnapshot.getString("distance");
+                                String phone = documentSnapshot.getString("phone");
                                 String horaire = documentSnapshot.getString("horaire");
                                 String website = documentSnapshot.getString("site");
                                 if (distance != null && nomPlace != null && adresse != null) {
@@ -385,27 +387,31 @@ public class ExtendedServicePlace implements InterfacePlace {
                 });
     }
 
-    public void cleanNDisplay() {
+    public void cleanNDisplayc() {
         call_all_retaurant().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             liste2place.clear();
                             for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                String idplace = documentSnapshot.getString("id");
-                                String nomPlace = documentSnapshot.getString("nomPlace");
-                                String adresse = documentSnapshot.getString("Adresse");
-                                String note = documentSnapshot.getString("note");
-                                String quivient = documentSnapshot.getString("quivient");
-                                String distance = documentSnapshot.getString("distance");
-                                String phone = documentSnapshot.getString("phone");
-                                String horaire = documentSnapshot.getString("horaire");
-                                String website = documentSnapshot.getString("site");
-                                liste2place.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
+//                                String idplace = documentSnapshot.getString("id");
+//                                String nomPlace = documentSnapshot.getString("nomPlace");
+//                                String adresse = documentSnapshot.getString("Adresse");
+//                                String note = documentSnapshot.getString("note");
+//                                String quivient = documentSnapshot.getString("quivient");
+//                                String distance = documentSnapshot.getString("distance");
+//                                String phone = documentSnapshot.getString("phone");
+//                                String horaire = documentSnapshot.getString("horaire");
+//                                String website = documentSnapshot.getString("site");
+//                                liste2place.add(new Place(nomPlace, adresse, horaire, distance, quivient, note, idplace, phone, website));
+                                Place place = documentSnapshot.toObject(Place.class);
+                                liste2place.add(place);
+
                             }
                         }
                     }
                 });
+
     }
 
     @Override
@@ -460,7 +466,6 @@ public class ExtendedServicePlace implements InterfacePlace {
                     }
                 });
     }
-
     @Override
     public List<Collegue> compareCollegueNPlace(String nomduResto, String idData, Context context) {
         MutableLiveData<List<Collegue>> liveData = serviceCollegue.GetQuiVient();

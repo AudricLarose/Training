@@ -1,17 +1,14 @@
-package entrainement.timer.p7_go4lunch.Collegue;
+package entrainement.timer.p7_go4lunch.api;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Collegue.Collegue;
-import entrainement.timer.p7_go4lunch.Collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.DI;
-import entrainement.timer.p7_go4lunch.Restaurant.Place;
+import entrainement.timer.p7_go4lunch.DI.DI;
+import entrainement.timer.p7_go4lunch.model.Collegue;
 
-public class ViewModelCollegue extends ViewModel {
+public class ViewModelApi extends androidx.lifecycle.ViewModel {
     private final MutableLiveData<List<Collegue>> userLiveData = DI.getService().getListCollegue();
 //    private final MutableLiveData<List<Place>> placeLiveData = DI.getServicePlace().getListOfPlace();
     private final MutableLiveData<List<Collegue>> whocomeLiveData = DI.getService().GetQuiVient();

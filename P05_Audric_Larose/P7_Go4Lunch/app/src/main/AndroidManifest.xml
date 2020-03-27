@@ -8,7 +8,6 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.REBOOT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -21,10 +20,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ActivityAfterCheck"
+        <activity android:name=".Bases.ActivityAfterCheck"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".Activities.ActivityDetails"  android:configChanges="orientation"
+        <activity android:name=".Bases.ActivityDetails"  android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <!--
      The API key for Google Maps-based APIs is defined as a string resource.
@@ -39,7 +38,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".Bases.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:label="Map">
@@ -54,14 +53,14 @@
             tools:replace="android:value"
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id" />
-        <receiver android:name=".Broadcaster"
+        <receiver android:name=".utils.Broadcaster"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".BroadCaster_24h"
+        <receiver android:name=".utils.BroadCaster_24h"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

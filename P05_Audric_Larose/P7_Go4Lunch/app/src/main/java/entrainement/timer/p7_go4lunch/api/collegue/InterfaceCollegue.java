@@ -1,13 +1,12 @@
-package entrainement.timer.p7_go4lunch.Collegue;
+package entrainement.timer.p7_go4lunch.api.collegue;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Activities.ActivityDetails;
+import entrainement.timer.p7_go4lunch.model.Collegue;
 
 public interface InterfaceCollegue {
      MutableLiveData<List<Collegue>> getListCollegue();
