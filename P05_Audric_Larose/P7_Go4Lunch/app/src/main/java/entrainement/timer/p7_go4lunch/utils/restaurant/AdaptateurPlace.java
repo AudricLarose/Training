@@ -1,6 +1,7 @@
 package entrainement.timer.p7_go4lunch.utils.restaurant;
 
 import android.content.Intent;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +22,14 @@ import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.model.Place;
 
 public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHolder> {
 //    LiveData<List<Place>> placeList;
     private ExtendedServicePlace servicePlace;
     List<Place> listedeplaces;
+    public Me me = new Me();
 
     public AdaptateurPlace(List<Place> listedeplaces) {
         this.listedeplaces = listedeplaces;
@@ -58,11 +63,17 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
         servicePlace= DI.getServicePlace();
+        float[] result = new float[1];
         Place place= listedeplaces.get(position);
         holder.nom.setText(place.getnomPlace());
         holder.adresse.setText(place.getAdresse());
         holder.perso.setText(place.getquivient());
-        holder.distance.setText(place.getDistance());
+        Double latitude = Double.parseDouble(place.getLatitude());
+        Double longitude = Double.parseDouble(place.getLongitude());
+        Location.distanceBetween(me.getMy_latitude(), me.getMy_longitude(), latitude, longitude, result);
+        int round = Math.round(result[0]);
+        String distance = String.valueOf(round);
+        holder.distance.setText(distance);
         holder.horaire.setText(place.getHoraire());
         if (place.getnote()!=null) {
             holder.bar.setRating(Float.parseFloat(place.getnote()));

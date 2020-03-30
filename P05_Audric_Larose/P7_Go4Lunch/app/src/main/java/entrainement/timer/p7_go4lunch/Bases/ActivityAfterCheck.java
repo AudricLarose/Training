@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +34,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import butterknife.BindView;
 import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.utils.collegue.FragmentContact;
@@ -70,7 +70,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
         Picasso.get().load(me.getMaPhoto()).into(photoSide);
         nomSide.setText(me.getMonNOm());
         mailSide.setText(me.getMonMail());
-        servicePlace.getListOfPlace();
+        servicePlace.SortPlaceDB();
 
         viewModelApi = new ViewModelProvider(this).get(ViewModelApi.class);
         other.internetVerify(ActivityAfterCheck.this);

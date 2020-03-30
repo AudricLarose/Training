@@ -9,7 +9,7 @@ import java.util.List;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 
 public interface InterfaceCollegue {
-     MutableLiveData<List<Collegue>> getListCollegue();
+     void getListCollegue();
      void newCollegue(Context context,String id, String collegue,String photo, String mail);
      void getme(String id);
      MutableLiveData<List<Collegue>> GetQuiVient();

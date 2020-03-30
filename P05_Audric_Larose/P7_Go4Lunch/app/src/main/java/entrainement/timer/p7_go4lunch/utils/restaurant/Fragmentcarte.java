@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import entrainement.timer.p7_go4lunch.Bases.ActivityAfterCheck;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI.DI;
@@ -80,7 +81,6 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
         localise=rootView.findViewById(R.id.local);
         progressBar=(ProgressBar)rootView.findViewById(R.id.progress_bar);
         extendedServicePlace= DI.getServicePlace();
-        extendedServicePlace.SortPlaceDB();
         Places.initialize(getContext(),getString(R.string.pswd));
         placesClient = Places.createClient(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
@@ -144,12 +144,13 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
 //        List<Place.Field> placeFields = Collections.singletonList(Place.Field.NAME);
         List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.TYPES);
         request =FindCurrentPlaceRequest.newInstance(placeFields);
-
-        mMap = googleMap;
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        extendedServicePlace.getListOfPlace(getContext(),mMap);
+        serviceCollegue.getListCollegue();
         extendedServicePlace.put_first_available_place_in_db(mMap,getContext());
         mylocation();
+
 
         localise.setOnClickListener(new View.OnClickListener() {
             @Override

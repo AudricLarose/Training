@@ -83,7 +83,7 @@ public class ActivityDetails extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         coordinatorLayout = findViewById(R.id.coordinate2);
-        RelativeLayout buttonImage = findViewById(R.id.checkGrand);
+        RelativeLayout myChoice = findViewById(R.id.checkGrand);
         RatingBar etoiles= findViewById(R.id.ratingdetails);
 
 
@@ -91,8 +91,8 @@ public class ActivityDetails extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            String idData = extra.getString("id");
-            String adresseData = extra.getString("adresse");
+             idData = extra.getString("id");
+             String adresseData = extra.getString("adresse");
             String etoile = extra.getString("etoile");
             String nomData = extra.getString("nom");
             String phone = extra.getString("phone");
@@ -121,7 +121,7 @@ public class ActivityDetails extends AppCompatActivity {
             nom.setText(nomData);
 
             if (me.getMon_choix().equals(nomData)) {
-                buttonImage.setVisibility(View.GONE);
+                myChoice.setVisibility(View.GONE);
                 put_me_Out.setVisibility(View.VISIBLE);
             }
             if (myLikes != null) {
@@ -133,7 +133,7 @@ public class ActivityDetails extends AppCompatActivity {
             Other.internetVerify(ActivityDetails.this);
             listedecollegues = servicePlace.compareCollegueNPlace(nomData, ActivityDetails.this.idData, ActivityDetails.this);
 
-            buttonImage.setOnClickListener(new View.OnClickListener() {
+            myChoice.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onClick(View v) {
@@ -144,7 +144,8 @@ public class ActivityDetails extends AppCompatActivity {
                     serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
                     servicePlace.saveMyPlace(me.getMonNOm(), ActivityDetails.this.idData);
                     serviceCollegue.whenNotifyme(ActivityDetails.this, true, nomData);
-                    buttonImage.setVisibility(View.GONE);
+                    me.setMon_choix(nomData);
+                    myChoice.setVisibility(View.GONE);
                     put_me_Out.setVisibility(View.VISIBLE);
                     Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
 
@@ -180,7 +181,7 @@ public class ActivityDetails extends AppCompatActivity {
                     listedecollegues = servicePlace.compareCollegueNPlace(nomData, ActivityDetails.this.idData, ActivityDetails.this);
                     listedecollegues.remove(new Collegue(me.getMonNOm(), getString(R.string.mychoice), me.getMaPhoto()));
                     put_me_Out.setVisibility(View.GONE);
-                    buttonImage.setVisibility(View.VISIBLE);
+                    myChoice.setVisibility(View.VISIBLE);
                     serviceCollegue.whenNotifyme(ActivityDetails.this, false, nomData);
                 }
             });
@@ -202,7 +203,7 @@ public class ActivityDetails extends AppCompatActivity {
                 public void onClick(View v) {
                     Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
 
-                    servicePlace.unlike(idData, nomData);
+                    servicePlace.unlike(nomData,idData);
                     Toast.makeText(ActivityDetails.this, R.string.notlike, Toast.LENGTH_SHORT).show();
                     unlikebutton.setVisibility(View.GONE);
                     like.setVisibility(View.VISIBLE);
