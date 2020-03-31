@@ -66,6 +66,8 @@ public class Collegue {
         return choix;
     }
 
+
+
     public void setChoix(String choix) {
         this.choix = choix;
     }

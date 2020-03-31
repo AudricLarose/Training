@@ -2,6 +2,8 @@ package entrainement.timer.p7_go4lunch.api.collegue;
 
 import android.app.AlarmManager;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,11 +33,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.utils.BroadCaster_24h;
 import entrainement.timer.p7_go4lunch.utils.Broadcaster;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.utils.Other;
 
 public class ExtendedServiceCollegue implements InterfaceCollegue {
     private MutableLiveData<List<Collegue>> listLiveData = new MutableLiveData<List<Collegue>>();
@@ -42,7 +47,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     private List<Collegue> quivient_array = new ArrayList<>();
     private static final String TAG = "ExtendedServiceCollegue";
     private List<Collegue> collegues = ListCollegueGenerator.generateNeighbours();
-    private Me me = new Me();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
 
@@ -65,11 +69,10 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
     @Override
     public void newCollegue(Context context, String id, String collegue, String photo, String mail) {
-        Me me = new Me();
-        me.setMonId(id);
-        me.setMonNOm(collegue);
-        me.setMaPhoto(photo);
-        me.setMonMail(mail);
+        Me.setMonId(id);
+        Me.setMonNOm(collegue);
+        Me.setMaPhoto(photo);
+        Me.setMonMail(mail);
         Map<String, String> note = new HashMap<>();
         note.put("Nom", collegue);
         note.put("id", id);
@@ -85,7 +88,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                             note.put("adresse_choix", " ");
                             note.put("id_monchoix", " ");
                             note.put("note_choix", " ");
-                            note.put("beNotified", " ");
+                            note.put("beNotified", "false");
                             note.put("date", "0");
                         } else {
                             note.put("adresse choix", documentSnapshot.getString("adresse choix"));
@@ -96,15 +99,16 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                             note.put("date", documentSnapshot.getString("date"));
                             firebaseFirestore.collection("collegue").document(id).set(note);
                         }
-                    } else {
-                        note.put("choix", " ");
-                        note.put("adresse_choix", " ");
-                        note.put("id_monchoix", " ");
-                        note.put("note_choix", " ");
-                        note.put("beNotified", " ");
-                        note.put("date", "0");
-                        firebaseFirestore.collection("collegue").document(id).set(note);
-                    }
+
+//                    } else {
+//                        note.put("choix", " ");
+//                        note.put("adresse_choix", " ");
+//                        note.put("id_monchoix", " ");
+//                        note.put("note_choix", " ");
+//                        note.put("beNotified", " ");
+//                        note.put("date", "0");
+//                        firebaseFirestore.collection("collegue").document(id).set(note);
+//                    }
 //                                .addOnSuccessListener(new OnSuccessListener<Void>() {
 //                                    @Override
 //                                    public void onSuccess(Void aVoid) {
@@ -125,9 +129,10 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 //                    note.put("beNotified", " ");
 //                    note.put("date", "0");
 //
-//                }
+                    }
                 }
             }
+
         });
     }
 
@@ -135,11 +140,11 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     public void getme(String id) {
         for (Collegue collegue : collegues) {
             if (collegue.getId().equals(id)){
-                me.setMon_choix(collegue.getChoix());
-                me.setId_monchoix(collegue.getId_monchoix());
-                me.setNoteChoix(collegue.getNote_choix());
+                Me.setMon_choix(collegue.getChoix());
+                Me.setId_monchoix(collegue.getId_monchoix());
+                Me.setNoteChoix(collegue.getNote_choix());
                 boolean aBoolean = Boolean.valueOf(collegue.getBeNotified());
-                me.setBeNotified(aBoolean);
+                Me.setBeNotified(aBoolean);
             }
         }
 //        call_this_collegue(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -147,17 +152,17 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 //            public void onSuccess(DocumentSnapshot documentSnapshot) {
 //                if (documentSnapshot.getString("choix") != null) {
 //                    if (documentSnapshot.getString("choix").isEmpty()) {
-//                        me.setMon_choix(" ");
+//                        Me.setMon_choix(" ");
 //                    } else {
 //                        Collegue collegue= documentSnapshot.toObject(Collegue.class);
-//                        me.setMon_choix(collegue.getChoix());
-//                        me.setId_monchoix(collegue.getId_monchoix());
-//                        me.setNoteChoix(collegue.getNote_choix());
+//                        Me.setMon_choix(collegue.getChoix());
+//                        Me.setId_monchoix(collegue.getId_monchoix());
+//                        Me.setNoteChoix(collegue.getNote_choix());
 //                        boolean aBoolean = Boolean.valueOf(collegue.getBeNotified());
-//                        me.setBeNotified(aBoolean);
+//                        Me.setBeNotified(aBoolean);
 //                    }
 //                } else {
-//                    me.setMon_choix(" ");
+//                    Me.setMon_choix(" ");
 //                }
 //            }
 //        });
@@ -174,19 +179,21 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         String collegueId = documentSnapshot.getString("id");
                         DocumentReference docRef = firebaseFirestore.collection("collegue").document(collegueId);
-                        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                if (documentSnapshot != null && documentSnapshot.exists()) {
-                                    Collegue collegue = documentSnapshot.toObject(Collegue.class);
-                                    collegues.add(collegue);
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            Collegue collegue = documentSnapshot.toObject(Collegue.class);
+                            collegues.add(collegue);
+                            getme(Me.getMonId());
 //                                    tmp.add(collegue);
 //                                    listLiveData.setValue(tmp);
-                                } else {
-                                    System.out.print("Current data: null");
-                                }
-                            }
-                        });
+                        } else {
+                            System.out.print("Current data: null");
+                        }
+   //                     docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+     //                       @Override
+       //                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+         //                   }
+           //             });
                     }
                 }
             }
@@ -200,10 +207,10 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         quivient.setValue(quivient_array);
         return quivient;
     }
-    public void updateMyLikes() {
 
+    public void updateMyLikes() {
         List<String> likes = new ArrayList<>();
-        DocumentReference reference = firebaseFirestore.collection("collegue").document(me.getMonId());
+        DocumentReference reference = firebaseFirestore.collection("collegue").document(Me.getMonId());
         reference.collection("ilike").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -211,7 +218,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
                     for (DocumentSnapshot documentSnapshot : task.getResult()) {
                         String like = documentSnapshot.getString("id_restaurant");
                         likes.add(like);
-                        me.setMyLikes(likes);
+                        Me.setMyLikes(likes);
                     }
                 }
             }
@@ -227,7 +234,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         for (Collegue collegue : listedecollegue) {
             if (collegue.getChoix().equals(restaurant)){
                 liste_who_come_with_me.add(collegue.getNom());
-                me.setGetCoworker(liste_who_come_with_me);
+                Me.setGetCoworker(liste_who_come_with_me);
             }
         }
 //        call_all_collegue().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -238,7 +245,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 //                        if (documentSnapshot.exists()) {
 //                            if (documentSnapshot.getString("choix").equals(restaurant)) {
 //                                liste_who_come_with_me.add(documentSnapshot.getString("Nom"));
-//                                me.setGetCoworker(liste_who_come_with_me);
+//                                Me.setGetCoworker(liste_who_come_with_me);
 //                            }
 //                        }
 //                    }
@@ -252,8 +259,8 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     @Override
     public void updateNotify() {
         Map<String, Object> note = new HashMap<>();
-        note.put("beNotified", me.getBeNotified().toString());
-        firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);
+        note.put("beNotified", Me.getBeNotified().toString());
+        firebaseFirestore.collection("collegue").document(Me.getMonId()).update(note);
     }
 
 
@@ -261,17 +268,22 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     public void addmychoice(String id, String resto, String adresse, String idRestaurant, String notechoix, String idAncienResto) {
         if (idAncienResto != null) {
         }
-        String date = String.valueOf(SystemClock.elapsedRealtime());
-        Me me = new Me();
-        me.setId_monchoix(idRestaurant);
-        Map<String, Object> note = new HashMap<>();
-        note.put("date", date);
-        note.put("choix", resto);
-        note.put("adresse choix", adresse);
-        note.put("id_monchoix", idRestaurant);
-        note.put("note_choix", notechoix);
-        me.setMon_choix(resto);
-        firebaseFirestore.collection("collegue").document(id).update(note);
+
+//        String date = String.valueOf(SystemClock.elapsedRealtime());
+        Me.setMon_choix(resto);
+        Me.setAdressechoix(adresse);
+        Me.setId_monchoix(idRestaurant);
+        Other.sendItToMyBDDPleaseatCollegue(id,collegues,resto);
+
+
+//        Map<String, Object> note = new HashMap<>();
+//        note.put("date", date);
+//        note.put("choix", resto);
+//        note.put("adresse choix", adresse);
+//        note.put("id_monchoix", idRestaurant);
+//        note.put("note_choix", notechoix);
+//        Me.setMon_choix(resto);
+//        firebaseFirestore.collection("collegue").document(id).update(note);
     }
     @Override
     public void twentyFourHourLast(Context context, boolean b) {
@@ -289,36 +301,35 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void notifyme(Context context) {
         List<String> names = new ArrayList<>();
-//        String restaurant_name = me.getMon_choix();
-//        names = me.getGetCoworker();
-//        if (names.contains(me.getMonNOm())) {
-//            names.remove(me.getMonNOm());
-//        }
-//        Intent intent = new Intent(context, ActivityDetails.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//        NotificationChannel notificationChannel = new NotificationChannel("channel1", context.getString(R.string.reminder), NotificationManager.IMPORTANCE_DEFAULT);
-//        notificationManager.createNotificationChannel(notificationChannel);
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
-//        if (!names.isEmpty() && names != null) {
-//            builder.setContentTitle(context.getString(R.string.reminder))
-//                    .setContentText(context.getString(R.string.rendezvous1) + restaurant_name + context.getString(R.string.with) + names + context.getString(R.string.dontforget))
-//                    .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1) + restaurant_name + context.getString(R.string.with) + names + context.getString(R.string.dontforget1)))
-//                    .setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
-//        } else {
-//            builder.setContentTitle(context.getString(R.string.reminder))
-//                    .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + restaurant_name + context.getString(R.string.dontforgetit1)))
-//                    .setContentText(context.getString(R.string.rendezvous3)).setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
-//        }
-//        notificationManager.notify(1, builder.build());
+       String restaurant_name = Me.getMon_choix();
+        names = Me.getGetCoworker();
+        if (names.contains(Me.getMonNOm())) {
+            names.remove(Me.getMonNOm());
+        }
+        Intent intent = new Intent(context, ActivityDetails.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel notificationChannel = new NotificationChannel("channel1", context.getString(R.string.reminder), NotificationManager.IMPORTANCE_DEFAULT);
+       notificationManager.createNotificationChannel(notificationChannel);
+       NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
+       if (!names.isEmpty() && names != null) {
+           builder.setContentTitle(context.getString(R.string.reminder))
+                   .setContentText(context.getString(R.string.rendezvous1) + restaurant_name + context.getString(R.string.with) + names + context.getString(R.string.dontforget))
+                   .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1) + restaurant_name + context.getString(R.string.with) + names + context.getString(R.string.dontforget1)))
+                   .setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+       } else {
+           builder.setContentTitle(context.getString(R.string.reminder))
+                   .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + restaurant_name + context.getString(R.string.dontforgetit1)))
+                   .setContentText(context.getString(R.string.rendezvous3)).setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
+       }
+       notificationManager.notify(1, builder.build());
     }
     public void whenNotifyme(Context context, Boolean alarm, String restaurant) {
-        Me me = new Me();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, Broadcaster.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarm) {
-            Boolean isNotified = me.getBeNotified();
+            Boolean isNotified = Me.getBeNotified();
             if (isNotified) {
 
                 Calendar calendar = Calendar.getInstance();

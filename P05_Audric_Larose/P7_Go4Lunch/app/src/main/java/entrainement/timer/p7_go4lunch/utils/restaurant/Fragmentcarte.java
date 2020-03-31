@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.Bases.ActivityAfterCheck;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI.DI;
@@ -165,7 +164,6 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
                             Log.d(TAG, "coordonnées: "+latLng.toString());
                             mMap.addMarker(new MarkerOptions().position(latLng).title(getString( R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,16));
-
                         }
                     }
                 });
@@ -187,14 +185,13 @@ public class Fragmentcarte extends Fragment implements OnMapReadyCallback {
             @Override
             public void onSuccess(Location location) {
                 if (location!=null){
-                    Me me = new Me();
                     double latitude =location.getLatitude();
                     double longitude =location.getLongitude();
                     LatLng latLng= new LatLng(latitude,longitude);
                     Log.d(TAG, "coordonnées: "+latLng.toString());
-                    me.setLatlng_me(latLng);
-                    me.setMy_latitude(latitude);
-                    me.setMy_longitude(longitude);
+                    Me.setLatlng_me(latLng);
+                    Me.setMy_latitude(latitude);
+                    Me.setMy_longitude(longitude);
                     mMap.addMarker(new MarkerOptions().position(latLng).title(getString(R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
                 }

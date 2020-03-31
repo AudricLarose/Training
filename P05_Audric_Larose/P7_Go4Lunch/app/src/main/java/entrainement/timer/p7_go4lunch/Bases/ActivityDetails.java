@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
@@ -39,6 +38,7 @@ import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Me;
+import entrainement.timer.p7_go4lunch.model.Place;
 import entrainement.timer.p7_go4lunch.utils.Other;
 import entrainement.timer.p7_go4lunch.utils.collegue.AdaptateurQuiVient;
 
@@ -63,19 +63,19 @@ public class ActivityDetails extends AppCompatActivity {
     @BindView(R.id.callGrand)
     CardView tel;
 
-    private TextView etoile;
-    private RecyclerView recyclerView;
     private AdaptateurQuiVient adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private List<Collegue> listedecollegues = new ArrayList<>();
+    private CoordinatorLayout coordinatorLayout;
+
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private ExtendedServicePlace servicePlace = DI.getServicePlace();
-    private Me me = new Me();
     private List<String> myLikes;
-    private ViewModelApi viewModelApi;
-    private String idData;
+    private List<Collegue> listedecollegues = new ArrayList<>();
     private String etoileData;
-    private CoordinatorLayout coordinatorLayout;
+   // private String ancienRestaurant= Me.getMon_choix();
+    private ViewModelApi viewModelApi;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,64 +87,63 @@ public class ActivityDetails extends AppCompatActivity {
         RatingBar etoiles= findViewById(R.id.ratingdetails);
 
 
-        myLikes = me.getMyLikes();
+
+        myLikes = Me.getMyLikes();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        Bundle extra = getIntent().getExtras();
+        Intent intent = this.getIntent();
+        Bundle extra = intent.getExtras();
         if (extra != null) {
-             idData = extra.getString("id");
-             String adresseData = extra.getString("adresse");
-            String etoile = extra.getString("etoile");
-            String nomData = extra.getString("nom");
-            String phone = extra.getString("phone");
-            String photo = extra.getString("photo");
-            String site = extra.getString("site");
-            if (etoile != null) {
+            Place place= (Place) extra.getSerializable("Place");
+            if (place.getnote() != null) {
                 etoileData = extra.getString("etoile");
-                etoiles.setRating(Integer.parseInt(etoileData.trim()));
+                etoiles.setRating(Integer.parseInt(place.getnote()));
             } else {
-                String etoileData = "0";
+                place.setnote("0");
             }
 
-            if (photo != null) {
-                Picasso.get().load(photo).into(image);
+            if (place.getPhoto() != null) {
+                Picasso.get().load(place.getPhoto()).into(image);
             }
-            if (phone == null) {
+            if (place.getPhone() == null) {
                 tel.setEnabled(false);
                 tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
             }
-            if (site == null || site.equals("null")) {
+            if (place.getSite() == null || place.getSite().equals("null")) {
                 internet.setEnabled(false);
                 internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
             }
 
-            adresse.setText(adresseData);
-            nom.setText(nomData);
+            adresse.setText(place.getAdresse());
+            nom.setText(place.getnomPlace());
 
-            if (me.getMon_choix().equals(nomData)) {
-                myChoice.setVisibility(View.GONE);
-                put_me_Out.setVisibility(View.VISIBLE);
+            if (Me.getMon_choix()!=null) {
+                if (Me.getMon_choix().equals(place.getnomPlace())) {
+                    myChoice.setVisibility(View.GONE);
+                    put_me_Out.setVisibility(View.VISIBLE);
+                }
             }
             if (myLikes != null) {
-                if (myLikes.contains(idData)) {
+                if (myLikes.contains(place.getId())) {
                     like.setVisibility(View.GONE);
                     unlikebutton.setVisibility(View.VISIBLE);
                 }
             }
             Other.internetVerify(ActivityDetails.this);
-            listedecollegues = servicePlace.compareCollegueNPlace(nomData, ActivityDetails.this.idData, ActivityDetails.this);
+            listedecollegues = servicePlace.compareCollegueNPlace(place.getnomPlace(), place.getId(), ActivityDetails.this);
 
             myChoice.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onClick(View v) {
-                    listedecollegues.add(new Collegue(me.getMonNOm(), "mon choix", me.getMaPhoto()));
-                    listedecollegues = servicePlace.compareCollegueNPlace(me.getMon_choix(), me.getId_monchoix(), ActivityDetails.this);
-                    listedecollegues = servicePlace.compareCollegueNPlace(nomData, ActivityDetails.this.idData, ActivityDetails.this);
-                    serviceCollegue.addmychoice(me.getMonId(), nomData, adresseData, ActivityDetails.this.idData, etoileData, me.getId_monchoix());
+                    listedecollegues.add(new Collegue(Me.getMonNOm(), "mon choix", Me.getMaPhoto()));
+                    Other.decrement(Me.getMon_choix());
+                    Me.setMon_choix(place.getnomPlace());
+                    listedecollegues = servicePlace.compareCollegueNPlace(place.getnomPlace(), place.getId(), ActivityDetails.this);
+                    serviceCollegue.addmychoice(Me.getMonId(), place.getnomPlace(), place.getAdresse(), place.getId(), etoileData, Me.getId_monchoix());
                     serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
-                    servicePlace.saveMyPlace(me.getMonNOm(), ActivityDetails.this.idData);
-                    serviceCollegue.whenNotifyme(ActivityDetails.this, true, nomData);
-                    me.setMon_choix(nomData);
+                    servicePlace.saveMyPlace(Me.getMonNOm(), place.getId());
+                    serviceCollegue.whenNotifyme(ActivityDetails.this, true, place.getnomPlace());
+                   // Other.removeCollegue();
                     myChoice.setVisibility(View.GONE);
                     put_me_Out.setVisibility(View.VISIBLE);
                     Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
@@ -157,7 +156,7 @@ public class ActivityDetails extends AppCompatActivity {
                 public void onClick(View v) {
                     Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
                     Intent intent = new Intent(Intent.ACTION_CALL);
-                    String phone1 = "tel:" + phone;
+                    String phone1 = "tel:" + place.getPhone();
                     intent.setData(Uri.parse(phone1));
                     if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
@@ -169,7 +168,7 @@ public class ActivityDetails extends AppCompatActivity {
             internet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(site));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(place.getSite()));
                     startActivity(intent);
                 }
             });
@@ -177,24 +176,24 @@ public class ActivityDetails extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
-                    servicePlace.unsaveMyPlace(idData);
-                    listedecollegues = servicePlace.compareCollegueNPlace(nomData, ActivityDetails.this.idData, ActivityDetails.this);
-                    listedecollegues.remove(new Collegue(me.getMonNOm(), getString(R.string.mychoice), me.getMaPhoto()));
+                    servicePlace.unsaveMyPlace(place.getId());
+                    listedecollegues = servicePlace.compareCollegueNPlace(place.getnomPlace(), place.getId(), ActivityDetails.this);
+                    listedecollegues.remove(new Collegue(Me.getMonNOm(), getString(R.string.mychoice), Me.getMaPhoto()));
                     put_me_Out.setVisibility(View.GONE);
                     myChoice.setVisibility(View.VISIBLE);
-                    serviceCollegue.whenNotifyme(ActivityDetails.this, false, nomData);
+                    serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getnomPlace());
                 }
             });
             like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    servicePlace.ilike(ActivityDetails.this.idData);
+                    servicePlace.addMyChoice(place.getId(), false, true);
+                    servicePlace.ilike(place.getId());
                     Snackbar.make(coordinatorLayout, getString(R.string.youlike), Snackbar.LENGTH_LONG).show();
                     like.setVisibility(View.GONE);
                     unlikebutton.setVisibility(View.VISIBLE);
-                    servicePlace.addMyChoice(ActivityDetails.this.idData, false, true);
-                    myLikes.add(idData);
-                    me.setMyLikes(myLikes);
+                    myLikes.add(place.getId());
+                    Me.setMyLikes(myLikes);
                     etoiles.setRating(Integer.parseInt(etoileData.trim()) + 1);
                 }
             });
@@ -203,12 +202,12 @@ public class ActivityDetails extends AppCompatActivity {
                 public void onClick(View v) {
                     Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
 
-                    servicePlace.unlike(nomData,idData);
+                    servicePlace.unlike(place.getnomPlace(),place.getId());
                     Toast.makeText(ActivityDetails.this, R.string.notlike, Toast.LENGTH_SHORT).show();
                     unlikebutton.setVisibility(View.GONE);
                     like.setVisibility(View.VISIBLE);
-                    myLikes.remove(idData);
-                    me.setMyLikes(myLikes);
+                    myLikes.remove(place.getId());
+                    Me.setMyLikes(myLikes);
                     etoiles.setRating(Integer.parseInt(etoileData.trim()) - 1);
                 }
             });
@@ -225,17 +224,12 @@ public class ActivityDetails extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        Bundle extra = getIntent().getExtras();
-//        String idData=extra.getString("id");
-//        String nomData = extra.getString("nom");
-//        nom.setText(nomData);
-//        listedecollegues = servicePlace.compareCollegueNPlace(nomData,idData);
 
     }
 }

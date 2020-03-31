@@ -23,15 +23,20 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.model.Place;
+import entrainement.timer.p7_go4lunch.runTest.FirebaseCollectionGrabber;
+import entrainement.timer.p7_go4lunch.utils.Other;
+import entrainement.timer.p7_go4lunch.utils.collegue.Adaptateur;
 
 public class FragmentResto extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private ExtendedServicePlace servicePlace = DI.getServicePlace();
+    private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private List<Place> liste2Place = servicePlace.generateListPlace();
     private SearchView searchView = null;
     private AdaptateurPlace adapter=new AdaptateurPlace(liste2Place);;
@@ -45,12 +50,13 @@ public class FragmentResto extends Fragment {
                              Bundle savedInstanceState) {
         liste2Place = servicePlace.generateListPlace();
         View view = inflater.inflate(R.layout.fragment_fragment_resto, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycleContact);
+        recyclerView =  view.findViewById(R.id.recycleContact);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(view.getContext());
         coordinatorLayout= view.findViewById(R.id.coordinate);
         swipeRefreshLayout= view.findViewById(R.id.swipedem);
         recyclerView.setLayoutManager(layoutManager);
+        serviceCollegue.getListCollegue();
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -113,6 +119,57 @@ public class FragmentResto extends Fragment {
                 }
 
             });
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.fav:
+                Toast.makeText(getContext(), "dsds", Toast.LENGTH_SHORT).show();
+                FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
+                    @Override
+                    public void success(List<Place> objects) {
+                        AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
+                        recyclerView.setAdapter(adaptateurPlace);
+                    }
+
+                    @Override
+                    public void error(Exception e) {
+
+                    }
+                },"quivient");
+                return true;
+            case R.id.people:
+                FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
+                    @Override
+                    public void success(List<Place> objects) {
+                        AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
+                        recyclerView.setAdapter(adaptateurPlace);
+                    }
+
+                    @Override
+                    public void error(Exception e) {
+
+                    }
+                },"note");
+                return true;
+            case R.id.proxy:
+                FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
+                    @Override
+                    public void success(List<Place> objects) {
+                        AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
+                        recyclerView.setAdapter(adaptateurPlace);
+                    }
+
+                    @Override
+                    public void error(Exception e) {
+
+                    }
+                },"nomPlace");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
     @Override

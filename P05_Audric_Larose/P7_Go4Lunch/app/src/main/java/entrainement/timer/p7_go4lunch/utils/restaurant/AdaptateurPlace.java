@@ -2,6 +2,7 @@ package entrainement.timer.p7_go4lunch.utils.restaurant;
 
 import android.content.Intent;
 import android.location.Location;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.LocationServices;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,6 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
 //    LiveData<List<Place>> placeList;
     private ExtendedServicePlace servicePlace;
     List<Place> listedeplaces;
-    public Me me = new Me();
 
     public AdaptateurPlace(List<Place> listedeplaces) {
         this.listedeplaces = listedeplaces;
@@ -70,7 +71,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
         holder.perso.setText(place.getquivient());
         Double latitude = Double.parseDouble(place.getLatitude());
         Double longitude = Double.parseDouble(place.getLongitude());
-        Location.distanceBetween(me.getMy_latitude(), me.getMy_longitude(), latitude, longitude, result);
+        Location.distanceBetween(Me.getMy_latitude(), Me.getMy_longitude(), latitude, longitude, result);
         int round = Math.round(result[0]);
         String distance = String.valueOf(round);
         holder.distance.setText(distance);
@@ -82,15 +83,17 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ActivityDetails.class);
-                intent.putExtra("id",place.getId());
-                intent.putExtra("nom",place.getnomPlace());
-                intent.putExtra("adresse",place.getAdresse());
-                intent.putExtra("phone",place.getPhone());
-                intent.putExtra("site",place.getSite());
-                intent.putExtra("etoile",place.getnote());
-                intent.putExtra("photo",place.getPhoto());
+                Bundle bundle= new Bundle();
+                bundle.putString("id",place.getId());
+                bundle.putString("nom",place.getnomPlace());
+                bundle.putString("adresse",place.getAdresse());
+                bundle.putString("phone",place.getPhone());
+                bundle.putString("site",place.getSite());
+                bundle.putString("etoile",place.getnote());
+                bundle.putString("photo",place.getPhoto());
+                bundle.putSerializable("Place",place);
+                intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
-
             }
         });
 //        holder.photo

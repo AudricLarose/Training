@@ -10,7 +10,7 @@ public  abstract class ListCollegueGenerator {
 
     public static List<Collegue> COLLEGUE_GEN = Arrays.asList(
     );
-    static List<Collegue> generateNeighbours() {
+    public static List<Collegue> generateNeighbours() {
         return new ArrayList<>(COLLEGUE_GEN);
     }
 }

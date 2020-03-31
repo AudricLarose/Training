@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.model.Place;
 import entrainement.timer.p7_go4lunch.utils.collegue.FragmentContact;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.model.Me;
@@ -49,27 +50,25 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private Fragment[] fragments={new Fragmentcarte(),new FragmentContact(), new FragmentResto()};
     private Switch switchmode;
-    private Me me = new Me();
     private SearchView searchView;
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
     private ExtendedServicePlace servicePlace= DI.getServicePlace();
     private ViewModelApi viewModelApi;
     private Other other= new Other();
-
+    private MenuItem sortedmenu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_after_check);
-        Me me = new Me();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerview = navigationView.getHeaderView(0);
         TextView nomSide = headerview.findViewById(R.id.nomSide);
         TextView mailSide = headerview.findViewById(R.id.mailSide);
         ImageView photoSide = headerview.findViewById(R.id.photoidenti);
-        Picasso.get().load(me.getMaPhoto()).into(photoSide);
-        nomSide.setText(me.getMonNOm());
-        mailSide.setText(me.getMonMail());
+        Picasso.get().load(Me.getMaPhoto()).into(photoSide);
+        nomSide.setText(Me.getMonNOm());
+        mailSide.setText(Me.getMonMail());
         servicePlace.SortPlaceDB();
 
         viewModelApi = new ViewModelProvider(this).get(ViewModelApi.class);
@@ -81,16 +80,19 @@ public class ActivityAfterCheck extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.yourlunch:
-                                Me me = new Me();
-                                String id_rest=me.getId_monchoix();
+                                String id_rest=Me.getId_monchoix();
                                 Intent intent= new Intent(ActivityAfterCheck.this,ActivityDetails.class);
-                                String name_lunch=me.getMon_choix();
+                                Bundle extra= new Bundle();
+                                String name_lunch=Me.getMon_choix();
 
                                 if (name_lunch!=null && !name_lunch.trim().isEmpty()) {
-                                    intent.putExtra("nom",name_lunch);
-                                    intent.putExtra("adresse",me.getAdressechoix());
-                                    intent.putExtra("id",me.getId_monchoix());
-                                    intent.putExtra("etoile",me.getNoteChoix());
+                                    Other.theGoodPlace(Me.getId_monchoix(), new Other.ThegoodPlace() {
+                                        @Override
+                                        public void GoodPlace(Place place) {
+                                            extra.putSerializable("Place",place);
+                                        }
+                                    });
+                                    intent.putExtras(extra);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(ActivityAfterCheck.this,R.string.nordv, Toast.LENGTH_LONG).show();
@@ -161,18 +163,18 @@ public class ActivityAfterCheck extends AppCompatActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         View view= getLayoutInflater().from(this).inflate(R.layout.choosenotif,null);
         switchmode= view.findViewById(R.id.switch1);
-        Boolean beNotified = me.getBeNotified();
+        Boolean beNotified = Me.getBeNotified();
         switchmode.setChecked(beNotified);
         alertDialog.setView(view);
         alertDialog.setTitle(getString( R.string.benotified)).setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(switchmode.isChecked()){
-                    me.setBeNotified(true);
+                    Me.setBeNotified(true);
                     Toast.makeText(ActivityAfterCheck.this, R.string.notified, Toast.LENGTH_SHORT).show();
                     serviceCollegue.updateNotify();
                 } else {
-                    me.setBeNotified(false);
+                    Me.setBeNotified(false);
                     Toast.makeText(ActivityAfterCheck.this, R.string.nonotif, Toast.LENGTH_SHORT).show();
                     serviceCollegue.whenNotifyme(getApplicationContext(),false,"");
                     serviceCollegue.updateNotify();
@@ -188,9 +190,9 @@ public class ActivityAfterCheck extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater;
         getMenuInflater().inflate(R.menu.search,menu);
         MenuItem menuItem= menu.findItem(R.id.search);
+         sortedmenu= menu.findItem(R.id.sortedmenu);
         searchView= (SearchView) menuItem.getActionView();
         return true;
     }
@@ -202,6 +204,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                     Fragment selectdFragment=null;
                     switch (menuItem.getItemId()){
                         case R.id.blue:
+
                             selectdFragment= fragments[0];
                             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                                 @Override
@@ -222,6 +225,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                             selectdFragment= fragments[1];
                             break;
                         case R.id.orange:
+
                             selectdFragment= fragments[2];
                             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                                 @Override

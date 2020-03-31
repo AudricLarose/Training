@@ -83,21 +83,16 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         service= DI.getService();
 
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
+        if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
 
-            if (resultCode == RESULT_OK) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String collegue = user.getDisplayName();
                 String photo= user.getPhotoUrl().toString();
-                String id= user.getUid().toString();
+                String id= user.getUid();
                 String mail= user.getEmail().toString();
                 service.newCollegue(MainActivity.this,id,collegue,photo, mail);
-                service.getme(id);
                 Intent intent= new Intent(MainActivity.this, ActivityAfterCheck.class);
                 startActivity(intent);
-                // ...
-            }
         }
     }
 

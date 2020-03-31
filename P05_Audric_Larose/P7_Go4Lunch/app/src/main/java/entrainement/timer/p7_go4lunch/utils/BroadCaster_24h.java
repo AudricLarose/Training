@@ -14,7 +14,6 @@ import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.model.Me;
 
 public class BroadCaster_24h extends BroadcastReceiver {
-    private Me me=new Me();
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
@@ -25,8 +24,8 @@ public class BroadCaster_24h extends BroadcastReceiver {
             note.put("note_choix","");
             Toast.makeText(context, R.string.choice, Toast.LENGTH_SHORT).show();
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            if (me.getMonId()!=null){
-                firebaseFirestore.collection("collegue").document(me.getMonId()).update(note);
+            if (Me.getMonId()!=null){
+                firebaseFirestore.collection("collegue").document(Me.getMonId()).update(note);
 
             }
         }

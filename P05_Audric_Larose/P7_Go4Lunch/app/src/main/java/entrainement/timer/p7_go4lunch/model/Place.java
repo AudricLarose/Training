@@ -1,6 +1,8 @@
 package entrainement.timer.p7_go4lunch.model;
 
-public class Place {
+import java.io.Serializable;
+
+public class Place implements Serializable {
     private String id;
     private String nomPlace;
     private String Adresse;

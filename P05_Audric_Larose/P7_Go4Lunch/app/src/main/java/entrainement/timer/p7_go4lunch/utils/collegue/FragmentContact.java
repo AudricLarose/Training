@@ -25,7 +25,6 @@ import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
-import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 
 public class FragmentContact extends Fragment {
@@ -36,14 +35,13 @@ public class FragmentContact extends Fragment {
     private ViewModelApi viewModelApi;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
-    private Adaptateur adapter=new Adaptateur(liste2collegue);;
+    private Adaptateur adapter=new Adaptateur(liste2collegue);
     private static final String TAG = "FragmentContact";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         viewModelApi = new ViewModelProvider(requireActivity()).get(ViewModelApi.class);
-        liste2collegue = service.generateListCollegue();
         View view = inflater.inflate(R.layout.fragment_fragment_contact, container, false);
         recyclerView = (RecyclerView) view;
         recyclerView.setHasFixedSize(true);
@@ -65,6 +63,8 @@ public class FragmentContact extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.search, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
+        MenuItem sortedenu= menu.findItem(R.id.sortedmenu);
+
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(getContext().SEARCH_SERVICE);
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();

@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-public class Me {
+public abstract class Me {
     private static String monId;
     private static String monNOm;
     private static String maPhoto;
@@ -21,130 +21,131 @@ public class Me {
     private static List<String> myLikes;
     private static List<String> getCoworker;
 
-    public  List<String> getGetCoworker() {
-        return getCoworker;
+    public Me(String monId) {
+        this.monId = monId;
     }
 
-    public  void setGetCoworker(List<String> getCoworker) {
-        Me.getCoworker = getCoworker;
+    public Me() {
     }
 
-    public List<String> getMyLikes() {
-        return myLikes;
-    }
-
-    public void setMyLikes(List<String> myLikes) {
-        Me.myLikes = myLikes;
-    }
-
-    public  String getNoteChoix() {
+    public static String getNoteChoix() {
         return NoteChoix;
     }
 
-    public  void setNoteChoix(String noteChoix) {
+    public static void setNoteChoix(String noteChoix) {
         NoteChoix = noteChoix;
     }
 
-    public String getAdressechoix() {
+    public static String getAdressechoix() {
         return adressechoix;
     }
 
-    public void setAdressechoix(String adressechoix) {
+    public static void setAdressechoix(String adressechoix) {
         Me.adressechoix = adressechoix;
     }
 
-    public Boolean getBeNotified() {
+    public static Boolean getBeNotified() {
         return beNotified;
     }
 
-    public void setBeNotified(Boolean beNotified) {
+    public static void setBeNotified(Boolean beNotified) {
         Me.beNotified = beNotified;
+    }
+
+    public static String getId_monchoix() {
+        return id_monchoix;
+    }
+
+    public static void setId_monchoix(String id_monchoix) {
+        Me.id_monchoix = id_monchoix;
+    }
+
+    public static String getMon_choix() {
+        return mon_choix;
+    }
+
+    public static void setMon_choix(String mon_choix) {
+        Me.mon_choix = mon_choix;
+    }
+
+    public static String getMonId() {
+        return monId;
+    }
+
+    public static void setMonId(String monId) {
+        Me.monId = monId;
+    }
+
+    public static List<String> getGetCoworker() {
+        return getCoworker;
+    }
+
+    public static void setGetCoworker(List<String> getCoworker) {
+        Me.getCoworker = getCoworker;
+    }
+
+    public static List<String> getMyLikes() {
+        return myLikes;
+    }
+
+    public static void setMyLikes(List<String> myLikes) {
+        Me.myLikes = myLikes;
     }
 
     public LatLng getLatlng_me() {
         return latlng_me;
     }
 
-    public void setLatlng_me(LatLng latlng_me) {
+    public static void setLatlng_me(LatLng latlng_me) {
         Me.latlng_me = latlng_me;
     }
 
-    public Double getMy_longitude() {
+    public static Double getMy_longitude() {
         return my_longitude;
     }
 
-    public String getId_monchoix() {
-        return id_monchoix;
-    }
-
-    public void setId_monchoix(String id_monchoix) {
-        Me.id_monchoix = id_monchoix;
-    }
-
-    public void setMy_longitude(Double my_longitude) {
+    public static void setMy_longitude(Double my_longitude) {
         Me.my_longitude = my_longitude;
     }
 
-    public Double getMy_latitude() {
+    public static Double getMy_latitude() {
         return my_latitude;
     }
 
-    public void setMy_latitude(Double my_latitude) {
+    public static void setMy_latitude(Double my_latitude) {
         Me.my_latitude = my_latitude;
     }
 
-    public String getMonMail() {
+    public static String getMonMail() {
         return monMail;
     }
 
-    public void setMonMail(String monMail) {
-        this.monMail = monMail;
+    public static void setMonMail(String monMail) {
+        Me.monMail = monMail;
     }
 
-    public  String getMon_choix() {
-        return mon_choix;
-    }
-
-    public  void setMon_choix(String mon_choix) {
-        Me.mon_choix = mon_choix;
-    }
-
-    public  String getMon_like() {
+    public String getMon_like() {
         return mon_like;
     }
 
-    public  void setMon_like(String mon_like) {
+    public void setMon_like(String mon_like) {
         Me.mon_like = mon_like;
     }
 
-    public Me(String monId) {
-        this.monId = monId;
-    }
-
-    public  String getMonNOm() {
+    public static String getMonNOm() {
         return monNOm;
     }
 
-    public  void setMonNOm(String monNOm) {
+    public static void setMonNOm(String monNOm) {
         Me.monNOm = monNOm;
     }
 
-    public  String getMaPhoto() {
+    public static String getMaPhoto() {
         return maPhoto;
     }
-    public   void setMaPhoto(String maPhoto) {
+
+    public static void setMaPhoto(String maPhoto) {
         Me.maPhoto = maPhoto;
-    }
-
-    public Me() {
-    }
-
-    public String getMonId() {
-        return monId;
-    }
-
-    public void setMonId(String monId) {
-        this.monId = monId;
     }
 
 }
