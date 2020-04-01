@@ -14,8 +14,7 @@ import entrainement.timer.p7_go4lunch.model.Place;
 
 public interface InterfacePlace {
     List<Place> getPlace(Context context, FindCurrentPlaceRequest request, PlacesClient placesClient, GoogleMap mMap, ProgressBar progressBar);
-//    void getListOfPlace();
-    List<Collegue> compareCollegueNPlace(String nomduResto, String idData, Context context);
+    List<Collegue> compareCollegueNPlace(String nomduResto, String idData, Context context, ExtendedServicePlace.Increment... increments);
     void ilike(String resto);
     void unlike(String resto, String id);
 

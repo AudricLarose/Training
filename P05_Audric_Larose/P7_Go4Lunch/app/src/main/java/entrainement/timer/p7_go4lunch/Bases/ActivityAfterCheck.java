@@ -69,7 +69,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
         Picasso.get().load(Me.getMaPhoto()).into(photoSide);
         nomSide.setText(Me.getMonNOm());
         mailSide.setText(Me.getMonMail());
-        servicePlace.SortPlaceDB();
 
         viewModelApi = new ViewModelProvider(this).get(ViewModelApi.class);
         other.internetVerify(ActivityAfterCheck.this);
@@ -211,7 +210,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
                                 public boolean onQueryTextSubmit(String query) {
                                     Fragmentcarte fragmentcarte = new Fragmentcarte();
                                     fragmentcarte.filterSearch(ActivityAfterCheck.this,query);
-//                Toast.makeText(ActivityAfterCheck.this,"ok",Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
 

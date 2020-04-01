@@ -71,7 +71,6 @@ public class ActivityDetails extends AppCompatActivity {
     private List<String> myLikes;
     private List<Collegue> listedecollegues = new ArrayList<>();
     private String etoileData;
-   // private String ancienRestaurant= Me.getMon_choix();
     private ViewModelApi viewModelApi;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -143,7 +142,6 @@ public class ActivityDetails extends AppCompatActivity {
                     serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
                     servicePlace.saveMyPlace(Me.getMonNOm(), place.getId());
                     serviceCollegue.whenNotifyme(ActivityDetails.this, true, place.getnomPlace());
-                   // Other.removeCollegue();
                     myChoice.setVisibility(View.GONE);
                     put_me_Out.setVisibility(View.VISIBLE);
                     Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
@@ -224,7 +222,6 @@ public class ActivityDetails extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        adapter.notifyDataSetChanged();
     }
 
     @Override

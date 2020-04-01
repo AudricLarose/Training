@@ -17,7 +17,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
@@ -28,6 +27,7 @@ import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.model.Place;
 
 public class Other {
+    public static int count = 0;
     static ExtendedServicePlace servicePlace = DI.getServicePlace();
     static ExtendedServiceCollegue serviceCollegue = DI.getService();
     static FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -36,7 +36,6 @@ public class Other {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
         } else {
             Toast.makeText(context, R.string.experience, Toast.LENGTH_LONG).show();
         }
@@ -75,24 +74,19 @@ public class Other {
         }
     }
 
-    public static void sendItToMyBDDPlease(String id, List<Place> liste, String restaurant_or_collegue) {
+    public static void sendItToMyBDDPlease(String id, List<Place> liste) {
         Map<String, Object> note = new HashMap<>();
         for (Place object : liste) {
             if (object.getId().equals(id)) {
-                switch (restaurant_or_collegue) {
-                    case "restaurant":
-                        note.put("quivient", object.getquivient());
-                        note.put("note", object.getnote());
-                        firebaseFirestore
-                                .collection("restaurant")
-                                .document(Me.getMonId())
-                                .collection("Myplace")
-                                .document(object.getId())
-                                .update(note);
-                        break;
-                    default:
-                        // code block
-                }
+                note.put("quivient", object.getquivient());
+                note.put("note", object.getnote());
+                firebaseFirestore
+                        .collection("restaurant")
+                        .document(Me.getMonId())
+                        .collection("Myplace")
+                        .document(object.getId())
+                        .update(note);
+
             }
         }
     }
@@ -121,18 +115,9 @@ public class Other {
         for (Place place : liste) {
             if (place.getnomPlace().equals(ancienresto)) {
                 place.setquivient(String.valueOf(Integer.valueOf(place.getquivient()) - 1));
-                sendItToMyBDDPlease(place.getId(), liste, "restaurant");
+                sendItToMyBDDPlease(place.getId(), liste);
             }
         }
-    }
-
-
-    public interface Callback {
-        void onFinish(Place place);
-    }
-
-    public interface ThegoodPlace {
-        void GoodPlace(Place place);
     }
 
     public static void theGoodPlace(String id, ThegoodPlace thegoodPlace, String... nomplace) {
@@ -143,26 +128,46 @@ public class Other {
             }
         }
     }
-    public interface ThegoodCollegue {
-        void GoodCollegue(Collegue collegue);
-    }
 
     public static void theGoodCollegue(String id, ThegoodCollegue thegoodCollegue) {
         List<Collegue> liste = serviceCollegue.generateListCollegue();
-        for (Collegue collegue: liste) {
+        for (Collegue collegue : liste) {
             if (collegue.getId().equals(id)) {
                 thegoodCollegue.GoodCollegue(collegue);
             }
         }
     }
 
-    public static void removeCollegue(){
-        theGoodCollegue(Me.getMonId(), new ThegoodCollegue() {
-            @Override
-            public void GoodCollegue(Collegue collegue) {
-                List<Collegue> listecollegue=serviceCollegue.generateListCollegue();
-                listecollegue.remove(collegue);
-            }
-        });
+    public static void refreshing(Context context, Refreshing refreshing) {
+        count = 0;
+        List<Place> listPlace = servicePlace.generateListPlace();
+        for (Place place : listPlace) {
+            servicePlace.compareCollegueNPlace(place.getnomPlace(), place.getId(), context, new ExtendedServicePlace.Increment() {
+                @Override
+                public void onFinish() {
+                    count = count + 1;
+                    if (count == listPlace.size() - 1) {
+                        refreshing.onFinish();
+                    }
+                }
+            });
+
+        }
+    }
+
+    public interface Callback {
+        void onFinish(Place place);
+    }
+
+    public interface ThegoodPlace {
+        void GoodPlace(Place place);
+    }
+
+    public interface ThegoodCollegue {
+        void GoodCollegue(Collegue collegue);
+    }
+
+    public interface Refreshing {
+        void onFinish();
     }
 }

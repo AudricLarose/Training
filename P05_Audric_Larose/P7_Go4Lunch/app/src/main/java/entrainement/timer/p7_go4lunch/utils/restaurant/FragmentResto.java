@@ -30,7 +30,7 @@ import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.model.Place;
 import entrainement.timer.p7_go4lunch.runTest.FirebaseCollectionGrabber;
 import entrainement.timer.p7_go4lunch.utils.Other;
-import entrainement.timer.p7_go4lunch.utils.collegue.Adaptateur;
+
 
 public class FragmentResto extends Fragment {
     private RecyclerView recyclerView;
@@ -61,13 +61,30 @@ public class FragmentResto extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                recyclerView.setAdapter(adapter);
-                swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(view.getContext(),R.string.listtoday, Toast.LENGTH_SHORT).show();
-            }
+                Other.refreshing(getContext(), new Other.Refreshing() {
+                    @Override
+                    public void onFinish() {
+                        FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
+                            @Override
+                            public void success(List<Place> objects) {
+                                AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
+                                recyclerView.setAdapter(adaptateurPlace);
+                                swipeRefreshLayout.setRefreshing(false);
+                                Toast.makeText(view.getContext(),R.string.listtoday, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void error(Exception e) {
+
+                            }
+                        });
+
+                    }
+                });
+
+        }
         });
 
-//        adapter= new Adaptateur(viewModelApi.getUser(), this);
         return view;
     }
 
