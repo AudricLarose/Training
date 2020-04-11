@@ -134,30 +134,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void getEarthQuakes() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Constants.url,null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray features = response.getJSONArray("features");
-                    for (int i =0 ; i<features.length();i++){
-                        JSONObject propreties= features.getJSONObject(i).getJSONObject("properties");
-                        Log.d(TAG, "onResponse: " + propreties.getString("place"));
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        queue.add(jsonObjectRequest);
-    }
+//    private void getEarthQuakes() {
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Constants.url,null, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                try {
+//                    JSONArray features = response.getJSONArray("features");
+//                    for (int i =0 ; i<features.length();i++){
+//                        JSONObject propreties= features.getJSONObject(i).getJSONObject("properties");
+//                        Log.d(TAG, "onResponse: " + propreties.getString("place"));
+//
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        });
+//        queue.add(jsonObjectRequest);
+//    }
 
 
     /**

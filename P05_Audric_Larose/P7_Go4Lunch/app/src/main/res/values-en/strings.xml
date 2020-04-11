@@ -18,7 +18,7 @@
     <string name="dontforget1">, don\'t forget it</string>
     <string name="dontforgetit1">don\'t forget it</string>
     <string name="dontlike">you doen\'t like it</string>
-    <string name="experience">You muist have a connection</string>
+    <string name="experience">You must have a connection</string>
     <string name="here">here !</string>
     <string name="listtoday">Your list is update</string>
     <string name="mychoice">my choice</string>
@@ -43,4 +43,8 @@
     <string name="youstay">You stay</string>
     <string name="areyousur">Are you sur ?</string>
     <string name="no">No</string>
+    <string name="parfavoris">By Favorite</string>
+    <string name="people">By Trend</string>
+    <string name="proximity">By Proximity</string>
+    <string name="benotified">Be notified ?</string>
 </resources>

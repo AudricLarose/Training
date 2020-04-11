@@ -1,25 +1,19 @@
 package entrainement.timer.p7_go4lunch.api.restaurant;
 
 import android.content.Context;
-import android.widget.ProgressBar;
-
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
-
 import java.util.List;
-
 import entrainement.timer.p7_go4lunch.model.Collegue;
-import entrainement.timer.p7_go4lunch.model.Place;
+import entrainement.timer.p7_go4lunch.model.Results;
 
 public interface InterfacePlace {
-    List<Place> getPlace(Context context, FindCurrentPlaceRequest request, PlacesClient placesClient, GoogleMap mMap, ProgressBar progressBar);
-    List<Collegue> compareCollegueNPlace(String nomduResto, String idData, Context context, ExtendedServicePlace.Increment... increments);
-    void ilike(String resto);
-    void unlike(String resto, String id);
+    void unsaveMyPlace(Results results);
+    void GetApiPlace(Context context, GoogleMap mMap);
 
-    void getListOfPlace(Context context, GoogleMap map);
+    List<Collegue> compareCollegueNPlace(Results results, Context context, ExtendedServicePlace.Increment... increments);
 
-    void saveMyPlace(String nom_restaurant, String id);
-    void unsaveMyPlace(String id);
+    void ilike(Results results);
+    void unlike(Results results);
+    void saveMyPlace(Results results);
+
 }

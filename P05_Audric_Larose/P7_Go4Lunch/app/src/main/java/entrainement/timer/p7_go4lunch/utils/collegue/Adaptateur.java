@@ -23,6 +23,7 @@ import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Place;
+import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
 public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
@@ -71,7 +72,7 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
                     Bundle extra = new Bundle();
                     Other.theGoodPlace(collegue.getId_monchoix(), new Other.ThegoodPlace() {
                         @Override
-                        public void GoodPlace(Place place) {
+                        public void GoodPlace(Results place) {
                             extra.putSerializable("Place",place);
                         }
                     });

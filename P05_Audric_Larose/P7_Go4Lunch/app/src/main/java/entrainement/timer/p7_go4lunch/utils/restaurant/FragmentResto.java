@@ -27,8 +27,7 @@ import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
-import entrainement.timer.p7_go4lunch.model.Place;
-import entrainement.timer.p7_go4lunch.runTest.FirebaseCollectionGrabber;
+import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
 
@@ -37,7 +36,7 @@ public class FragmentResto extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private ExtendedServicePlace servicePlace = DI.getServicePlace();
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
-    private List<Place> liste2Place = servicePlace.generateListPlace();
+    private List<Results> liste2Place = servicePlace.generateListPlaceAPI();
     private SearchView searchView = null;
     private AdaptateurPlace adapter=new AdaptateurPlace(liste2Place);;
     private static final String TAG = "FragmentContact";
@@ -48,43 +47,25 @@ public class FragmentResto extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        liste2Place = servicePlace.generateListPlace();
+        liste2Place = servicePlace.generateListPlaceAPI();
         View view = inflater.inflate(R.layout.fragment_fragment_resto, container, false);
         recyclerView =  view.findViewById(R.id.recycleContact);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(view.getContext());
         coordinatorLayout= view.findViewById(R.id.coordinate);
-        swipeRefreshLayout= view.findViewById(R.id.swipedem);
+//        swipeRefreshLayout= view.findViewById(R.id.swipedem);
         recyclerView.setLayoutManager(layoutManager);
         serviceCollegue.getListCollegue();
         recyclerView.setAdapter(adapter);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Other.refreshing(getContext(), new Other.Refreshing() {
-                    @Override
-                    public void onFinish() {
-                        FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
-                            @Override
-                            public void success(List<Place> objects) {
-                                AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
-                                recyclerView.setAdapter(adaptateurPlace);
-                                swipeRefreshLayout.setRefreshing(false);
-                                Toast.makeText(view.getContext(),R.string.listtoday, Toast.LENGTH_SHORT).show();
-                            }
 
-                            @Override
-                            public void error(Exception e) {
+    //    Other.checkrealtime(new Other.Adapterinterf() {
+    //        @Override
+    //        public void onFinish(List<Results> listePlaceApi) {
+    //            AdaptateurPlace adapter=new AdaptateurPlace(listePlaceApi);
+    //            recyclerView.setAdapter(adapter);
 
-                            }
-                        });
-
-                    }
-                });
-
-        }
-        });
-
+      //      }
+      //  });
         return view;
     }
 
@@ -122,11 +103,11 @@ public class FragmentResto extends Fragment {
                 public boolean onQueryTextChange(String newText) {
                     Toast.makeText(getContext(), newText, Toast.LENGTH_SHORT).show();
                     String userInput = newText.toLowerCase();
-                    List<Place> newList = new ArrayList<>();
-                    for (Place name :liste2Place)
+                    List<Results> newList = new ArrayList<>();
+                    for (Results name :liste2Place)
                     {
-                        if (name.getnomPlace().toLowerCase().contains(userInput)){
-                            Toast.makeText(getContext(), name.getnomPlace(), Toast.LENGTH_SHORT).show();
+                        if (name.getName().toLowerCase().contains(userInput)){
+                            Toast.makeText(getContext(), name.getName(), Toast.LENGTH_SHORT).show();
                             newList.add(name);
                         }
                     }
@@ -142,53 +123,27 @@ public class FragmentResto extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.fav:
-                Toast.makeText(getContext(), "dsds", Toast.LENGTH_SHORT).show();
-                FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
-                    @Override
-                    public void success(List<Place> objects) {
-                        AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
-                        recyclerView.setAdapter(adaptateurPlace);
-                    }
-
-                    @Override
-                    public void error(Exception e) {
-
-                    }
-                },"quivient");
-                return true;
             case R.id.people:
-                FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
-                    @Override
-                    public void success(List<Place> objects) {
-                        AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
-                        recyclerView.setAdapter(adaptateurPlace);
-                    }
-
-                    @Override
-                    public void error(Exception e) {
-
-                    }
-                },"note");
+              Other.SortedByWhoCome();
+                AdaptateurPlace adaptateurPlace= new AdaptateurPlace(liste2Place);
+                       recyclerView.setAdapter(adaptateurPlace);
+                return true;
+            case R.id.fav:
+                Other.SortedByLike();
+                AdaptateurPlace adaptateurPlace1= new AdaptateurPlace(liste2Place);
+                recyclerView.setAdapter(adaptateurPlace1);
                 return true;
             case R.id.proxy:
-                FirebaseCollectionGrabber.getCollection("restaurant", Place.class, new FirebaseCollectionGrabber.OnFinish<Place>() {
-                    @Override
-                    public void success(List<Place> objects) {
-                        AdaptateurPlace adaptateurPlace= new AdaptateurPlace(objects);
-                        recyclerView.setAdapter(adaptateurPlace);
-                    }
+                Other.SortedByDistance();
 
-                    @Override
-                    public void error(Exception e) {
-
-                    }
-                },"nomPlace");
+                AdaptateurPlace adaptateurPlace2= new AdaptateurPlace(liste2Place);
+                recyclerView.setAdapter(adaptateurPlace2);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();

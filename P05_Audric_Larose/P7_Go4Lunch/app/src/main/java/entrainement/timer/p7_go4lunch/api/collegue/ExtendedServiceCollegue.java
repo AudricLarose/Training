@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     private static final String TAG = "ExtendedServiceCollegue";
     private List<Collegue> collegues = ListCollegueGenerator.generateNeighbours();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private Map<String,Object> collegueParResto;
 
 
     public List<Collegue> generateListCollegue() {
@@ -59,6 +61,23 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         Task<QuerySnapshot> query_my_collegue = db_my_collegue.get();
         return query_my_collegue;
     }
+
+//    public void addCollegueesToResto(String place_id, List<Collegue> collegues) {
+  //      collegueParResto.put(place_id, collegues);
+   // }
+
+    //public void addCollegueeToResto(String place_id, Collegue collegue) {
+      //  collegueParResto.put(place_id, Collections.singletonList(collegue));
+    //}
+
+
+   // public List<Collegue> quiVientPourResto(String place_id) {
+   //     return collegueParResto.get(place_id);
+   // }
+
+   // public Integer combientPourResto(String place_id) {
+   //     return collegueParResto.get(place_id).size();
+   // }
 
     public Task<DocumentSnapshot> call_this_collegue(String idCollegue) {
         CollectionReference db_my_collegue = firebaseFirestore.collection("collegue");
@@ -166,7 +185,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
     }
 
 
-    public List<String> getcoworker(String restaurant) {
+    public List<String> GetCoworkerMethod(String restaurant) {
         List<String> liste_who_come_with_me = new ArrayList<>();
         List<Collegue> listedecollegue = collegues;
         for (Collegue collegue : listedecollegue) {

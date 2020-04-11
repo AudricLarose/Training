@@ -21,11 +21,11 @@
     <string name="rendezvous1">Bonjour, vous avez rendez vous a</string>
     <string name="dontforget">, ne l\'oubliez pas</string>
     <string name="rendezvous">Hello, vous avez rendez vous a</string>
-    <string name="dontforgetit1">ne l\'oubliez pas</string>
+    <string name="dontforgetit1"> ne l\'oubliez pas</string>
     <string name="rendezvous2">Votre rendez-vous vous sera rappelé demain midi</string>
-    <string name="rendezvous3">Votre rendez vous a midi</string>
-    <string name="rdv1">Bonjour, vous avez rendez vous a</string>
-    <string name="with">avec</string>
+    <string name="rendezvous3">Votre rendez vous a midi </string>
+    <string name="rdv1">Bonjour, vous avez rendez vous a </string>
+    <string name="with"> avec </string>
     <string name="dontforget1">, ne l\'oubliez pas</string>
     <string name="reminder">Rappel</string>
     <string name="nordv">Il n\'y a pas de rendez vous encore enregistrez a votre nom</string>
@@ -52,6 +52,9 @@
     <string name="parfavoris">Par Favoris</string>
     <string name="people">Par personne</string>
     <string name="proximity">Par proximité</string>
-    <string name="newPlace">Place ajouté !</string>
+    <string name="newPlace">Place ajoutée !</string>
+    <string name="clefLicence">AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c</string>
+    <string name="open">Ouvert</string>
+    <string name="fermé">Fermé</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

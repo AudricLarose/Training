@@ -2,6 +2,7 @@ package entrainement.timer.p7_go4lunch.Bases;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.model.Place;
+import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.collegue.FragmentContact;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.model.Me;
@@ -56,6 +59,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private ViewModelApi viewModelApi;
     private Other other= new Other();
     private MenuItem sortedmenu;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
         viewModelApi = new ViewModelProvider(this).get(ViewModelApi.class);
         other.internetVerify(ActivityAfterCheck.this);
         ViewPager pagerAdapter= (ViewPager) findViewById(R.id.pager123);
+        Other.GPSOnVerify(ActivityAfterCheck.this);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -87,8 +92,8 @@ public class ActivityAfterCheck extends AppCompatActivity {
                                 if (name_lunch!=null && !name_lunch.trim().isEmpty()) {
                                     Other.theGoodPlace(Me.getId_monchoix(), new Other.ThegoodPlace() {
                                         @Override
-                                        public void GoodPlace(Place place) {
-                                            extra.putSerializable("Place",place);
+                                        public void GoodPlace(Results results) {
+                                            extra.putSerializable("Place",results);
                                         }
                                     });
                                     intent.putExtras(extra);
@@ -196,6 +201,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
         return true;
     }
 
+
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener=
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -203,7 +209,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
                     Fragment selectdFragment=null;
                     switch (menuItem.getItemId()){
                         case R.id.blue:
-
                             selectdFragment= fragments[0];
                             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                                 @Override

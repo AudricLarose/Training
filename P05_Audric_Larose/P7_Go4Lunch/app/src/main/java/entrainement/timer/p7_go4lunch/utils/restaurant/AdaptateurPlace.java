@@ -1,7 +1,7 @@
 package entrainement.timer.p7_go4lunch.utils.restaurant;
 
 import android.content.Intent;
-import android.location.Location;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,44 +14,33 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.location.LocationServices;
+import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
-import entrainement.timer.p7_go4lunch.model.Me;
-import entrainement.timer.p7_go4lunch.model.Place;
+import entrainement.timer.p7_go4lunch.model.Results;
+import entrainement.timer.p7_go4lunch.utils.Other;
 
 public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHolder> {
 //    LiveData<List<Place>> placeList;
     private ExtendedServicePlace servicePlace;
-    List<Place> listedeplaces;
+    List<Results> listedeplaces;
 
-    public AdaptateurPlace(List<Place> listedeplaces) {
+    public AdaptateurPlace(List<Results> listedeplaces) {
         this.listedeplaces = listedeplaces;
         notifyDataSetChanged();
     }
 
-    void updatelistplace(List<Place> liste){
+    void updatelistplace(List<Results> liste){
         listedeplaces=new ArrayList<>();
         listedeplaces.addAll(liste);
     }
-
-    //    public AdaptateurPlace(LiveData<List<Place>> placeList, LifecycleOwner owner) {
-//
-//        this.placeList = placeList;
-//        this.placeList.observe(owner, new Observer<List<Place>>() {
-//            @Override
-//            public void onChanged(List<Place> places) {
-//                AdaptateurPlace.this.notifyDataSetChanged();
-//            }
-//        });
-//    }
 
     @NonNull
     @Override
@@ -64,39 +53,35 @@ public class AdaptateurPlace extends RecyclerView.Adapter <AdaptateurPlace.LeHol
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
         servicePlace= DI.getServicePlace();
-        float[] result = new float[1];
-        Place place= listedeplaces.get(position);
-        holder.nom.setText(place.getnomPlace());
-        holder.adresse.setText(place.getAdresse());
-        holder.perso.setText(place.getquivient());
-        Double latitude = Double.parseDouble(place.getLatitude());
-        Double longitude = Double.parseDouble(place.getLongitude());
-        Location.distanceBetween(Me.getMy_latitude(), Me.getMy_longitude(), latitude, longitude, result);
-        int round = Math.round(result[0]);
-        String distance = String.valueOf(round);
-        holder.distance.setText(distance);
-        holder.horaire.setText(place.getHoraire());
-        if (place.getnote()!=null) {
-            holder.bar.setRating(Float.parseFloat(place.getnote()));
+        Results place= listedeplaces.get(position);
+        holder.nom.setText(place.getName());
+        holder.adresse.setText(place.getVicinity());
+        holder.perso.setText(place.getWhocome());
+        holder.distance.setText(String.valueOf(place.getGeometry().getLocation().getDistance()));
+        if (place.getOpeningHours()!=null) {
+            if (place.getOpeningHours().getOpenNow() == true) {
+                holder.horaire.setText(R.string.open);
+                holder.horaire.setTextColor(Color.GREEN);
+            } else {
+                holder.horaire.setText(R.string.fermé);
+                holder.horaire.setTextColor(Color.RED);
+            }
+        }
+        String html= Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
+        Picasso.get().load(html).into(holder.photo);
+        if (place.getId()!=null) {
+            holder.bar.setRating(Float.parseFloat(String.valueOf(place.getRating()/1.5)));
         }
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ActivityDetails.class);
                 Bundle bundle= new Bundle();
-                bundle.putString("id",place.getId());
-                bundle.putString("nom",place.getnomPlace());
-                bundle.putString("adresse",place.getAdresse());
-                bundle.putString("phone",place.getPhone());
-                bundle.putString("site",place.getSite());
-                bundle.putString("etoile",place.getnote());
-                bundle.putString("photo",place.getPhoto());
                 bundle.putSerializable("Place",place);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
             }
         });
-//        holder.photo
 
     }
 
