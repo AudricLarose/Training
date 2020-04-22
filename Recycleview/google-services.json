@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1039722194645",
+    "firebase_url": "https://recycleview-ac514.firebaseio.com",
+    "project_id": "recycleview-ac514",
+    "storage_bucket": "recycleview-ac514.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039722194645:android:18830a27cc6433725ce45c",
+        "android_client_info": {
+          "package_name": "entrainement.recycleview.un"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039722194645-6h1v3qn5rfjgfpcf2b9e83th4j6v15mk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "entrainement.recycleview.un",
+            "certificate_hash": "7b45ceb12c5f09320066d47f361c72293e49c58c"
+          }
+        },
+        {
+          "client_id": "1039722194645-2ue2u00304eo21q2pbg1u1595pbqrv2m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMFqGawje1V_O7L_CxfGhzgBOjU031eKA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039722194645-2ue2u00304eo21q2pbg1u1595pbqrv2m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

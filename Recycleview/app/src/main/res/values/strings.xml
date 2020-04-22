@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Recycleview</string>
+    <string name="appwidget_text">liste des elements</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="title_activity_carte_display">carteDisplay</string>
+</resources>

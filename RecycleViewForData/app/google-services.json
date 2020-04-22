@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "965486481722",
+    "firebase_url": "https://recycleviewfordata.firebaseio.com",
+    "project_id": "recycleviewfordata",
+    "storage_bucket": "recycleviewfordata.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965486481722:android:57fee73893979518258003",
+        "android_client_info": {
+          "package_name": "entrainement.timer.recycleviewfordata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965486481722-3ijo59qsfo8lmhfpdko38jfsca3b1j9j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "entrainement.timer.recycleviewfordata",
+            "certificate_hash": "7b45ceb12c5f09320066d47f361c72293e49c58c"
+          }
+        },
+        {
+          "client_id": "965486481722-cpmjv6v0j6rte5hocpe1rn164h0r461r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDPhfNpLF-1FCjq0Og8xvY4o9jeVoBF_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965486481722-cpmjv6v0j6rte5hocpe1rn164h0r461r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

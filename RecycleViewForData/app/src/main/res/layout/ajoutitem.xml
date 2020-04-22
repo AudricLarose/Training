@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    >
+
+<!--    <EditText-->
+<!--        android:id="@+id/nom"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:gravity="center"-->
+<!--        android:hint="titre"-->
+<!--        android:inputType="textPersonName" />-->
+
+    <ImageView
+        android:id="@+id/photo_test"
+        android:layout_width="223dp"
+        android:layout_height="301dp"
+        android:layout_marginVertical="50dp"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <Button
+        android:layout_centerHorizontal="true"
+        android:id="@+id/bouton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/photo_test"
+        android:text="Ajouter photo" />
+
+    <EditText
+        android:id="@+id/longtext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Legende"
+        android:gravity="center"
+        android:inputType="textMultiLine"
+        android:layout_below="@id/bouton"
+
+        />
+
+</RelativeLayout>

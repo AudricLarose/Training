@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:drawable="@drawable/dark27841881280" />
+    <item>
+        <shape android:shape="rectangle" android:padding="10dp">
+        <corners
+            android:radius="14dp"
+            />
+        <gradient
+            android:angle="45"
+            android:centerX="35%"
+            android:endColor="#000000"
+            />
+        <padding
+            android:left="0dp"
+            android:top="0dp"
+            android:right="0dp"
+            android:bottom="0dp"
+            />
+
+        <size
+            android:width="270dp"
+            android:height="60dp"
+            />
+        <stroke
+            android:width="3dp"
+            android:color="#878787"
+            />
+        </shape>
+
+    </item>
+</layer-list>
