@@ -4,14 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/Me"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Me rappeler mon rendez vous de demain ?" />
+        android:text="@string/me_rappeler_mon_rendez_vous_de_demain" />
 
     <Switch
         android:id="@+id/switch1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activer ?" />
+        android:text="@string/activer" />
 </LinearLayout>

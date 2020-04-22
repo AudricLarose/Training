@@ -151,7 +151,7 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
 

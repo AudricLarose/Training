@@ -8,7 +8,6 @@ import java.util.List;
 
 public class Results implements Serializable {
     public String getphone;
-    public String website;
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
@@ -27,6 +26,7 @@ public class Results implements Serializable {
     @SerializedName("photos")
     @Expose
     private List<Photo> photos = null;
+    private String photo;
     @SerializedName("place_id")
     @Expose
     private String placeId;
@@ -53,6 +53,12 @@ public class Results implements Serializable {
     private String vicinity;
     private String whocome;
     private String like;
+    @SerializedName("formatted_phone_number")
+    @Expose
+    private String formattedPhoneNumber;
+    @SerializedName("website")
+    @Expose
+    private String website;
 
     public Results(String id, String whocome, String like) {
         this.id = id;
@@ -60,7 +66,34 @@ public class Results implements Serializable {
         this.like = like;
     }
 
+    public Results(String placeId, String name, List<Photo> photos) {
+        this.placeId = placeId;
+        this.name = name;
+        this.photos = photos;
+    }
+
     public Results() {
+    }
+
+    public Results(String placeId, String name) {
+        this.placeId = placeId;
+        this.name = name;
+    }
+
+    public Results(String placeId, String name, String photo, Double etoile, String adresse) {
+        this.placeId = placeId;
+        this.name = name;
+        this.photo = photo;
+        this.vicinity=adresse;
+        this.rating=etoile;
+    }
+
+    public String getFormattedPhoneNumber() {
+        return formattedPhoneNumber;
+    }
+
+    public void setFormattedPhoneNumber(String formattedPhoneNumber) {
+        this.formattedPhoneNumber = formattedPhoneNumber;
     }
 
     public Geometry getGeometry() {

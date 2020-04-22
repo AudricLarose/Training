@@ -92,29 +92,6 @@ public class MainActivityTest {
                         isDisplayed()));
         cardView.perform(click());
     }
-//    @Test
-//    public  void retour_arriere(){
-//        onView(withId(R.id.ajout))
-//                .perform(click());
-//        onView(ViewMatchers.withId(R.id.imageView2))
-//                .perform(click());
-//        onView(ViewMatchers.withId(R.id.recycleViewId))
-//                .check(matches(isDisplayed()));
-//    }
-//    @Test
-//    public  void ajout_perso(){
-//        onView(withId(R.id.ajout))
-//                .perform(click());
-//        onView(ViewMatchers.withId(R.id.ajout_reunion))
-//                .check(matches(isDisplayed()));
-//    }
-//    @Test
-//    public  void valider(){
-//        onView(withId(R.id.ajout))
-//                .perform(click());
-//        onView(ViewMatchers.withId(R.id.valider))
-//                .check(matches(isDisplayed()));
-//    }
     @After
     public void tearDown() throws Exception {
 

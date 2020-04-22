@@ -1,7 +1,6 @@
 package entrainement.timer.p7_go4lunch.Bases;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -28,6 +27,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +36,6 @@ import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
-import entrainement.timer.p7_go4lunch.model.ApiforOnePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.model.Results;
@@ -64,7 +63,6 @@ public class ActivityDetails extends AppCompatActivity {
     @BindView(R.id.callGrand)
     CardView tel;
 
-    private AdaptateurQuiVient adapter;
     private CoordinatorLayout coordinatorLayout;
 
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
@@ -72,10 +70,6 @@ public class ActivityDetails extends AppCompatActivity {
     private List<String> myLikes= new ArrayList<>();
     private List<Collegue> listedecollegues = new ArrayList<>();
     private String etoileData;
-    private ViewModelApi viewModelApi;
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private List<ApiforOnePlace> listfor1=servicePlace.generateListPlaceAPIForOnePlace();
 
 
 
@@ -93,18 +87,60 @@ public class ActivityDetails extends AppCompatActivity {
         Intent intent = this.getIntent();
         Bundle extra = intent.getExtras();
 
+
         if (extra != null) {
             Results place= (Results) extra.getSerializable("Place");
             if ((place!=null) &&(place.getPlaceId()!=null)){
-                ApiforOnePlace apiforOnePlace= Other.CallApiOnOnePlacePlease( place.getPlaceId());
-                if (apiforOnePlace!=null){
-                    if (apiforOnePlace.getInternationalPhoneNumber() == null) {
-                        tel.setEnabled(false);
-                        tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+       Other.CallApiOnOnePlacePlease(place.getPlaceId(), new Other.Finish() {
+                    @Override
+                    public void onFinish(Results apiforOnePlaces) {
+                        if (apiforOnePlaces!=null){
+                            if (apiforOnePlaces.getFormattedPhoneNumber() == null) {
+                                tel.setEnabled(false);
+                                tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                            }
+                            if (apiforOnePlaces.getWebsite() == null || place.getWebsite().equals("null")) {
+                                internet.setEnabled(false);
+                                internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                            }
+
+                        } else {
+                            tel.setEnabled(false);
+                            internet.setEnabled(false);
+                        }
+                        tel.setOnClickListener(new View.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(Intent.ACTION_CALL);
+                                String phone1 = "tel:" + Objects.requireNonNull(apiforOnePlaces).getFormattedPhoneNumber();
+                                intent.setData(Uri.parse(phone1));
+                                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
+                                } else {
+                                    startActivity(intent);
+                                }
+                                Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
+                            }
+
+                        });
+                        internet.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = null;
+                                if (apiforOnePlaces != null) {
+                                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apiforOnePlaces.getWebsite()));
+                                }
+                                startActivity(intent);
+                            }
+                        });
                     }
-                    if (apiforOnePlace.getWebsite() == null || place.getWebsite().equals("null")) {
-                        internet.setEnabled(false);
-                        internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                });
+
+                if (place.getPhotos()!=null) {
+                    if (place.getPhotos().get(0) != null) {
+                        String html= Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
+                        Picasso.get().load(html).into(image);
                     }
                 }
                 if (place.getRating() != null) {
@@ -113,15 +149,12 @@ public class ActivityDetails extends AppCompatActivity {
             } else {
                 place.setRating(Double.valueOf(0));
             }
-            if (place.getPhotos().get(0) != null) {
-                String html= Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
-                Picasso.get().load(html).into(image);
-            }
+
             adresse.setText(place.getVicinity());
             nom.setText(place.getName());
 
-            if (Me.getMon_choix()!=null) {
-                if (Me.getMon_choix().equals(place.getName())) {
+            if (Me.getMy_choice()!=null) {
+                if (Me.getMy_choice().equals(place.getName())) {
                     myChoice.setVisibility(View.GONE);
                     put_me_Out.setVisibility(View.VISIBLE);
                 } else{
@@ -141,10 +174,10 @@ public class ActivityDetails extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onClick(View v) {
-                    listedecollegues.add(new Collegue(Me.getMonNOm(), getString(R.string.mychoice), Me.getMaPhoto()));
-                    Other.decrement(Me.getMon_choix());
-                    Me.setMon_choix(place.getName());
-                    serviceCollegue.addMyChoice(Me.getMonId(), place.getName(), place.getVicinity(), place.getId(), etoileData, Me.getId_monchoix());
+                    listedecollegues.add(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                    Other.decrement(Me.getMy_choice());
+                    Me.setMy_choice(place.getName());
+                    serviceCollegue.addMyChoice(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString(), place.getPhotos().get(0).getPhotoReference());
                     listedecollegues = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
                     serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
                     servicePlace.saveMyPlace(place);
@@ -154,36 +187,13 @@ public class ActivityDetails extends AppCompatActivity {
                     Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
                 }
             });
-            tel.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    String phone1 = "tel:" + place.getGetphone();
-                    intent.setData(Uri.parse(phone1));
-                    if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
-                    } else {
-                        startActivity(intent);
-                    }
-                    Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
-                }
-
-            });
-            internet.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(place.getWebsite()));
-                    startActivity(intent);
-                }
-            });
             put_me_Out.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listedecollegues.remove(new Collegue(Me.getMonNOm(), getString(R.string.mychoice), Me.getMaPhoto()));
-                    Me.setMon_choix(" ");
-                    Me.setId_monchoix(" ");
-                    serviceCollegue.dontaddMyChoice(Me.getMonId(), place.getName(), place.getVicinity(), place.getId(), etoileData, Me.getId_monchoix());
+                    listedecollegues.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                    Me.setMy_choice(" ");
+                    Me.setId_mychoice(" ");
+                    serviceCollegue.dontaddMyChoice(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), etoileData, Me.getId_mychoice());
                     listedecollegues = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
                     serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
                     servicePlace.unsaveMyPlace(place);
@@ -219,12 +229,12 @@ public class ActivityDetails extends AppCompatActivity {
 //                    etoiles.setRating(Integer.parseInt(etoileData.trim()) - 1);
                 }
             });
-            viewModelApi = new ViewModelProvider(ActivityDetails.this).get(ViewModelApi.class);
-            adapter = new AdaptateurQuiVient(viewModelApi.getwhocome(), this);
-            recyclerView = findViewById(R.id.RecycleGrand);
+                ViewModelApi viewModelApi = new ViewModelProvider(ActivityDetails.this).get(ViewModelApi.class);
+                AdaptateurQuiVient adapter = new AdaptateurQuiVient(viewModelApi.getwhocome(), this);
+                RecyclerView recyclerView = findViewById(R.id.RecycleGrand);
             recyclerView.setHasFixedSize(true);
             List<Collegue> valeur = viewModelApi.getwhocome().getValue();
-            layoutManager = new LinearLayoutManager(this);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         }

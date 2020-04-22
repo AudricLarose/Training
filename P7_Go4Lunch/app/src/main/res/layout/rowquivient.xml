@@ -5,9 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/relativeRecyGrand"
-    >
+    android:layout_height="wrap_content">
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/photoRecyGrand"
@@ -21,10 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_toRightOf="@+id/photoRecyGrand"
-        android:text="name" />
+        android:text="@string/name" />
 
     <TextView
-        android:id="@+id/iscomingRecyGrand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

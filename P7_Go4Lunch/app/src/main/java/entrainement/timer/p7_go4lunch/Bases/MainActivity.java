@@ -1,12 +1,6 @@
 package entrainement.timer.p7_go4lunch.Bases;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +9,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -30,42 +28,28 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
-
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI.DI;
-import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
-import entrainement.timer.p7_go4lunch.model.Inter;
-import entrainement.timer.p7_go4lunch.model.PlaceApi;
-import entrainement.timer.p7_go4lunch.utils.Other;
 import entrainement.timer.p7_go4lunch.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
-
-
-
+import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
+import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.utils.Other;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
+    private static final String TAG = "MainActivity";
     private Button button;
     private ExtendedServiceCollegue service;
-    private ExtendedServicePlace servicePlace=DI.getServicePlace();
-//    private CardView cardF;
+    private ExtendedServicePlace servicePlace = DI.getServicePlace();
     private CardView cardG;
-    private static final String TAG = "MainActivity";
+    private CardView cardFa;
     private CallbackManager mCallbackManager;
+    private  LoginButton loginButton;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -73,21 +57,20 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         button = findViewById(R.id.button);
-//        cardF=findViewById(R.id.cardF);
-        cardG=findViewById(R.id.cardG);
+        cardFa=findViewById(R.id.cardFa);
+        cardG = findViewById(R.id.cardG);
+        loginButton = findViewById(R.id.cardF);
         initializeFBLogin();
+        cardFa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    loginButton.performClick();
+            }
+        });
+        Other.hashFinder(MainActivity.this);
 
-        //Facebook Login
-//        cardF.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                createSignInIntent(1);
-//                Other.internetVerify(MainActivity.this);
-//                Other.GPSOnVerify(MainActivity.this);
-//            }
-//        });
         //Gmail Login
         cardG.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         Other.internetVerify(MainActivity.this);
     }
 
+
+
     public void createSignInIntent(int i) {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -117,11 +102,9 @@ public class MainActivity extends AppCompatActivity {
                 RC_SIGN_IN);
     }
 
-// Initialize Facebook Login button
-    private void initializeFBLogin(){
-
+    // Initialize Facebook Login button
+    private void initializeFBLogin() {
         mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = findViewById(R.id.cardF);
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -148,25 +131,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        service= DI.getService();
+        service = DI.getService();
 
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String collegue = user.getDisplayName();
-            String photo= user.getPhotoUrl().toString();
-            String id= user.getUid();
-            String mail= user.getEmail().toString();
-            service.newCollegue(MainActivity.this,id,collegue,photo, mail);
-            Intent intent= new Intent(MainActivity.this, ActivityAfterCheck.class);
+            String photo = user.getPhotoUrl().toString();
+            String id = user.getUid();
+            String mail = user.getEmail();
+            service.newCollegue(MainActivity.this, id, collegue, photo, mail);
+            Intent intent = new Intent(MainActivity.this, ActivityAfterCheck.class);
             startActivity(intent);
         } else {
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -177,11 +160,11 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             String collegue = user.getDisplayName();
-                            String photo= user.getPhotoUrl().toString();
-                            String id= user.getUid();
-                            String mail= "no Mails";
-                            service.newCollegue(MainActivity.this,id,collegue,photo, mail);
-                            Intent intent= new Intent(MainActivity.this, ActivityAfterCheck.class);
+                            String photo = user.getPhotoUrl().toString();
+                            String id = user.getUid();
+                            String mail = "no Mails";
+                            service.newCollegue(MainActivity.this, id, collegue, photo, mail);
+                            Intent intent = new Intent(MainActivity.this, ActivityAfterCheck.class);
                             startActivity(intent);
 //                            updateUI(user);
                         } else {
@@ -196,9 +179,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-
 
 
 }

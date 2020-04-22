@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">P7Go4Lunch</string>
-    <string name="deconnecte_string" translatable="false">Log Out</string>
     <string name="eating_at">eating at</string>
-    <string name="local_string">Locate me</string>
-    <string name="searching_string">Search me</string>
-    <string name="parametre_string">Parameter</string>
     <string name="dont_choose">doesn\'t choose</string>
     <string name="coming">is coming !</string>
     <string name="list">ListView</string>
@@ -18,18 +14,14 @@
     <string name="dontforget1">, don\'t forget it</string>
     <string name="dontforgetit1">don\'t forget it</string>
     <string name="dontlike">you doen\'t like it</string>
-    <string name="experience">You must have a connection</string>
     <string name="here">here !</string>
-    <string name="listtoday">Your list is update</string>
     <string name="mychoice">my choice</string>
     <string name="navigation_drawer_close" translatable="false">closed</string>
     <string name="navigation_drawer_open" translatable="false">opened</string>
-    <string name="notlike">no like !</string>
     <string name="nonotif">you won\'t have notification</string>
     <string name="nordv">"There is no rendez vous here "</string>
     <string name="notified">You will receive your notifications</string>
     <string name="rdv1">Hello , you have a rendez vous</string>
-    <string name="redirection">Redirection in a minutes</string>
     <string name="reminder">Reminder</string>
     <string name="rendezvous">Hello , you have rendez vous at</string>
     <string name="rendezvous1">Hello , you have rendez vous at</string>

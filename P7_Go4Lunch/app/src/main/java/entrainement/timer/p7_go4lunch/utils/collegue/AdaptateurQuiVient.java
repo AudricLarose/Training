@@ -3,7 +3,6 @@ package entrainement.timer.p7_go4lunch.utils.collegue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,8 +20,8 @@ import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 
 
-public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient.LeHolder> {
-        LiveData<List<Collegue>> quivientliste;
+public class AdaptateurQuiVient extends RecyclerView.Adapter<AdaptateurQuiVient.LeHolder> {
+    LiveData<List<Collegue>> quivientliste;
 
     public AdaptateurQuiVient(LiveData<List<Collegue>> quivientliste, LifecycleOwner owner) {
         this.quivientliste = quivientliste;
@@ -35,44 +34,41 @@ public class AdaptateurQuiVient extends RecyclerView.Adapter <AdaptateurQuiVient
     }
 
     @NonNull
-        @Override
-        public AdaptateurQuiVient.LeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rowquivient,parent,false);
-            AdaptateurQuiVient.LeHolder leHolder= new AdaptateurQuiVient.LeHolder(view);
-            return leHolder;
-        }
+    @Override
+    public AdaptateurQuiVient.LeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rowquivient, parent, false);
+        AdaptateurQuiVient.LeHolder leHolder = new AdaptateurQuiVient.LeHolder(view);
+        return leHolder;
+    }
 
-        @Override
-        public void onBindViewHolder(@NonNull AdaptateurQuiVient.LeHolder holder, int position) {
-            Collegue collegue = quivientliste.getValue().get(position);
-            holder.nom.setText(collegue.getNom());
-            String photoUri= collegue.getPhoto();
-            Picasso.get().load(photoUri).into(holder.photo);
-        }
+    @Override
+    public void onBindViewHolder(@NonNull AdaptateurQuiVient.LeHolder holder, int position) {
+        Collegue collegue = quivientliste.getValue().get(position);
+        holder.nom.setText(collegue.getName());
+        String photoUri = collegue.getPhoto();
+        Picasso.get().load(photoUri).into(holder.photo);
+    }
 
-        @Override
-        public int getItemCount() {
-        if (quivientliste!=null){
+    @Override
+    public int getItemCount() {
+        if (quivientliste != null) {
             return quivientliste.getValue().size();
         } else {
             return 0;
         }
-        }
+    }
 
-      public static class LeHolder extends RecyclerView.ViewHolder {
-            private RelativeLayout relativeLayout;
-            private TextView nom;
-            private TextView choix;
-            private CircularImageView photo;
+    public static class LeHolder extends RecyclerView.ViewHolder {
+        private TextView nom;
+        private CircularImageView photo;
 
-            public LeHolder(@NonNull View itemView) {
-                super(itemView);
-                nom=itemView.findViewById(R.id.nomRecyGrand);
-                choix=itemView.findViewById(R.id.iscomingRecyGrand);
-                photo=itemView.findViewById(R.id.photoRecyGrand);
+        public LeHolder(@NonNull View itemView) {
+            super(itemView);
+            nom = itemView.findViewById(R.id.nomRecyGrand);
+            photo = itemView.findViewById(R.id.photoRecyGrand);
 
-            }
         }
     }
+}
 
 

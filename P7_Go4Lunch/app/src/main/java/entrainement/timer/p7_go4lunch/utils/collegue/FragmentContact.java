@@ -4,9 +4,9 @@ import android.app.SearchManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,7 +21,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
@@ -33,16 +32,12 @@ public class FragmentContact extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private ExtendedServiceCollegue service=DI.getService();
     private List<Collegue> liste2collegue = service.generateListCollegue();
-    private ViewModelApi viewModelApi;
     private SearchView searchView = null;
-    private SearchView.OnQueryTextListener queryTextListener;
     private Adaptateur adapter=new Adaptateur(liste2collegue);
-    private static final String TAG = "FragmentContact";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
-        viewModelApi = new ViewModelProvider(requireActivity()).get(ViewModelApi.class);
         View view = inflater.inflate(R.layout.fragment_fragment_contact, container, false);
         recyclerView = (RecyclerView) view;
         recyclerView.setHasFixedSize(true);
@@ -66,7 +61,7 @@ public class FragmentContact extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.search, menu);
@@ -92,8 +87,8 @@ public class FragmentContact extends Fragment {
                     List<Collegue> newList = new ArrayList<>();
                     for (Collegue name :liste2collegue)
                     {
-                        if (name.getNom().toLowerCase().contains(userInput)){
-                            Toast.makeText(getContext(), name.getNom(), Toast.LENGTH_SHORT).show();
+                        if (name.getName().toLowerCase().contains(userInput)){
+                            Toast.makeText(getContext(), name.getName(), Toast.LENGTH_SHORT).show();
                             newList.add(name);
                         }
                     }

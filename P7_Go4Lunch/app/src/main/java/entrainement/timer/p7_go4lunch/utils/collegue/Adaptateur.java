@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,12 +22,11 @@ import java.util.List;
 import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.model.Collegue;
-import entrainement.timer.p7_go4lunch.model.Place;
 import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
-public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
-    List<Collegue> liste ;
+public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder> {
+    List<Collegue> liste;
 
 
     public Adaptateur(List<Collegue> liste) {
@@ -37,8 +35,8 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     }
 
 
-    public void updateList(List<Collegue> listSearch){
-        liste=new ArrayList<>();
+    public void updateList(List<Collegue> listSearch) {
+        liste = new ArrayList<>();
         liste.addAll(listSearch);
         notifyDataSetChanged();
     }
@@ -48,33 +46,31 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
     @Override
     public LeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
-        LeHolder holder = new LeHolder(view);
-        return holder;
+        return new LeHolder(view);
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull LeHolder holder, int position) {
-          final Collegue collegue = liste.get(position);
-
-        holder.nom.setText(collegue.getNom());
-        if ((collegue.getChoix() == null) || (collegue.getChoix().trim().isEmpty())) {
+        final Collegue collegue = liste.get(position);
+        holder.nom.setText(collegue.getName());
+        if ((collegue.getChoice() == null) || (collegue.getChoice().trim().isEmpty())) {
             holder.nom.setTextColor(Color.parseColor("#979797"));
             holder.choice.setVisibility(View.GONE);
             holder.choixnot.setVisibility(View.VISIBLE);
         } else {
             holder.choice.setVisibility(View.VISIBLE);
             holder.choixnot.setVisibility(View.GONE);
-            holder.choix.setText(collegue.getChoix());
+            holder.choix.setText(collegue.getChoice());
             holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), ActivityDetails.class);
                     Bundle extra = new Bundle();
-                    Other.theGoodPlace(collegue.getId_monchoix(), new Other.ThegoodPlace() {
+                    Other.theGoodPlace(collegue.getId_mychoice(), collegue.getChoice(), collegue.getPhoto(), Double.valueOf(collegue.getNote_choice()), collegue.getAdresse_Choice(), new Other.ThegoodPlace() {
                         @Override
                         public void GoodPlace(Results place) {
-                            extra.putSerializable("Place",place);
+                            extra.putSerializable("Place", place);
                         }
                     });
                     intent.putExtras(extra);
@@ -89,7 +85,7 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder>  {
 
     @Override
     public int getItemCount() {
-        if (liste!=null) {
+        if (liste != null) {
             return liste.size();
         } else {
             return 0;

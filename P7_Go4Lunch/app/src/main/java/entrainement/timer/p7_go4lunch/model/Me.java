@@ -5,43 +5,52 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 
 public abstract class Me {
-    private static String monId;
-    private static String monNOm;
-    private static String maPhoto;
-    private static String monMail;
-    private static String mon_choix;
-    private static String adressechoix;
-    private static String id_monchoix;
-    private static String mon_like;
+    private static String myId;
+    private static String myName;
+    private static String myPhoto;
+    private static String myMail;
+    private static String my_choice;
+    private static String adresschoice;
+    private static String id_mychoice;
+    private static String my_like;
     private static Double my_longitude;
     private static Double my_latitude;
     private static LatLng latlng_me;
     private static Boolean beNotified;
-    private static String NoteChoix;
+    private static String NoteChoice;
     private static List<String> myLikes;
     private static List<String> getCoworker;
+    private static String choicePhoto;
 
-    public Me(String monId) {
-        this.monId = monId;
+    public Me(String myId) {
+        this.myId = myId;
     }
 
     public Me() {
     }
 
-    public static String getNoteChoix() {
-        return NoteChoix;
+    public static String getChoicePhoto() {
+        return choicePhoto;
     }
 
-    public static void setNoteChoix(String noteChoix) {
-        NoteChoix = noteChoix;
+    public static void setChoicePhoto(String choicePhoto) {
+        Me.choicePhoto = choicePhoto;
     }
 
-    public static String getAdressechoix() {
-        return adressechoix;
+    public static String getNoteChoice() {
+        return NoteChoice;
     }
 
-    public static void setAdressechoix(String adressechoix) {
-        Me.adressechoix = adressechoix;
+    public static void setNoteChoice(String noteChoice) {
+        NoteChoice = noteChoice;
+    }
+
+    public static String getAdresschoice() {
+        return adresschoice;
+    }
+
+    public static void setAdresschoice(String adresschoice) {
+        Me.adresschoice = adresschoice;
     }
 
     public static Boolean getBeNotified() {
@@ -52,28 +61,28 @@ public abstract class Me {
         Me.beNotified = beNotified;
     }
 
-    public static String getId_monchoix() {
-        return id_monchoix;
+    public static String getId_mychoice() {
+        return id_mychoice;
     }
 
-    public static void setId_monchoix(String id_monchoix) {
-        Me.id_monchoix = id_monchoix;
+    public static void setId_mychoice(String id_mychoice) {
+        Me.id_mychoice = id_mychoice;
     }
 
-    public static String getMon_choix() {
-        return mon_choix;
+    public static String getMy_choice() {
+        return my_choice;
     }
 
-    public static void setMon_choix(String mon_choix) {
-        Me.mon_choix = mon_choix;
+    public static void setMy_choice(String my_choice) {
+        Me.my_choice = my_choice;
     }
 
-    public static String getMonId() {
-        return monId;
+    public static String getMyId() {
+        return myId;
     }
 
-    public static void setMonId(String monId) {
-        Me.monId = monId;
+    public static void setMyId(String myId) {
+        Me.myId = myId;
     }
 
     public static List<String> getGetCoworker() {
@@ -92,14 +101,6 @@ public abstract class Me {
         Me.myLikes = myLikes;
     }
 
-    public LatLng getLatlng_me() {
-        return latlng_me;
-    }
-
-    public static void setLatlng_me(LatLng latlng_me) {
-        Me.latlng_me = latlng_me;
-    }
-
     public static Double getMy_longitude() {
         return my_longitude;
     }
@@ -116,36 +117,44 @@ public abstract class Me {
         Me.my_latitude = my_latitude;
     }
 
-    public static String getMonMail() {
-        return monMail;
+    public static String getMyMail() {
+        return myMail;
     }
 
-    public static void setMonMail(String monMail) {
-        Me.monMail = monMail;
+    public static void setMyMail(String myMail) {
+        Me.myMail = myMail;
     }
 
-    public String getMon_like() {
-        return mon_like;
+    public static String getMyName() {
+        return myName;
     }
 
-    public void setMon_like(String mon_like) {
-        Me.mon_like = mon_like;
+    public static void setMyName(String myName) {
+        Me.myName = myName;
     }
 
-    public static String getMonNOm() {
-        return monNOm;
+    public static String getMyPhoto() {
+        return myPhoto;
     }
 
-    public static void setMonNOm(String monNOm) {
-        Me.monNOm = monNOm;
+    public static void setMyPhoto(String myPhoto) {
+        Me.myPhoto = myPhoto;
     }
 
-    public static String getMaPhoto() {
-        return maPhoto;
+    public LatLng getLatlng_me() {
+        return latlng_me;
     }
 
-    public static void setMaPhoto(String maPhoto) {
-        Me.maPhoto = maPhoto;
+    public static void setLatlng_me(LatLng latlng_me) {
+        Me.latlng_me = latlng_me;
+    }
+
+    public String getMy_like() {
+        return my_like;
+    }
+
+    public void setmy_like(String my_like) {
+        Me.my_like = my_like;
     }
 
 }

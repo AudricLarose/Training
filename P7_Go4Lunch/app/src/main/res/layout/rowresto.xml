@@ -11,11 +11,13 @@
         android:id="@+id/photoresto"
         android:layout_width="60dp"
         android:layout_height="54dp"
+        android:layout_marginLeft="20dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        android:contentDescription="@string/avatar" />
 
     <TextView
         android:id="@+id/nomresto"
@@ -23,23 +25,24 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textStyle="bold |italic"
-        android:text="nom resto" />
+        android:text="@string/nom_resto" />
 
     <TextView
         android:id="@+id/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/photoresto"
-        android:text="distance" />
+        android:text="@string/distance" />
 
     <TextView
         android:id="@+id/adresse"
-        android:layout_marginLeft="5dp"
-
-        android:layout_width="wrap_content"
+        android:layout_width="201dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nomresto"
-        android:text="adresse" />
+        android:layout_marginLeft="5dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/adresse" />
 
     <TextView
         android:layout_marginLeft="5dp"
@@ -47,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 android:layout_below="@+id/adresse"
-        android:text="horaire" />
+        android:text="@string/horaire" />
 
     <TextView
         android:id="@+id/perso"
@@ -55,7 +58,7 @@ android:layout_below="@+id/adresse"
         android:layout_height="wrap_content"
         android:layout_below="@+id/distance"
         android:layout_toLeftOf="@+id/photoresto"
-        android:text="perso" />
+        android:text="@string/perso" />
 
     <RatingBar
         android:id="@+id/ratingbar"
@@ -71,19 +74,18 @@ android:layout_below="@+id/adresse"
         android:stepSize="1.0" />
 
     <TextView
-        android:id="@+id/etoile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/perso"
         android:layout_toLeftOf="@+id/photoresto"
         android:visibility="gone"
-        android:text="etoile" />
+        android:text="@string/etoile" />
 
     <ImageView
-        android:id="@+id/imageView6"
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_toLeftOf="@+id/perso"
         android:layout_below="@+id/distance"
-        app:srcCompat="@drawable/ic_perm_identity_black_24dp" />
+        app:srcCompat="@drawable/ic_perm_identity_black_24dp"
+        android:contentDescription="@string/number_of_person_who_come" />
 </RelativeLayout>

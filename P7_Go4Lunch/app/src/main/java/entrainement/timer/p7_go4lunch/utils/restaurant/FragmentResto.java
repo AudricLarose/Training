@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -38,7 +39,7 @@ public class FragmentResto extends Fragment {
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private List<Results> liste2Place = servicePlace.generateListPlaceAPI();
     private SearchView searchView = null;
-    private AdaptateurPlace adapter=new AdaptateurPlace(liste2Place);;
+    private AdaptateurPlace adapter=new AdaptateurPlace(liste2Place);
     private static final String TAG = "FragmentContact";
     private CoordinatorLayout coordinatorLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -78,7 +79,7 @@ public class FragmentResto extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
 

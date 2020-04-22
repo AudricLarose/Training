@@ -10,10 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -28,16 +25,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import entrainement.timer.p7_go4lunch.api.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.collegue.FragmentContact;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.model.Me;
@@ -55,7 +47,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     private ExtendedServiceCollegue serviceCollegue= DI.getService();
     private ExtendedServicePlace servicePlace= DI.getServicePlace();
     private Other other= new Other();
-    private MenuItem sortedmenu;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +63,9 @@ public class ActivityAfterCheck extends AppCompatActivity {
         ImageView photoSide = headerview.findViewById(R.id.photoidenti);
         Toolbar toolbar = findViewById(R.id.toolbar);
         drawerLayout=findViewById(R.id.drawer_layout);
-        Picasso.get().load(Me.getMaPhoto()).into(photoSide);
-        nomSide.setText(Me.getMonNOm());
-        mailSide.setText(Me.getMonMail());
+        Picasso.get().load(Me.getMyPhoto()).into(photoSide);
+        nomSide.setText(Me.getMyName());
+        mailSide.setText(Me.getMyMail());
 
         // I verifiy if User have internet and the GPS on.
         other.internetVerify(ActivityAfterCheck.this);
@@ -95,7 +87,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                         }
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
-                    };
+                    }
         });
 
         // setting the hiddenbar
@@ -174,7 +166,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search,menu);
         MenuItem menuItem= menu.findItem(R.id.search);
-         sortedmenu= menu.findItem(R.id.sortedmenu);
+        MenuItem sortedmenu = menu.findItem(R.id.sortedmenu);
         searchView= (SearchView) menuItem.getActionView();
         return true;
     }
@@ -224,7 +216,9 @@ public class ActivityAfterCheck extends AppCompatActivity {
                             break;
                     }
                     drawerLayout.closeDrawer(GravityCompat.START);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectdFragment).commit();
+                    if (selectdFragment != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectdFragment).commit();
+                    }
                     return true;
                 }
             };

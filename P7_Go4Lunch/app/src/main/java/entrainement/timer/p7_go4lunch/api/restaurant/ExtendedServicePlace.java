@@ -30,24 +30,19 @@ import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.model.ApiforOnePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Me;
-import entrainement.timer.p7_go4lunch.model.Place;
 import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
 public class ExtendedServicePlace implements InterfacePlace {
-    private ExtendedServicePlace servicePlace = DI.getServicePlace();
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
-    private Marker marker;
     private Map<String, String> mMarker = new HashMap<>();
-    private List<Place> liste2place = ListPlaceGenerator.generatePlace();
     private List<Results> listPlaceApi = ListPlaceArray.generatePlaceArray();
-    private List<ApiforOnePlace> apiforOnePlace=ListPlaceArray.generateAPIOnePlace();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private List<ApiforOnePlace> list2PlaceApi= ListPlaceArray.PLACE_GEN1;
 
     // Generate the list of Place and placing  Markers  in function of the size list
     public void GetApiPlace(Context context, GoogleMap mMap) {
-        servicePlace = DI.getServicePlace();
+        ExtendedServicePlace servicePlace = DI.getServicePlace();
         List<Results> resultsList = servicePlace.generateListPlaceAPI();
         for (Results results : resultsList) {
             PlacethePlace(context, mMap);
@@ -56,10 +51,8 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     // Put info on the place
     void PlacethePlace(Context context, GoogleMap mMap) {
-        Map<String, String> note = new HashMap<>();
         for (Results place : listPlaceApi) {
             eventPlace(mMap, place);
-            note.put(place.getVicinity(), place.getLike());
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
@@ -83,6 +76,7 @@ public class ExtendedServicePlace implements InterfacePlace {
     private void eventPlace(GoogleMap mMap, Results place) {
         if (place.getGeometry().getLocation().getLat() != null) {
             LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
+            Marker marker;
             if (Integer.parseInt(place.getWhocome()) >= 1) {
                 marker = mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()).snippet(place.getVicinity()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
                 mMarker.put(marker.getId(), place.getId());
@@ -119,8 +113,8 @@ public class ExtendedServicePlace implements InterfacePlace {
                     tmp.clear();
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         Collegue collegue = documentSnapshot.toObject(Collegue.class);
-                        if (collegue.getChoix().equals(results.getName())) {
-                            tmp.add(new Collegue(collegue.getNom(), results.getName(), collegue.getPhoto()));
+                        if (collegue.getChoice().equals(results.getName())) {
+                            tmp.add(new Collegue(collegue.getName(), results.getName(), collegue.getPhoto()));
                         }
                         getCoworkerName(tmp);
                         liveData.setValue(tmp);
@@ -170,22 +164,22 @@ public class ExtendedServicePlace implements InterfacePlace {
             note.put("iCome", "true");
             Me.setBeNotified(true);
             firebaseFirestore.collection("restaurant")
-                    .document(Me.getMonId())
+                    .document(Me.getMyId())
                     .collection("Myplace")
                     .document(idrestaurant)
                     .collection("choice")
-                    .document(Me.getMonNOm())
+                    .document(Me.getMyName())
                     .set(note);
         }
         if (like) {
             Map<String, Object> note2 = new HashMap<>();
             note2.put("iLike", "true");
             firebaseFirestore.collection("restaurant")
-                    .document(Me.getMonId())
+                    .document(Me.getMyId())
                     .collection("Myplace")
                     .document(idrestaurant)
                     .collection("choice")
-                    .document(Me.getMonNOm())
+                    .document(Me.getMyName())
                     .update(note2);
         }
     }
