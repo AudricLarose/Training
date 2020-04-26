@@ -16,13 +16,13 @@ public class ApiforOnePlace implements Serializable {
     private String status;
     @SerializedName("result")
     @Expose
-    private List<Result> results;
+    private Results results;
 
-    public List<Result> getResults() {
+    public Results getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(Results results) {
         this.results = results;
     }
 

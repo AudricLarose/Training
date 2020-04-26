@@ -58,22 +58,6 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         return query_my_collegue;
     }
 
-//    public void addCollegueesToResto(String place_id, List<Collegue> collegues) {
-    //      collegueParResto.put(place_id, collegues);
-    // }
-
-    //public void addCollegueeToResto(String place_id, Collegue collegue) {
-    //  collegueParResto.put(place_id, Collections.singletonList(collegue));
-    //}
-
-
-    // public List<Collegue> quiVientPourResto(String place_id) {
-    //     return collegueParResto.get(place_id);
-    // }
-
-    // public Integer combientPourResto(String place_id) {
-    //     return collegueParResto.get(place_id).size();
-    // }
 
     public Task<DocumentSnapshot> call_this_collegue(String idCollegue) {
         CollectionReference db_my_collegue = firebaseFirestore.collection("collegue");
@@ -89,7 +73,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         Me.setMyPhoto(photo);
         Me.setMyMail(mail);
         Map<String, String> note = new HashMap<>();
-        note.put("Nom", collegue);
+        note.put("name", collegue);
         note.put("id", id);
         note.put("photo", photo);
         call_this_collegue(id).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -97,31 +81,31 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task != null) {
                     DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.getString("choix") == null) {
-                        note.put("id_monchoix", " ");
-                        note.put("choix", " ");
-                        note.put("adresse_choix", " ");
-                        note.put("note_choix", " ");
-                        note.put("photo_choix", " ");
+                    if (documentSnapshot.getString("choice") == null) {
+                        note.put("Id_mychoice", " ");
+                        note.put("choice", " ");
+                        note.put("adresse_Choice", " ");
+                        note.put("note_choice", " ");
+                        note.put("photo_choice", " ");
                         note.put("beNotified", "false");
                         note.put("date", "0");
                         firebaseFirestore.collection("collegue").document(id).set(note);
                     } else {
-                        note.put("id_monchoix", documentSnapshot.getString("id_monchoix"));
-                        note.put("choix", documentSnapshot.getString("choix"));
-                        note.put("adresse_choix", documentSnapshot.getString("adresse_choix"));
-                        note.put("note_choix", documentSnapshot.getString("note_choix"));
-                        note.put("photo_choix", documentSnapshot.getString("photo_choix"));
+                        note.put("Id_mychoice", documentSnapshot.getString("Id_mychoice"));
+                        note.put("choice", documentSnapshot.getString("choice"));
+                        note.put("adresse_Choice", documentSnapshot.getString("adresse_Choice"));
+                        note.put("note_choice", documentSnapshot.getString("note_choice"));
+                        note.put("photo_choice", documentSnapshot.getString("photo_choice"));
                         note.put("beNotified", documentSnapshot.getString("beNotified"));
                         note.put("date", documentSnapshot.getString("date"));
                         firebaseFirestore.collection("collegue").document(id).set(note);
                     }
                 } else {
-                    note.put("id_monchoix", " ");
-                    note.put("choix", " ");
-                    note.put("adresse_choix", " ");
-                    note.put("photo_choix", " ");
-                    note.put("note_choix", " ");
+                    note.put("Id_mychoice", " ");
+                    note.put("choice", " ");
+                    note.put("adresse_Choice", " ");
+                    note.put("photo_choice", " ");
+                    note.put("note_choice", " ");
                     note.put("beNotified", "false");
                     note.put("date", "0");
                     firebaseFirestore.collection("collegue").document(id).set(note);
@@ -194,11 +178,13 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
     public List<String> GetCoworkerMethod(String restaurant) {
         List<String> liste_who_come_with_me = new ArrayList<>();
-        List<Collegue> listedecollegue = collegues;
-        for (Collegue collegue : listedecollegue) {
-            if (collegue.getChoice().equals(restaurant)) {
+        List<Collegue> listcollegue = collegues;
+        for (Collegue collegue : listcollegue) {
+            if (collegue.getChoice()!= null && collegue.getChoice().equals(restaurant)) {
                 liste_who_come_with_me.add(collegue.getName());
                 Me.setGetCoworker(liste_who_come_with_me);
+            } else {
+                Me.setGetCoworker(liste_who_come_with_me  );
             }
         }
         return liste_who_come_with_me;
@@ -213,13 +199,13 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
 
     @Override
-    public void addMyChoice(String id, String resto, String adresse, String idRestaurant, String notechoix, String photo) {
-        Me.setMy_choice(resto);
+    public void addMyChoiceToLists(String id, String restaurant, String adresse, String idRestaurant, String notechoix, String photo) {
+        Me.setMy_choice(restaurant);
         Me.setAdresschoice(adresse);
         Me.setId_mychoice(idRestaurant);
         Me.setChoicePhoto(photo);
         Me.setNoteChoice(notechoix);
-        Other.sendItToMyBDDPleaseatCollegue(id, collegues, resto);
+        Other.sendItToMyBDDPleaseatCollegue(id, collegues, restaurant,notechoix);
     }
 
     @Override
@@ -250,12 +236,12 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
             if (names.size() != 0) {
                 builder.setContentTitle(context.getString(R.string.reminder))
-                        .setContentText(context.getString(R.string.rendezvous1) + restaurant_name + context.getString(R.string.with) + names + context.getString(R.string.dontforget))
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1) + restaurant_name + context.getString(R.string.with) + names + context.getString(R.string.dontforget1)))
+                        .setContentText(context.getString(R.string.rendezvous1) + restaurant_name + context.getString(R.string.with)+ " " + names+ " " + context.getString(R.string.dontforget))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1) + restaurant_name + context.getString(R.string.with) + " "+ names + context.getString(R.string.dontforget1)))
                         .setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
             } else {
                 builder.setContentTitle(context.getString(R.string.reminder))
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + restaurant_name + context.getString(R.string.dontforgetit1)))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + " "+ restaurant_name+ " " + context.getString(R.string.dontforgetit1)))
                         .setContentText(context.getString(R.string.rendezvous3)).setSmallIcon(R.mipmap.ic_launcher).setContentIntent(pendingIntent);
             }
             notificationManager.notify(1, builder.build());
@@ -284,10 +270,10 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         }
     }
 
-    public void dontaddMyChoice(String monId, String name, String vicinity, String id, String etoileData, String id_monchoix) {
+    public void dontaddMyChoice() {
         Me.setMy_choice(" ");
         Me.setAdresschoice(" ");
         Me.setId_mychoice(" ");
-        Other.sendItToMyBDDPleaseatCollegue(id, collegues, " ");
+        Other.sendItToMyBDDPleaseatCollegue(" ", collegues, " ", " ");
     }
 }

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         cardFa=findViewById(R.id.cardFa);
         cardG = findViewById(R.id.cardG);
         loginButton = findViewById(R.id.cardF);
+        Other.initGlobalVerificationConnectionCheck(MainActivity.this);
         initializeFBLogin();
         cardFa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,17 +77,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createSignInIntent(0);
-                Other.internetVerify(MainActivity.this);
+                Other.internetIsOn(MainActivity.this);
                 Other.GPSOnVerify(MainActivity.this);
             }
         });
-
-        //Verify if GPS and Internet is available
-        Other.GPSOnVerify(MainActivity.this);
-        Other.internetVerify(MainActivity.this);
     }
-
-
 
     public void createSignInIntent(int i) {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -109,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                Other.internetIsOn(MainActivity.this);
+                Other.GPSOnVerify(MainActivity.this);
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }

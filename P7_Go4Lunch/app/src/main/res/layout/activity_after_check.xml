@@ -28,6 +28,7 @@
             android:layout_alignParentBottom="true"
             android:background="@android:color/white"
             app:menu="@menu/menu_inflated" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -55,4 +56,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/sidemenu" />
+
+
 </androidx.drawerlayout.widget.DrawerLayout>

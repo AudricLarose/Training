@@ -18,10 +18,10 @@ public class BroadCaster_24h extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             Map<String,Object> note= new HashMap<>();
-            note.put("choix","");
-            note.put("adresse choix","");
-            note.put("id_choix","");
-            note.put("note_choix","");
+            note.put("choice","");
+            note.put("adresse_Choice","");
+            note.put("Id_mychoice","");
+            note.put("note_choice","");
             Toast.makeText(context, R.string.choice, Toast.LENGTH_SHORT).show();
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
             if (Me.getMyId()!=null){

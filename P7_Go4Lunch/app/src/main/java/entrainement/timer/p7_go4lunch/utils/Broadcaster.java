@@ -15,9 +15,9 @@ public class Broadcaster extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-      if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+//      if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
           ExtendedServiceCollegue service = DI.getService();
             service.notifyme(context);
       }
-    }
+//    }
 }

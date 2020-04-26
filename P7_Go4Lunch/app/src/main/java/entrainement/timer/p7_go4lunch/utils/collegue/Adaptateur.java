@@ -67,7 +67,7 @@ public class Adaptateur extends RecyclerView.Adapter<Adaptateur.LeHolder> {
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), ActivityDetails.class);
                     Bundle extra = new Bundle();
-                    Other.theGoodPlace(collegue.getId_mychoice(), collegue.getChoice(), collegue.getPhoto(), Double.valueOf(collegue.getNote_choice()), collegue.getAdresse_Choice(), new Other.ThegoodPlace() {
+                    Other.theGoodPlace(collegue.getId_mychoice(), collegue.getChoice(), collegue.getPhoto_choice(), Double.valueOf(collegue.getNote_choice())-1, collegue.getAdresse_Choice(), new Other.ThegoodPlace() {
                         @Override
                         public void GoodPlace(Results place) {
                             extra.putSerializable("Place", place);

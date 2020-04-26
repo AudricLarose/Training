@@ -12,12 +12,6 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="510dp"
-        android:text="2" />
-
 
     <ImageButton
         android:id="@+id/local"
@@ -30,6 +24,5 @@
         android:background="@drawable/round_circle_white"
         android:tint="@android:color/black"
         android:src="@android:drawable/ic_menu_mylocation" />
-
 
 </RelativeLayout>

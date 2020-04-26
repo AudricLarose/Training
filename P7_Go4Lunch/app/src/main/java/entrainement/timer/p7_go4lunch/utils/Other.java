@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -38,6 +39,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
@@ -69,6 +71,7 @@ import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
+import entrainement.timer.p7_go4lunch.model.ApiforOnePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Inter;
 import entrainement.timer.p7_go4lunch.model.Me;
@@ -129,10 +132,12 @@ public class Other {
         Map<String, Object> note = new HashMap<>();
         for (Results object : liste) {
             if (object.getId().equals(id)) {
-                note.put("nom", object.getName());
+                note.put("name", object.getName());
                 note.put("id", object.getId());
                 note.put("whocome", object.getWhocome());
                 note.put("like", object.getLike());
+                note.put("lat",object.getGeometry().getLocation().getLat().toString());
+                note.put("longi",object.getGeometry().getLocation().getLng().toString());
                 FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
                 firebaseFirestore
@@ -171,13 +176,14 @@ public class Other {
     }
 
     // Verify if user have internet on
-    public static void internetVerify(Context context) {
-        String status = null;
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static Boolean internetIsOn(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null) {
-            Toast.makeText(context, R.string.bad_internet , Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.bad_internet, Toast.LENGTH_LONG).show();
+            return false;
         }
+        return true;
     }
 
 
@@ -189,35 +195,43 @@ public class Other {
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        List<Results> resultsBDD = queryDocumentSnapshots.toObjects(Results.class);
-                        for (int i = 0; i < listePlaceApi.size(); i++) {
-                            for (Results resultBDD : resultsBDD) {
-                                String resultBDDId = resultBDD.getId();
-                                String id = listePlaceApi.get(i).getId();
-                                if (resultBDDId.equals(id)) {
-                                    listePlaceApi.get(i).setWhocome(resultBDD.getWhocome());
+                        List<Results> resultsBDD = null;
+                        if (queryDocumentSnapshots != null) {
+                            resultsBDD = queryDocumentSnapshots.toObjects(Results.class);
+                            for (int i = 0; i < listePlaceApi.size(); i++) {
+                                for (Results resultBDD : resultsBDD) {
+                                    String resultBDDId = resultBDD.getId();
+                                    String id = listePlaceApi.get(i).getId();
+                                    if (resultBDDId.equals(id)) {
+                                        listePlaceApi.get(i).setWhocome(resultBDD.getWhocome());
+//                                        servicePlace.GetApiPlace(context,mMap);
+                                    }
                                 }
                             }
+                            adapterinterf.onFinish(listePlaceApi);
+                            adapterinterf.onRequest(resultsBDD);
                         }
-                        adapterinterf.onFinish(listePlaceApi);
                     }
                 });
     }
 
     // Send all the list of Collegue model on BDD
-    public static void sendItToMyBDDPleaseatCollegue(String id, List<Collegue> liste, String resto) {
+    public static void sendItToMyBDDPleaseatCollegue(String id, List<Collegue> liste, String resto, String notechoix) {
         Map<String, Object> note = new HashMap<>();
         for (Collegue collegue : liste) {
             if (collegue.getId().equals(Me.getMyId())) {
+                collegue.setId_mychoice(id);
+                collegue.setAdresse_Choice(Me.getAdresschoice());
                 collegue.setChoice(resto);
+                collegue.setNote_choice(notechoix);
+                collegue.setPhoto_choice(Me.getChoicePhoto());
                 String date = valueOf(SystemClock.elapsedRealtime());
                 note.put("date", date);
-                note.put("choix", resto);
-                note.put("adresse_choix", Me.getAdresschoice());
-                note.put("id_monchoix", Me.getId_mychoice());
-                note.put("note_choix", Me.getNoteChoice());
-                note.put("photo", Me.getChoicePhoto());
-
+                note.put("choice", resto);
+                note.put("adresse_Choice", Me.getAdresschoice());
+                note.put("Id_mychoice", Me.getId_mychoice());
+                note.put("note_choice", Me.getNoteChoice());
+                note.put("photo_choice", Me.getChoicePhoto());
                 FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
                 firebaseFirestore
                         .collection("collegue")
@@ -270,7 +284,12 @@ public class Other {
         Intent intent = new Intent(activity, ActivityDetails.class);
         Bundle extra = new Bundle();
         String name_lunch = Me.getMy_choice();
-
+        Other.theGoodPlace(id_rest, Me.getMy_choice(), Me.getChoicePhoto(), Double.valueOf(Me.getNoteChoice()) - 1, Me.getAdresschoice(), new ThegoodPlace() {
+            @Override
+            public void GoodPlace(Results results) {
+                extra.putSerializable("Place", results);
+            }
+        });
         if (name_lunch != null && !name_lunch.trim().isEmpty()) {
             intent.putExtras(extra);
             activity.startActivity(intent);
@@ -321,8 +340,8 @@ public class Other {
         }
     }
 
-    public static void theGoodPlace(String id, String name,String photo, Double etoile, String adresse,ThegoodPlace thegoodPlace) {
-        Results place= new Results(id,name,photo,etoile,adresse);
+    public static void theGoodPlace(String id, String name, String photo, Double etoile, String adresse, ThegoodPlace thegoodPlace) {
+        Results place = new Results(id, name, photo, etoile, adresse);
         thegoodPlace.GoodPlace(place);
     }
 
@@ -343,6 +362,15 @@ public class Other {
             });
 
         }
+    }
+
+    public static void initGlobalVerificationConnectionCheck(Context context) {
+        context.registerReceiver(
+                new ConnectivityChangeReceiver(),
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        context.registerReceiver(
+                new initBroadcaster4GPS(),
+                new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
     public static List<Results> sortedByDistance(List<Results> listePlaceApi) {
@@ -402,9 +430,13 @@ public class Other {
         return url;
     }
 
-
-
-    public static void FilterSearch(Context context, String query, GoogleMap mMap) {
+public interface Finishsuggest{
+        void onFinish(List<entrainement.timer.p7_go4lunch.model.Place> placeList);
+}
+    public static void FilterSearch(Context context, String query, GoogleMap mMap , Finishsuggest finishsuggest) {
+        ExtendedServicePlace extendedServicePlace = DI.getServicePlace();
+        List<entrainement.timer.p7_go4lunch.model.Place> placeList = extendedServicePlace.generateSuggestion();
+        placeList.clear();
         if (query != null) {
             Places.initialize(context, context.getString(R.string.pswd));
             placesClient = Places.createClient(context);
@@ -412,24 +444,46 @@ public class Other {
             AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
             FindAutocompletePredictionsRequest request1 = FindAutocompletePredictionsRequest.builder()
                     .setSessionToken(token)
+                    .setTypeFilter(TypeFilter.ESTABLISHMENT)
                     .setQuery(query)
                     .setCountry("FR")
                     .build();
             placesClient.findAutocompletePredictions(request1).addOnSuccessListener((response) -> {
+                placeList.clear();
                 for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                    String hint = prediction.getFullText(null).toString();
                     String placeId = prediction.getPlaceId();
                     List<com.google.android.libraries.places.api.model.Place.Field> placeFields = Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME, com.google.android.libraries.places.api.model.Place.Field.LAT_LNG);
                     FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
                     placesClient.fetchPlace(request).addOnSuccessListener((response1) -> {
                         Place place = response1.getPlace();
-                        Log.i(TAG, "Place found: " + place.getLatLng());
+//                        Log.i(TAG, "Place found: " + place.getName());
+                        placeList.add(new entrainement.timer.p7_go4lunch.model.Place(place.getId(),place.getName(),place.getAddress()," ",""));
                         LatLng place_found = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+                        finishsuggest.onFinish(placeList);
                         mMap.addMarker(new MarkerOptions().position(place_found).title(place.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
                         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                             @Override
                             public void onInfoWindowClick(Marker marker) {
+                                Intent intent = new Intent(context, ActivityDetails.class);
+                                Bundle extra = new Bundle();
+                                if (place.getPhotoMetadatas() ==null || place.getRating()==null){
+                                    Other.theGoodPlace(place.getId(), place.getName(), " ", Double.valueOf(3), place.getAddress(), new Other.ThegoodPlace() {
+                                        @Override
+                                        public void GoodPlace(Results place) {
+                                            extra.putSerializable("Place", place);
+                                        }
+                                    });
+                                } else{
+                                    Other.theGoodPlace(place.getId(), place.getName(), place.getPhotoMetadatas().get(0).toString(), place.getRating(), place.getAddress(), new Other.ThegoodPlace() {
+                                        @Override
+                                        public void GoodPlace(Results place) {
+                                            extra.putSerializable("Place", place);
+                                        }
+                                    });
+                                }
 
+                                intent.putExtras(extra);
+                                context.startActivity(intent);
                             }
                         });
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 16));
@@ -452,34 +506,33 @@ public class Other {
         }
     }
 
-    public interface AdapterCollegueCB{
-        void onFinish(List<Collegue> listresultcollegue);
-    }
-    public static void checkrealitimeCollegue(AdapterCollegueCB adapterCollegueCB){
-    ExtendedServiceCollegue extendedServiceCollegue = DI.getService();
-    List<Collegue> listeCollegue = extendedServiceCollegue.generateListCollegue();
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    public static void checkrealitimeCollegue(AdapterCollegueCB adapterCollegueCB) {
+        ExtendedServiceCollegue extendedServiceCollegue = DI.getService();
+        List<Collegue> listeCollegue = extendedServiceCollegue.generateListCollegue();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore
                 .collection("collegue")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
-        @Override
-        public void onEvent (@Nullable QuerySnapshot
-        queryDocumentSnapshots, @Nullable FirebaseFirestoreException e){
-            List<Collegue> resultsBDD = queryDocumentSnapshots.toObjects(Collegue.class);
-            for (int i = 0; i < listeCollegue.size(); i++) {
-                for (Collegue resultBDD : resultsBDD) {
-                    String resultBDDId = resultBDD.getId();
-                    String id = listeCollegue.get(i).getId();
-                    if (resultBDDId.equals(id)) {
-                        listeCollegue.get(i).setName(resultBDD.getName());
-                        listeCollegue.get(i).setChoice(resultBDD.getChoice());
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot
+                                                queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        List<Collegue> resultsBDD = queryDocumentSnapshots.toObjects(Collegue.class);
+                        for (int i = 0; i < listeCollegue.size(); i++) {
+                            for (Collegue resultBDD : resultsBDD) {
+                                String resultBDDId = resultBDD.getId();
+                                String id = listeCollegue.get(i).getId();
+                                if (resultBDDId.equals(id)) {
+                                    listeCollegue.get(i).setName(resultBDD.getName());
+                                    listeCollegue.get(i).setChoice(resultBDD.getChoice());
+                                }
+                            }
+                        }
+                        adapterCollegueCB.onFinish(listeCollegue);
                     }
-                }
-            }
-            adapterCollegueCB.onFinish(listeCollegue);
-        }
-    });
-}    public static void hashFinder(Context context) {
+                });
+    }
+
+    public static void hashFinder(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(
                     "entrainement.timer.p7_go4lunch",
@@ -489,12 +542,11 @@ public class Other {
                 md.update(signature.toByteArray());
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        }
-        catch (PackageManager.NameNotFoundException e) {
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NoSuchAlgorithmException e) {
         }
     }
+
     public static void mylocation(Activity activity, GoogleMap mMap, Context context) {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<Location>() {
@@ -510,11 +562,10 @@ public class Other {
                     Me.setMy_longitude(longitude);
                     Other other = new Other();
                     String latl = latitude + "," + longitude;
-                    other.CallApiPlease(context, latl, new Other.TheCalling() {
+                    other.CallApiPlease(context, latl,mMap, new Other.TheCalling() {
                         @Override
                         public void onFinish() {
-                            ExtendedServicePlace servicePlace = DI.getServicePlace();
-                            servicePlace.GetApiPlace(context, mMap);
+
 
                         }
                     });
@@ -525,15 +576,16 @@ public class Other {
         });
 
     }
+
     //Get the Place With API Place
-    public static void CallApiPlease(Context context, String location, TheCalling callback) {
+    public static void CallApiPlease(Context context, String location, GoogleMap map, TheCalling callback) {
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(ScalarsConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
                 .build();
         Inter intera = retrofit.create(entrainement.timer.p7_go4lunch.model.Inter.class);
-        Call<String> call = intera.getplaces("ChIJN1t_tDeuEmsRUsoyG83frY4", "AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c", location, "restaurant", "3000", "cruise");
+        Call<String> call = intera.getplaces("ChIJN1t_tDeuEmsRUsoyG83frY4", "AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c", location, "restaurant", "800", "cruise");
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
@@ -552,14 +604,13 @@ public class Other {
                     servicePlace.generateListPlaceAPI().addAll(placeApi.getResults());
                     for (Results results : placeApi.getResults()) {
                         results.setLike("0");
-                        results.setWhocome("0");
                     }
                     refreshing(context, new Refreshing() {
                         @Override
                         public void onFinish() {
+                            servicePlace.GetApiPlace(context, map);
                             Other.EraseMyBddWisely();
                             callback.onFinish();
-
                         }
                     });
                 } catch (JSONException e) {
@@ -574,9 +625,6 @@ public class Other {
         });
     }
 
-    public interface Finish{
-        void onFinish(Results apiforOnePlaces);
-    }
     public static void CallApiOnOnePlacePlease(String location, Finish finish) {
         ExtendedServicePlace servicePlace = DI.getServicePlace();
         Retrofit retrofit = new Retrofit.Builder()
@@ -597,8 +645,8 @@ public class Other {
                     obj = new JSONObject(readable);
                     Gson gson = new Gson();
                     List<Results> listfor1 = servicePlace.generateListPlaceAPI();
-//                    ApiforOnePlace apiforOnePlace = gson.fromJson(readable, ApiforOnePlace.class);
-                    finish.onFinish(null);
+                    ApiforOnePlace apiforOnePlace = gson.fromJson(obj.toString(), ApiforOnePlace.class);
+                    finish.onFinish(apiforOnePlace.getResults());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -611,12 +659,21 @@ public class Other {
         });
     }
 
+    public interface AdapterCollegueCB {
+        void onFinish(List<Collegue> listresultcollegue);
+    }
+
+    public interface Finish {
+        void onFinish(Results apiforOnePlaces);
+    }
+
     public interface TheCalling {
         void onFinish();
     }
 
     public interface Adapterinterf {
         void onFinish(List<Results> listePlaceApi);
+        void onRequest(List<Results> request);
     }
 
     public interface OnFinish<T> {

@@ -14,7 +14,7 @@ public interface InterfaceCollegue {
      void getme(String id);
      MutableLiveData<List<Collegue>> GetQuiVient();
     void updateNotify();
-    void addMyChoice(String id, String resto, String adresse, String idRestaurant, String notechoix, String idAncienResto);
+    void addMyChoiceToLists(String id, String resto, String adresse, String idRestaurant, String notechoix, String idAncienResto);
 
     void twentyFourHourLast(Context context, boolean b);
 }

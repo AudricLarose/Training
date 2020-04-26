@@ -53,6 +53,14 @@ public class Place implements Serializable {
     public Place() {
     }
 
+    public Place(String id, String name, String Adresse, String horaire, String distance) {
+        this.nomPlace = name;
+        this.Adresse = Adresse;
+        this.horaire = horaire;
+        this.distance = distance;
+        this.id = id;
+    }
+
     public String getSite() {
         return site;
     }

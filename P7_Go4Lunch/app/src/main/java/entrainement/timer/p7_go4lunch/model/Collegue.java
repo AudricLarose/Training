@@ -11,13 +11,14 @@ public class Collegue {
     private String note_choice;
     private String photo;
     private String adresse_Choice;
+    private String photo_choice;
 
 
     public Collegue() {
     }
 
-    public Collegue(String nom) {
-        this.name = nom;
+    public Collegue(String name) {
+        this.name = name;
     }
 
     public Collegue(String name, String choix, String photo, String Id_mychoice) {
@@ -41,6 +42,14 @@ public class Collegue {
 
     public String getId_mychoice() {
         return Id_mychoice;
+    }
+
+    public String getPhoto_choice() {
+        return photo_choice;
+    }
+
+    public void setPhoto_choice(String photo_choice) {
+        this.photo_choice = photo_choice;
     }
 
     public void setId_mychoice(String id_mychoice) {

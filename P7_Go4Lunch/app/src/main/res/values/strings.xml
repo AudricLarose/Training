@@ -173,5 +173,6 @@
     <string name="param_tre">Paramètre</string>
     <string name="se_deconnecter">Se Deconnecter</string>
     <string name="bad_internet">Connexion Internet mauvaise ou inexistante</string>
+    <string name="unaivailable">horaire non disponible</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

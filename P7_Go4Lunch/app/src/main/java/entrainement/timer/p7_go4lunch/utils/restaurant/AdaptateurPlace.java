@@ -53,7 +53,7 @@ public class AdaptateurPlace extends RecyclerView.Adapter<AdaptateurPlace.LeHold
         place.getGeometry().getLocation().setDistance(Other.getDistance(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng()));
         holder.distance.setText(String.valueOf(place.getGeometry().getLocation().getDistance()));
         if (place!= null) {
-            if (place.getOpeningHours() != null) {
+            if (place.getOpeningHours()!= null && place.getOpeningHours().getOpenNow()!=null) {
                 if (place.getOpeningHours().getOpenNow() == true) {
                     holder.horaire.setText(R.string.open);
                     holder.horaire.setTextColor(Color.GREEN);
@@ -61,11 +61,14 @@ public class AdaptateurPlace extends RecyclerView.Adapter<AdaptateurPlace.LeHold
                     holder.horaire.setText(R.string.fermé);
                     holder.horaire.setTextColor(Color.RED);
                 }
+            } else {
+                holder.horaire.setText(R.string.unaivailable );
+                holder.horaire.setTextColor(Color.BLUE);
             }
             String html = Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
             Picasso.get().load(html).into(holder.photo);
             if (place.getId() != null) {
-                holder.bar.setRating(Float.parseFloat(String.valueOf(place.getRating() / 5)));
+                holder.bar.setRating(Float.parseFloat(String.valueOf(place.getRating()-1)));
             }
         }
 

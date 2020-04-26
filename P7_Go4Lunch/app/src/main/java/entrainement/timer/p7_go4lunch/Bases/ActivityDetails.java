@@ -67,10 +67,9 @@ public class ActivityDetails extends AppCompatActivity {
 
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private ExtendedServicePlace servicePlace = DI.getServicePlace();
-    private List<String> myLikes= new ArrayList<>();
-    private List<Collegue> listedecollegues = new ArrayList<>();
-    private String etoileData;
-
+    private List<String> myLikes = new ArrayList<>();
+    private List<Collegue> collegueList = new ArrayList<>();
+    private String starData;
 
 
     @Override
@@ -80,166 +79,195 @@ public class ActivityDetails extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         coordinatorLayout = findViewById(R.id.coordinate2);
         RelativeLayout myChoice = findViewById(R.id.checkGrand);
-        RatingBar etoiles= findViewById(R.id.ratingdetails);
+        RatingBar stars = findViewById(R.id.ratingdetails);
         ButterKnife.bind(this);
         myLikes = Me.getMyLikes();
-        Other.internetVerify(ActivityDetails.this);
+
+        // I verifiy if User have internet and the GPS on.
+        Other.initGlobalVerificationConnectionCheck(ActivityDetails.this);
+
         Intent intent = this.getIntent();
         Bundle extra = intent.getExtras();
 
 
         if (extra != null) {
-            Results place= (Results) extra.getSerializable("Place");
-            if ((place!=null) &&(place.getPlaceId()!=null)){
-       Other.CallApiOnOnePlacePlease(place.getPlaceId(), new Other.Finish() {
+            Results place = (Results) extra.getSerializable("Place");
+            if ((place != null) && (place.getPlaceId() != null)) {
+                Other.CallApiOnOnePlacePlease(place.getPlaceId(), new Other.Finish() {
                     @Override
                     public void onFinish(Results apiforOnePlaces) {
-                        if (apiforOnePlaces!=null){
+                        if (apiforOnePlaces != null && Other.internetIsOn(ActivityDetails.this)) {
                             if (apiforOnePlaces.getFormattedPhoneNumber() == null) {
                                 tel.setEnabled(false);
                                 tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                            } else {
+                                tel.setOnClickListener(new View.OnClickListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.M)
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(Intent.ACTION_CALL);
+                                        String phone1 = "tel:" + Objects.requireNonNull(apiforOnePlaces).getFormattedPhoneNumber();
+                                        intent.setData(Uri.parse(phone1));
+                                        if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                            ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
+                                        } else {
+                                            startActivity(intent);
+                                        }
+                                        Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
+                                    }
+
+                                });
                             }
-                            if (apiforOnePlaces.getWebsite() == null || place.getWebsite().equals("null")) {
+                            if (apiforOnePlaces.getWebsite() == null || apiforOnePlaces.getWebsite().equals("null")) {
                                 internet.setEnabled(false);
                                 internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                            } else {
+                                internet.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apiforOnePlaces.getWebsite()));
+                                        startActivity(intent);
+                                    }
+                                });
                             }
-
+                            if (apiforOnePlaces.getPhotos() != null) {
+                                if (apiforOnePlaces.getPhotos().get(0) != null) {
+                                    String html = Other.getUrlimage(apiforOnePlaces.getPhotos().get(0).getPhotoReference(), String.valueOf(apiforOnePlaces.getPhotos().get(0).getWidth()));
+                                    Picasso.get().load(html).into(image);
+                                }
+                            }
                         } else {
                             tel.setEnabled(false);
                             internet.setEnabled(false);
-                        }
-                        tel.setOnClickListener(new View.OnClickListener() {
-                            @RequiresApi(api = Build.VERSION_CODES.M)
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(Intent.ACTION_CALL);
-                                String phone1 = "tel:" + Objects.requireNonNull(apiforOnePlaces).getFormattedPhoneNumber();
-                                intent.setData(Uri.parse(phone1));
-                                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
-                                } else {
-                                    startActivity(intent);
-                                }
-                                Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
-                            }
+                            tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                            internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
 
-                        });
-                        internet.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = null;
-                                if (apiforOnePlaces != null) {
-                                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apiforOnePlaces.getWebsite()));
-                                }
-                                startActivity(intent);
-                            }
-                        });
+                        }
                     }
                 });
 
-                if (place.getPhotos()!=null) {
+                if (place.getPhotos() != null) {
                     if (place.getPhotos().get(0) != null) {
-                        String html= Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
+                        String html = Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
+                        Picasso.get().load(html).into(image);
+                    }
+                } else if (place.getPhoto() != null) {
+                    if (place.getPhoto() != null) {
+                        String html = Other.getUrlimage(place.getPhoto(), "300");
                         Picasso.get().load(html).into(image);
                     }
                 }
+
+
                 if (place.getRating() != null) {
-                etoileData = extra.getString("etoile");
-                etoiles.setRating(Float.parseFloat(place.getRating().toString()));
-            } else {
-                place.setRating(Double.valueOf(0));
-            }
+                    starData = extra.getString("etoile");
+                    stars.setRating(Float.parseFloat(place.getRating().toString()));
+                } else {
+                    place.setRating(Double.valueOf(0));
+                }
 
-            adresse.setText(place.getVicinity());
-            nom.setText(place.getName());
+                adresse.setText(place.getVicinity());
+                nom.setText(place.getName());
 
-            if (Me.getMy_choice()!=null) {
-                if (Me.getMy_choice().equals(place.getName())) {
-                    myChoice.setVisibility(View.GONE);
-                    put_me_Out.setVisibility(View.VISIBLE);
-                } else{
-                    myChoice.setVisibility(View.VISIBLE);
-                    put_me_Out.setVisibility(View.GONE);
+                if (Me.getMy_choice() != null) {
+                    if (Me.getMy_choice().equals(place.getName())) {
+                        myChoice.setVisibility(View.GONE);
+                        put_me_Out.setVisibility(View.VISIBLE);
+                    } else {
+                        myChoice.setVisibility(View.VISIBLE);
+                        put_me_Out.setVisibility(View.GONE);
+                    }
                 }
-            }
-            if (myLikes != null) {
-                if (myLikes.contains(place.getId())) {
-                    like.setVisibility(View.GONE);
-                    unlikebutton.setVisibility(View.VISIBLE);
+                if (myLikes != null) {
+                    if (myLikes.contains(place.getId())) {
+                        like.setVisibility(View.GONE);
+                        unlikebutton.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-            listedecollegues = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
+                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
 
-            myChoice.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onClick(View v) {
-                    listedecollegues.add(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
-                    Other.decrement(Me.getMy_choice());
-                    Me.setMy_choice(place.getName());
-                    serviceCollegue.addMyChoice(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString(), place.getPhotos().get(0).getPhotoReference());
-                    listedecollegues = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
-                    serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
-                    servicePlace.saveMyPlace(place);
-                    serviceCollegue.whenNotifyme(ActivityDetails.this, true, place.getName());
-                    myChoice.setVisibility(View.GONE);
-                    put_me_Out.setVisibility(View.VISIBLE);
-                    Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
+                myChoice.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onClick(View v) {
+                        collegueList.add(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                        Other.decrement(Me.getMy_choice());
+                        Me.setMy_choice(place.getName());
+                        if (place.getPhotos()!=null) {
+                            serviceCollegue.addMyChoiceToLists(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString(), place.getPhotos().get(0).getPhotoReference());
+                        } else {
+                            serviceCollegue.addMyChoiceToLists(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString()," ada");
+
+                        }
+                        collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
+                        serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
+                        servicePlace.saveMyPlace(place);
+                        serviceCollegue.whenNotifyme(ActivityDetails.this, true, place.getName());
+                        myChoice.setVisibility(View.GONE);
+                        put_me_Out.setVisibility(View.VISIBLE);
+                        Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                put_me_Out.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        collegueList.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                        Me.setMy_choice(" ");
+                        Me.setId_mychoice(" ");
+                        serviceCollegue.dontaddMyChoice();
+                        collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
+                        serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
+                        servicePlace.unsaveMyPlace(place);
+                        serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getName());
+                        put_me_Out.setVisibility(View.GONE);
+                        myChoice.setVisibility(View.VISIBLE);
+                        Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                if (Other.internetIsOn(ActivityDetails.this)) {
+                    like.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            myLikes = new ArrayList<>();
+                            myLikes.add(place.getId());
+                            Me.setMyLikes(myLikes);
+                            servicePlace.iLike(place);
+                            servicePlace.addMyChoice(place.getId(), false, true);
+                            like.setVisibility(View.GONE);
+                            unlikebutton.setVisibility(View.VISIBLE);
+                            Snackbar.make(coordinatorLayout, getString(R.string.youlike), Snackbar.LENGTH_LONG).show();
+//                    etoiles.setRating(Integer.parseInt(starData.trim()) + 1);
+                        }
+                    });
+                } else {
+                    like.setEnabled(false);
+                    like.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+
                 }
-            });
-            put_me_Out.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listedecollegues.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
-                    Me.setMy_choice(" ");
-                    Me.setId_mychoice(" ");
-                    serviceCollegue.dontaddMyChoice(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), etoileData, Me.getId_mychoice());
-                    listedecollegues = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
-                    serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
-                    servicePlace.unsaveMyPlace(place);
-                    serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getName());
-                    put_me_Out.setVisibility(View.GONE);
-                    myChoice.setVisibility(View.VISIBLE);
-                    Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
-                }
-            });
-            like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myLikes=new ArrayList<>();
-                    myLikes.add(place.getId());
-                    Me.setMyLikes(myLikes);
-                    servicePlace.iLike(place);
-                    servicePlace.addMyChoice(place.getId(), false, true);
-                    like.setVisibility(View.GONE);
-                    unlikebutton.setVisibility(View.VISIBLE);
-                    Snackbar.make(coordinatorLayout, getString(R.string.youlike), Snackbar.LENGTH_LONG).show();
-//                    etoiles.setRating(Integer.parseInt(etoileData.trim()) + 1);
-                }
-            });
-            unlikebutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myLikes.remove(place.getId());
-                    Me.setMyLikes(myLikes);
-                    servicePlace.unLike(place);
-                    unlikebutton.setVisibility(View.GONE);
-                    like.setVisibility(View.VISIBLE);
-                    Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
-//                    etoiles.setRating(Integer.parseInt(etoileData.trim()) - 1);
-                }
-            });
+                unlikebutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myLikes.remove(place.getId());
+                        Me.setMyLikes(myLikes);
+                        servicePlace.unLike(place);
+                        unlikebutton.setVisibility(View.GONE);
+                        like.setVisibility(View.VISIBLE);
+                        Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
+//                    etoiles.setRating(Integer.parseInt(starData.trim()) - 1);
+                    }
+                });
                 ViewModelApi viewModelApi = new ViewModelProvider(ActivityDetails.this).get(ViewModelApi.class);
                 AdaptateurQuiVient adapter = new AdaptateurQuiVient(viewModelApi.getwhocome(), this);
                 RecyclerView recyclerView = findViewById(R.id.RecycleGrand);
-            recyclerView.setHasFixedSize(true);
-            List<Collegue> valeur = viewModelApi.getwhocome().getValue();
+                recyclerView.setHasFixedSize(true);
+                List<Collegue> valeur = viewModelApi.getwhocome().getValue();
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            }
         }
     }
-    }
+
     @Override
     protected void onResume() {
         super.onResume();

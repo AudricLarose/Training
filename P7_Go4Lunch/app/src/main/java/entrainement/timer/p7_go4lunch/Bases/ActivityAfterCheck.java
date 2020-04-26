@@ -58,18 +58,18 @@ public class ActivityAfterCheck extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerview = navigationView.getHeaderView(0);
-        TextView nomSide = headerview.findViewById(R.id.nomSide);
+        TextView nameSide = headerview.findViewById(R.id.nomSide);
         TextView mailSide = headerview.findViewById(R.id.mailSide);
         ImageView photoSide = headerview.findViewById(R.id.photoidenti);
         Toolbar toolbar = findViewById(R.id.toolbar);
         drawerLayout=findViewById(R.id.drawer_layout);
         Picasso.get().load(Me.getMyPhoto()).into(photoSide);
-        nomSide.setText(Me.getMyName());
+        nameSide.setText(Me.getMyName());
         mailSide.setText(Me.getMyMail());
 
         // I verifiy if User have internet and the GPS on.
-        other.internetVerify(ActivityAfterCheck.this);
-        Other.GPSOnVerify(ActivityAfterCheck.this);
+        Other.initGlobalVerificationConnectionCheck(ActivityAfterCheck.this);
+
 
         // SideBar Hidden
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -170,7 +170,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
         searchView= (SearchView) menuItem.getActionView();
         return true;
     }
-
     //search bar with the 3 fragments chooser
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener=
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -180,18 +179,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                     switch (menuItem.getItemId()){
                         case R.id.blue:
                             selectdFragment= fragments[0];
-                            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                                @Override
-                                public boolean onQueryTextSubmit(String query) {
-//                                    Fragmentcarte fragmentcarte = new Fragmentcarte();
-//                                    fragmentcarte.FilterSearch(ActivityAfterCheck.this,query);
-                                    return true;
-                                }
-                                @Override
-                                public boolean onQueryTextChange(String newText) {
-                                    return false;
-                                }
-                            });
+
                             break;
                         case R.id.violet:
                             selectdFragment= fragments[1];
@@ -199,20 +187,7 @@ public class ActivityAfterCheck extends AppCompatActivity {
                         case R.id.orange:
 
                             selectdFragment= fragments[2];
-                            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                                @Override
-                                public boolean onQueryTextSubmit(String query) {
-//                                    Fragmentcarte fragmentcarte = new Fragmentcarte();
-//                                    fragmentcarte.FilterSearch(ActivityAfterCheck.this,query);
-                                    return true;
-                                }
 
-                                @Override
-                                public boolean onQueryTextChange(String newText) {
-
-                                    return false;
-                                }
-                            });
                             break;
                     }
                     drawerLayout.closeDrawer(GravityCompat.START);

@@ -2,6 +2,7 @@ package entrainement.timer.p7_go4lunch.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.type.LatLng;
 
 import java.io.Serializable;
 import java.util.List;
@@ -59,6 +60,8 @@ public class Results implements Serializable {
     @SerializedName("website")
     @Expose
     private String website;
+    private String lat;
+    private String longi;
 
     public Results(String id, String whocome, String like) {
         this.id = id;
@@ -74,7 +77,6 @@ public class Results implements Serializable {
 
     public Results() {
     }
-
     public Results(String placeId, String name) {
         this.placeId = placeId;
         this.name = name;
@@ -84,9 +86,34 @@ public class Results implements Serializable {
         this.placeId = placeId;
         this.name = name;
         this.photo = photo;
-        this.vicinity=adresse;
-        this.rating=etoile;
+        this.vicinity = adresse;
+        this.rating = etoile;
     }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLongi() {
+        return longi;
+    }
+
+    public void setLongi(String longi) {
+        this.longi = longi;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
 
     public String getFormattedPhoneNumber() {
         return formattedPhoneNumber;

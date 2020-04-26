@@ -27,9 +27,9 @@ import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
-import entrainement.timer.p7_go4lunch.model.ApiforOnePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
 import entrainement.timer.p7_go4lunch.model.Me;
+import entrainement.timer.p7_go4lunch.model.Place;
 import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
@@ -37,22 +37,25 @@ public class ExtendedServicePlace implements InterfacePlace {
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private Map<String, String> mMarker = new HashMap<>();
     private List<Results> listPlaceApi = ListPlaceArray.generatePlaceArray();
+    private List<Place> listsuggestion = ListPlaceGenerator.generatePlace();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private List<ApiforOnePlace> list2PlaceApi= ListPlaceArray.PLACE_GEN1;
 
     // Generate the list of Place and placing  Markers  in function of the size list
     public void GetApiPlace(Context context, GoogleMap mMap) {
         ExtendedServicePlace servicePlace = DI.getServicePlace();
         List<Results> resultsList = servicePlace.generateListPlaceAPI();
         for (Results results : resultsList) {
-            PlacethePlace(context, mMap);
+            PlacetheInfoPlace(context, mMap);
         }
     }
 
     // Put info on the place
-    void PlacethePlace(Context context, GoogleMap mMap) {
+    void PlacetheInfoPlace(Context context, GoogleMap mMap) {
         for (Results place : listPlaceApi) {
-            eventPlace(mMap, place);
+            if (place.getGeometry().getLocation().getLat() != null) {
+                LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
+                eventPlace(mMap, place, latLng);
+            }
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
@@ -66,18 +69,20 @@ public class ExtendedServicePlace implements InterfacePlace {
                             context.startActivity(intent);
                         }
                     }
-
                 }
             });
         }
     }
 
     // Place the Marker
-    private void eventPlace(GoogleMap mMap, Results place) {
-        if (place.getGeometry().getLocation().getLat() != null) {
-            LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
+    public void eventPlace(GoogleMap mMap, Results place, LatLng latLng) {
+//        if (place.getGeometry().getLocation().getLat() != null) {
+//            LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
             Marker marker;
-            if (Integer.parseInt(place.getWhocome()) >= 1) {
+            if (place.getWhocome()==null){
+                place.setWhocome("0");
+            }
+                if (Integer.parseInt(place.getWhocome()) >= 1) {
                 marker = mMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()).snippet(place.getVicinity()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_white)));
                 mMarker.put(marker.getId(), place.getId());
             } else {
@@ -85,7 +90,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                 mMarker.put(marker.getId(), place.getId());
             }
         }
-    }
+//    }
 
     // increment the variable "whocome" and put the value to the BDD
     @Override
@@ -113,8 +118,8 @@ public class ExtendedServicePlace implements InterfacePlace {
                     tmp.clear();
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         Collegue collegue = documentSnapshot.toObject(Collegue.class);
-                        if (collegue.getChoice().equals(results.getName())) {
-                            tmp.add(new Collegue(collegue.getName(), results.getName(), collegue.getPhoto()));
+                        if (collegue.getChoice()!=null && collegue.getChoice().equals(results.getName())) {
+                            tmp.add(new Collegue(collegue.getName(), results.getName(), collegue.getPhoto(),collegue.getId_mychoice()));
                         }
                         getCoworkerName(tmp);
                         liveData.setValue(tmp);
@@ -143,9 +148,12 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     // To set the Name of Coworker Depending on the Method CompareNPlace
     private void getCoworkerName(List<Collegue> tmp) {
+        List<String> smbd = new ArrayList<>();
         for (Results results : listPlaceApi) {
-            if (results.getId().equals(results.getId())) {
+            if (!tmp.isEmpty() && tmp.get(0).getId_mychoice().equals(results.getPlaceId())) {
                 serviceCollegue.GetCoworkerMethod(results.getName());
+            } else {
+                Me.setGetCoworker(smbd);
             }
         }
     }
@@ -194,8 +202,8 @@ public class ExtendedServicePlace implements InterfacePlace {
     public List<Results> generateListPlaceAPI() {
         return listPlaceApi;
     }
-    public List<ApiforOnePlace> generateListPlaceAPIForOnePlace() {
-        return list2PlaceApi;
+    public List<entrainement.timer.p7_go4lunch.model.Place> generateSuggestion() {
+        return listsuggestion;
     }
 
 

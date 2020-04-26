@@ -65,6 +65,11 @@ public class FragmentResto extends Fragment {
                 recyclerView.setAdapter(adapter);
 
             }
+
+            @Override
+            public void onRequest(List<Results> request) {
+
+            }
         });
         return view;
     }
