@@ -92,19 +92,6 @@ public class ExtendedServicePlace implements InterfacePlace {
         }
 //    }
 
-    // increment the variable "whocome" and put the value to the BDD
-    @Override
-    public void saveMyPlace(Results results) {
-        Other.updatemyliste(results.getId(), listPlaceApi, 1, "go");
-        Other.sendItToMyBDDPlease(results.getId(), listPlaceApi);
-    }
-
-    // Decrement the variable "whocome" and put the value to th BDD
-    @Override
-    public void unsaveMyPlace(Results results) {
-        Other.updatemyliste(results.getId(), listPlaceApi, -1, "go");
-        Other.sendItToMyBDDPlease(results.getId(), listPlaceApi);
-    }
 
     // Return the number collegue in fonction of the size number of people who said they come in this restaurant
     @Override
@@ -125,6 +112,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                         liveData.setValue(tmp);
                     }
                     results.setWhocome(String.valueOf(tmp.size()));
+                    Other.sendItToMyBDDPlease(results.getId(),listPlaceApi);
                 }
                 RefreshingBDD(increments);
             }
@@ -158,13 +146,6 @@ public class ExtendedServicePlace implements InterfacePlace {
         }
     }
 
-    // increment the variable "like" and put the value to the BDD
-    @Override
-    public void iLike(Results results) {
-        Other.updatemyliste(results.getId(), listPlaceApi, 1, "like");
-        Other.sendItToMyBDDPlease(results.getId(), listPlaceApi);
-    }
-
     // add the name of me choice or my like to the BDD
     public void addMyChoice(String idrestaurant, Boolean come, Boolean like) {
         if (come) {
@@ -191,13 +172,33 @@ public class ExtendedServicePlace implements InterfacePlace {
                     .update(note2);
         }
     }
+
+
+    // increment the variable "whocome" and put the value to the BDD
+    @Override
+    public void saveMyPlace(Results results) {
+        List<Results> updatedLocalList=Other.incrementIncomeCollegue(results.getId(), listPlaceApi, 1);
+        Other.sendItToMyBDDPlease(results.getId(), updatedLocalList);
+    }
+    // Decrement the variable "whocome" and put the value to th BDD
+    @Override
+    public void unsaveMyPlace(Results results) {
+        List<Results> updatedLocalList=Other.incrementIncomeCollegue(results.getId(), listPlaceApi, -1);
+        Other.sendItToMyBDDPlease(results.getId(), updatedLocalList);
+    }
+    // increment the variable "like" and put the value to the BDD
+    @Override
+    public void iLike(Results results) {
+        List<Results> updatedLocalList=Other.incrementNumberOfLike(results.getId(), listPlaceApi, 1);
+        Other.sendItToMyBDDPlease(results.getId(), updatedLocalList);
+    }
     // Decrement the variable "like" and put the value to the BDD
     @Override
     public void unLike(Results results) {
-        Other.updatemyliste(results.getId(), listPlaceApi, -1, "like");
-        Other.sendItToMyBDDPlease(results.getId(), listPlaceApi);
-
+        List<Results> updatedLocalList=Other.incrementNumberOfLike(results.getId(), listPlaceApi, -1);
+        Other.sendItToMyBDDPlease(results.getId(), updatedLocalList);
     }
+
     // Return the liste static
     public List<Results> generateListPlaceAPI() {
         return listPlaceApi;

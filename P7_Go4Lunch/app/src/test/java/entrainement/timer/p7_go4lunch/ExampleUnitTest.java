@@ -5,10 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
-import entrainement.timer.p7_go4lunch.model.Location;
-import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
@@ -172,7 +169,7 @@ public class ExampleUnitTest {
     public void test_updatelist() {
         List<Results> oldOne= new ArrayList<>();
         oldOne.add(new Results("1","0","0"));
-        List<Results> newOne=Other.updatemylisteRest("1",oldOne,1);
+        List<Results> newOne=Other.incrementIncomeCollegue("1",oldOne,1);
         assertSame(1,Integer.valueOf(newOne.get(0).getWhocome()));
     }
 
@@ -180,14 +177,14 @@ public class ExampleUnitTest {
     public void test_updatelistLike() {
         List<Results> oldOne= new ArrayList<>();
         oldOne.add(new Results("1","0","0"));
-        List<Results> newOne=Other.updatemylisteLike("1",oldOne,1);
+        List<Results> newOne=Other.incrementNumberOfLike("1",oldOne,1);
         assertSame(0,Integer.valueOf(newOne.get(0).getLike()));
     }
     @Test
     public void test_updatelistMinus() {
         List<Results> oldOne= new ArrayList<>();
         oldOne.add(new Results("1","1","0"));
-        List<Results> newOne=Other.updatemylisteRest("1",oldOne,-1);
+        List<Results> newOne=Other.incrementIncomeCollegue("1",oldOne,-1);
         assertSame(0,Integer.valueOf(newOne.get(0).getWhocome()));
     }
 
@@ -195,7 +192,7 @@ public class ExampleUnitTest {
     public void test_updatelistLikeMinus() {
         List<Results> oldOne= new ArrayList<>();
         oldOne.add(new Results("1","0","1"));
-        List<Results> newOne=Other.updatemylisteLike("1",oldOne,-1);
+        List<Results> newOne=Other.incrementNumberOfLike("1",oldOne,-1);
         assertSame(0,Integer.valueOf(newOne.get(0).getWhocome()));
     }
     }

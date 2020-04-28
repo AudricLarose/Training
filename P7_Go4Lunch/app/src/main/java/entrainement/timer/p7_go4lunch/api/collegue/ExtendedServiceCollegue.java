@@ -256,17 +256,20 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         if (alarm) {
             Boolean isNotified = Me.getBeNotified();
             if (isNotified) {
-
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
                 calendar.set(Calendar.HOUR_OF_DAY, 12);
                 calendar.set(Calendar.MINUTE, 00);
                 intent.putExtra("restaurant", restaurant);
-                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000, pendingIntent);
+                if (alarmManager != null) {
+                    alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
                 Toast.makeText(context, R.string.rendezvous2, Toast.LENGTH_SHORT).show();
             }
         } else {
-            alarmManager.cancel(pendingIntent);
+            if (alarmManager != null) {
+                alarmManager.cancel(pendingIntent);
+            }
         }
     }
 

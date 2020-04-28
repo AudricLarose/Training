@@ -33,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
-import entrainement.timer.p7_go4lunch.api.ViewModelApi;
+import entrainement.timer.p7_go4lunch.utils.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
@@ -62,6 +62,10 @@ public class ActivityDetails extends AppCompatActivity {
     ImageView image;
     @BindView(R.id.callGrand)
     CardView tel;
+    @BindView(R.id.nocollegue)
+    CardView noplace;
+    @BindView(R.id.nointernet)
+    ImageView nointernet;
 
     private CoordinatorLayout coordinatorLayout;
 
@@ -70,6 +74,7 @@ public class ActivityDetails extends AppCompatActivity {
     private List<String> myLikes = new ArrayList<>();
     private List<Collegue> collegueList = new ArrayList<>();
     private String starData;
+    private ViewModelApi viewModelApi;
 
 
     @Override
@@ -82,14 +87,13 @@ public class ActivityDetails extends AppCompatActivity {
         RatingBar stars = findViewById(R.id.ratingdetails);
         ButterKnife.bind(this);
         myLikes = Me.getMyLikes();
+        viewModelApi = new ViewModelProvider(ActivityDetails.this).get(ViewModelApi.class);
+        AdaptateurQuiVient adapter = new AdaptateurQuiVient(viewModelApi.getwhocome(), this);
 
         // I verifiy if User have internet and the GPS on.
         Other.initGlobalVerificationConnectionCheck(ActivityDetails.this);
-
         Intent intent = this.getIntent();
         Bundle extra = intent.getExtras();
-
-
         if (extra != null) {
             Results place = (Results) extra.getSerializable("Place");
             if ((place != null) && (place.getPlaceId() != null)) {
@@ -97,175 +101,252 @@ public class ActivityDetails extends AppCompatActivity {
                     @Override
                     public void onFinish(Results apiforOnePlaces) {
                         if (apiforOnePlaces != null && Other.internetIsOn(ActivityDetails.this)) {
-                            if (apiforOnePlaces.getFormattedPhoneNumber() == null) {
-                                tel.setEnabled(false);
-                                tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
-                            } else {
-                                tel.setOnClickListener(new View.OnClickListener() {
-                                    @RequiresApi(api = Build.VERSION_CODES.M)
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(Intent.ACTION_CALL);
-                                        String phone1 = "tel:" + Objects.requireNonNull(apiforOnePlaces).getFormattedPhoneNumber();
-                                        intent.setData(Uri.parse(phone1));
-                                        if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                            ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
-                                        } else {
-                                            startActivity(intent);
-                                        }
-                                        Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
-                                    }
-
-                                });
-                            }
-                            if (apiforOnePlaces.getWebsite() == null || apiforOnePlaces.getWebsite().equals("null")) {
-                                internet.setEnabled(false);
-                                internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
-                            } else {
-                                internet.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apiforOnePlaces.getWebsite()));
-                                        startActivity(intent);
-                                    }
-                                });
-                            }
-                            if (apiforOnePlaces.getPhotos() != null) {
-                                if (apiforOnePlaces.getPhotos().get(0) != null) {
-                                    String html = Other.getUrlimage(apiforOnePlaces.getPhotos().get(0).getPhotoReference(), String.valueOf(apiforOnePlaces.getPhotos().get(0).getWidth()));
-                                    Picasso.get().load(html).into(image);
-                                }
-                            }
+                            initiatePlaceApiDetails(apiforOnePlaces);
                         } else {
                             tel.setEnabled(false);
-                            internet.setEnabled(false);
                             tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+                            internet.setEnabled(false);
                             internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
-
                         }
                     }
                 });
-
-                if (place.getPhotos() != null) {
-                    if (place.getPhotos().get(0) != null) {
-                        String html = Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
-                        Picasso.get().load(html).into(image);
-                    }
-                } else if (place.getPhoto() != null) {
-                    if (place.getPhoto() != null) {
-                        String html = Other.getUrlimage(place.getPhoto(), "300");
-                        Picasso.get().load(html).into(image);
-                    }
-                }
-
-
-                if (place.getRating() != null) {
-                    starData = extra.getString("etoile");
-                    stars.setRating(Float.parseFloat(place.getRating().toString()));
-                } else {
-                    place.setRating(Double.valueOf(0));
-                }
-
-                adresse.setText(place.getVicinity());
+                InitiatePlaceNearByElements(myChoice, stars, extra, place);
                 nom.setText(place.getName());
-
-                if (Me.getMy_choice() != null) {
-                    if (Me.getMy_choice().equals(place.getName())) {
-                        myChoice.setVisibility(View.GONE);
-                        put_me_Out.setVisibility(View.VISIBLE);
-                    } else {
-                        myChoice.setVisibility(View.VISIBLE);
-                        put_me_Out.setVisibility(View.GONE);
-                    }
-                }
-                if (myLikes != null) {
-                    if (myLikes.contains(place.getId())) {
-                        like.setVisibility(View.GONE);
-                        unlikebutton.setVisibility(View.VISIBLE);
-                    }
-                }
-                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
-
-                myChoice.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
+                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this, new ExtendedServicePlace.Increment() {
                     @Override
-                    public void onClick(View v) {
-                        collegueList.add(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
-                        Other.decrement(Me.getMy_choice());
-                        Me.setMy_choice(place.getName());
-                        if (place.getPhotos()!=null) {
-                            serviceCollegue.addMyChoiceToLists(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString(), place.getPhotos().get(0).getPhotoReference());
+                    public void onFinish() {
+                        if (collegueList.isEmpty() || viewModelApi.getwhocome().getValue().isEmpty()) {
+                            noplace.setVisibility(View.VISIBLE);
                         } else {
-                            serviceCollegue.addMyChoiceToLists(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString()," ada");
-
+                            noplace.setVisibility(View.GONE);
                         }
-                        collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
-                        serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
-                        servicePlace.saveMyPlace(place);
-                        serviceCollegue.whenNotifyme(ActivityDetails.this, true, place.getName());
-                        myChoice.setVisibility(View.GONE);
-                        put_me_Out.setVisibility(View.VISIBLE);
-                        Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
-                    }
-                });
-                put_me_Out.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        collegueList.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
-                        Me.setMy_choice(" ");
-                        Me.setId_mychoice(" ");
-                        serviceCollegue.dontaddMyChoice();
-                        collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
-                        serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
-                        servicePlace.unsaveMyPlace(place);
-                        serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getName());
-                        put_me_Out.setVisibility(View.GONE);
-                        myChoice.setVisibility(View.VISIBLE);
-                        Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
                     }
                 });
                 if (Other.internetIsOn(ActivityDetails.this)) {
-                    like.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            myLikes = new ArrayList<>();
-                            myLikes.add(place.getId());
-                            Me.setMyLikes(myLikes);
-                            servicePlace.iLike(place);
-                            servicePlace.addMyChoice(place.getId(), false, true);
-                            like.setVisibility(View.GONE);
-                            unlikebutton.setVisibility(View.VISIBLE);
-                            Snackbar.make(coordinatorLayout, getString(R.string.youlike), Snackbar.LENGTH_LONG).show();
-//                    etoiles.setRating(Integer.parseInt(starData.trim()) + 1);
-                        }
-                    });
+                    enableButtons(myChoice, place);
                 } else {
-                    like.setEnabled(false);
-                    like.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
-
+                    disableButtons(myChoice);
                 }
-                unlikebutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myLikes.remove(place.getId());
-                        Me.setMyLikes(myLikes);
-                        servicePlace.unLike(place);
-                        unlikebutton.setVisibility(View.GONE);
-                        like.setVisibility(View.VISIBLE);
-                        Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
-//                    etoiles.setRating(Integer.parseInt(starData.trim()) - 1);
-                    }
-                });
-                ViewModelApi viewModelApi = new ViewModelProvider(ActivityDetails.this).get(ViewModelApi.class);
-                AdaptateurQuiVient adapter = new AdaptateurQuiVient(viewModelApi.getwhocome(), this);
                 RecyclerView recyclerView = findViewById(R.id.RecycleGrand);
+                recyclerView.bringToFront();
                 recyclerView.setHasFixedSize(true);
-                List<Collegue> valeur = viewModelApi.getwhocome().getValue();
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
             }
         }
+    }
+
+    private void initiatePlaceApiDetails(Results apiforOnePlaces) {
+        setAdressIfPossible(apiforOnePlaces);
+        setPhoneIfPossible(apiforOnePlaces);
+        setWebsiteIfPossible(apiforOnePlaces);
+        setPhotoIfPossible(apiforOnePlaces);
+    }
+
+    private void setAdressIfPossible(Results apifor) {
+        if (apifor.getVicinity()!=null) {
+            adresse.setText(apifor.getVicinity());
+        }
+    }
+
+    private void InitiatePlaceNearByElements(RelativeLayout myChoice, RatingBar stars, Bundle extra, Results place) {
+        setPhotoIfPossibleApi(place);
+        setRatingIfPossibleApi(stars, extra, place);
+        setChoiceIfPossibleApi(myChoice, place);
+        setLikeIfPossibleApi(place);
+    }
+
+    private void setLikeIfPossibleApi(Results place) {
+        if (myLikes != null) {
+            if (myLikes.contains(place.getPlaceId())) {
+                like.setVisibility(View.GONE);
+                unlikebutton.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void setChoiceIfPossibleApi(RelativeLayout myChoice, Results place) {
+        if (Me.getMy_choice() != null) {
+            if (Me.getMy_choice().equals(place.getName())) {
+                myChoice.setVisibility(View.GONE);
+                put_me_Out.setVisibility(View.VISIBLE);
+            } else {
+                myChoice.setVisibility(View.VISIBLE);
+                put_me_Out.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setRatingIfPossibleApi(RatingBar stars, Bundle extra, Results place) {
+        if (place.getRating() != null) {
+            starData = extra.getString("etoile");
+            stars.setRating(Float.parseFloat(place.getRating().toString()));
+        } else {
+            place.setRating(Double.valueOf(0));
+        }
+    }
+
+    private void setPhotoIfPossibleApi(Results place) {
+        if (place.getPhotos() != null) {
+            if (place.getPhotos().get(0) != null) {
+                String html = Other.getUrlimage(place.getPhotos().get(0).getPhotoReference(), String.valueOf(place.getPhotos().get(0).getWidth()));
+                Picasso.get().load(html).into(image);
+            }
+        } else if (place.getPhoto() != null) {
+            if (place.getPhoto() != null) {
+                String html = Other.getUrlimage(place.getPhoto(), "300");
+                Picasso.get().load(html).into(image);
+            }
+        }
+    }
+
+    private void setPhotoIfPossible(Results apiforOnePlaces) {
+        if (apiforOnePlaces.getPhotos() != null) {
+            if (apiforOnePlaces.getPhotos().get(0) != null) {
+                String html = Other.getUrlimage(apiforOnePlaces.getPhotos().get(0).getPhotoReference(), String.valueOf(apiforOnePlaces.getPhotos().get(0).getWidth()));
+                Picasso.get().load(html).into(image);
+            }
+        }
+    }
+
+    private void setWebsiteIfPossible(Results apiforOnePlaces) {
+        if (apiforOnePlaces.getWebsite() == null || apiforOnePlaces.getWebsite().equals("null")) {
+            internet.setEnabled(false);
+            internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+        } else {
+            internet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apiforOnePlaces.getWebsite()));
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    private void setPhoneIfPossible(Results apiforOnePlaces) {
+        if (apiforOnePlaces.getFormattedPhoneNumber() == null) {
+            tel.setEnabled(false);
+            tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+        } else {
+            tel.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    String phone1 = "tel:" + Objects.requireNonNull(apiforOnePlaces).getFormattedPhoneNumber();
+                    intent.setData(Uri.parse(phone1));
+                    if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{CALL_PHONE}, 1);
+                    } else {
+                        startActivity(intent);
+                    }
+                    Snackbar.make(coordinatorLayout, getString(R.string.call), Snackbar.LENGTH_LONG).show();
+                }
+
+            });
+        }
+    }
+
+    private void enableButtons(RelativeLayout myChoice, Results place) {
+        nointernet.setVisibility(View.GONE);
+        image.setVisibility(View.VISIBLE);
+        iPressLikeButton(place);
+        iPressChoiceButton(myChoice, place);
+        iUnpresschoiceButton(myChoice, place);
+        iUnpressLikeButton(place);
+    }
+
+    private void disableButtons(RelativeLayout myChoice) {
+        like.setEnabled(false);
+        like.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+        tel.setEnabled(false);
+        tel.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+        internet.setEnabled(false);
+        internet.setCardBackgroundColor(getResources().getColor(R.color.quantum_grey));
+        myChoice.setEnabled(false);
+        image.setVisibility(View.INVISIBLE);
+        nointernet.setVisibility(View.VISIBLE);
+    }
+
+    private void iUnpressLikeButton(Results place) {
+        unlikebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myLikes.remove(place.getPlaceId());
+                Me.setMyLikes(myLikes);
+                servicePlace.unLike(place);
+                unlikebutton.setVisibility(View.GONE);
+                like.setVisibility(View.VISIBLE);
+
+                Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
+//                    etoiles.setRating(Integer.parseInt(starData.trim()) - 1);
+            }
+        });
+    }
+
+    private void iUnpresschoiceButton(RelativeLayout myChoice, Results place) {
+        put_me_Out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collegueList.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                Me.setMy_choice(" ");
+                Me.setId_mychoice(" ");
+                serviceCollegue.dontaddMyChoice();
+                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
+                serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
+                servicePlace.unsaveMyPlace(place);
+                serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getName());
+                put_me_Out.setVisibility(View.GONE);
+                myChoice.setVisibility(View.VISIBLE);
+                Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void iPressChoiceButton(RelativeLayout myChoice, Results place) {
+        myChoice.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                noplace.setVisibility(View.GONE);
+                collegueList.add(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                Other.decrement(Me.getMy_choice());
+                Me.setMy_choice(place.getName());
+                if (place.getPhotos() != null) {
+                    serviceCollegue.addMyChoiceToLists(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString(), place.getPhotos().get(0).getPhotoReference());
+                } else {
+                    serviceCollegue.addMyChoiceToLists(Me.getMyId(), place.getName(), place.getVicinity(), place.getPlaceId(), place.getRating().toString(), " ada");
+
+                }
+                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
+                serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
+                servicePlace.saveMyPlace(place);
+                serviceCollegue.whenNotifyme(ActivityDetails.this, true, place.getName());
+                myChoice.setVisibility(View.GONE);
+                put_me_Out.setVisibility(View.VISIBLE);
+                Snackbar.make(coordinatorLayout, getString(R.string.newPlace), Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void iPressLikeButton(Results place) {
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myLikes = new ArrayList<>();
+                myLikes.add(place.getPlaceId());
+                Me.setMyLikes(myLikes);
+                servicePlace.iLike(place);
+                servicePlace.addMyChoice(place.getPlaceId(), false, true);
+                like.setVisibility(View.GONE);
+                unlikebutton.setVisibility(View.VISIBLE);
+                Snackbar.make(coordinatorLayout, getString(R.string.youlike), Snackbar.LENGTH_LONG).show();
+//                    etoiles.setRating(Integer.parseInt(starData.trim()) + 1);
+            }
+        });
     }
 
     @Override

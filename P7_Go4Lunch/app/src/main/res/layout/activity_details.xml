@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinate2"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinate2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Bases.ActivityDetails">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,248 +16,285 @@
             android:id="@+id/imageGrand"
             android:layout_width="match_parent"
             android:layout_height="290dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="-1dp"
             android:layout_marginTop="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/button_to_push"
+            android:scaleType="fitXY"
             android:src="@drawable/jpjnrp"
-            tools:srcCompat="@drawable/jpjnrp"
-            android:contentDescription="@string/button_to_push" />
+            tools:srcCompat="@drawable/jpjnrp" />
 
         <RelativeLayout
-            android:padding="20dp"
-        android:id="@+id/relativeGrand"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageGrand"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/nomGrand"
-            android:layout_width="100sp"
+            android:id="@+id/relativeGrand"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/Name"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:layout_below="@+id/imageGrand"
+            android:background="@color/colorPrimary"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/nomGrand"
+                android:layout_width="203dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Name"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
 
 
-        <RatingBar
-            android:id="@+id/ratingdetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_toRightOf="@+id/nomGrand"
-            android:isIndicator="true"
-            android:numStars="3"
-            android:progressBackgroundTint="@android:color/transparent"
-            android:progressTint="@android:color/holo_orange_light"
-            android:stepSize="1.0" />
-
-        <TextView
-            android:id="@+id/adresseGrand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/nomGrand"
-            android:layout_marginTop="10dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/adress"
-            android:textColor="@android:color/white" />
-    </RelativeLayout>
-
-    <GridLayout
-        android:id="@+id/gridGrand"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@+id/relativeGrand"
-        android:columnCount="4"
-        android:rowCount="1">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/callGrand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1">
-
-            <RelativeLayout
+            <RatingBar
+                android:id="@+id/ratingdetails"
+                style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="40dp"
-                    android:layout_height="50sp"
-                    app:srcCompat="@drawable/ic_local_phone_black_24dp"
-                    android:contentDescription="@string/button_call" />
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/nomGrand"
+                android:isIndicator="true"
+                android:numStars="3"
+                android:progressBackgroundTint="@android:color/transparent"
+                android:progressTint="@android:color/holo_orange_light"
+                android:stepSize="1.0" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="#FF5722"
-                    android:textSize="19dp"
-                    android:layout_below="@+id/imageView2"
-                    android:text="@string/call_button"/>
-
-            </RelativeLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/likeGrand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1">
-
-            <RelativeLayout
+            <TextView
+                android:id="@+id/adresseGrand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="40dp"
-                    android:layout_height="50sp"
-                    app:srcCompat="@drawable/ic_star_orange_24dp"
-                    android:contentDescription="@string/button_like" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="#FF5722"
-                    android:textSize="19dp"
-                    android:layout_below="@+id/imageView3"
-                    android:text="@string/like"/>
-
-
-            </RelativeLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/likenotGrand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="0"
-            android:visibility="gone"
-            android:layout_rowWeight="1"
-            android:layout_column="1"
-            android:layout_columnWeight="1">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="40dp"
-                    android:layout_height="50sp"
-                    app:srcCompat="@drawable/ic_star_yellow_24dp"
-                    android:contentDescription="@string/button_not_like" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageView5"
-                    android:gravity="center"
-                    android:text="@string/unlike"
-                    android:textSize="19dp"/>
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/wesiteGrand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1">
-
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="40dp"
-                    android:layout_height="50sp"
-                    app:srcCompat="@drawable/ic_earth_orange_24dp"
-                    android:contentDescription="@string/internet_button" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="#FF5722"
-                    android:textSize="19dp"
-                    android:layout_below="@+id/imageView4"
-
-                    android:text="@string/site"/>
-
-
-            </RelativeLayout>
-
-        </androidx.cardview.widget.CardView>
-
-
-    </GridLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecycleGrand"
-        android:layout_width="match_parent"
-        android:layout_height="347dp"
-        android:layout_below="@+id/gridGrand"/>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="255dp"
-        android:layout_marginRight="20dp"
-        app:cardBackgroundColor="@android:color/transparent">
-
-        <RelativeLayout
-            android:id="@+id/checkGrand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_circle_white"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@drawable/fui_ic_check_circle_black_128dp"
-                android:contentDescription="@string/green_button" />
+                android:layout_below="@+id/nomGrand"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/adress"
+                android:textColor="@android:color/white" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/checknotGrand"
+        <GridLayout
+            android:id="@+id/gridGrand"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/relativeGrand"
+            android:columnCount="4"
+            android:rowCount="1">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/callGrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="40dp"
+                        android:layout_height="50sp"
+                        android:contentDescription="@string/button_call"
+                        app:srcCompat="@drawable/ic_local_phone_black_24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imageView2"
+                        android:gravity="center"
+                        android:text="@string/call_button"
+                        android:textColor="#FF5722"
+                        android:textSize="19dp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/likeGrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="40dp"
+                        android:layout_height="50sp"
+                        android:contentDescription="@string/button_like"
+                        app:srcCompat="@drawable/ic_star_orange_24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imageView3"
+                        android:gravity="center"
+                        android:text="@string/like"
+                        android:textColor="#FF5722"
+                        android:textSize="19dp" />
+
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/likenotGrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="0"
+                android:layout_rowWeight="1"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="40dp"
+                        android:layout_height="50sp"
+                        android:contentDescription="@string/button_not_like"
+                        app:srcCompat="@drawable/ic_star_yellow_24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imageView5"
+                        android:gravity="center"
+                        android:text="@string/unlike"
+                        android:textSize="19dp" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/wesiteGrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1">
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="40dp"
+                        android:layout_height="50sp"
+                        android:contentDescription="@string/internet_button"
+                        app:srcCompat="@drawable/ic_earth_orange_24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imageView4"
+                        android:gravity="center"
+                        android:text="@string/site"
+                        android:textColor="#FF5722"
+
+                        android:textSize="19dp" />
+
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+        </GridLayout>
+
+        <ImageView
+            android:id="@+id/nointernet"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/nointernet"
+            android:visibility="gone" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecycleGrand"
+            android:layout_width="match_parent"
+            android:layout_height="347dp"
+            android:background="@android:color/white"
+            android:layout_below="@+id/gridGrand">
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/nocollegue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/gridGrand"
+            android:layout_centerInParent="true"
+            android:alpha="0.3">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imagevide"
+                    android:layout_width="300dp"
+                    android:layout_height="200dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/nobodyhere" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/circle_false"
-            android:gravity="center"
-            android:visibility="gone">
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="255dp"
+            android:layout_marginRight="20dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:srcCompat="@drawable/fui_ic_check_circle_black_128dp"
-                android:contentDescription="@string/check_not_button" />
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+            <RelativeLayout
+                android:id="@+id/checkGrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_circle_white"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="@string/green_button"
+                    app:srcCompat="@drawable/fui_ic_check_circle_black_128dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/checknotGrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_false"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:contentDescription="@string/check_not_button"
+                    app:srcCompat="@drawable/fui_ic_check_circle_black_128dp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

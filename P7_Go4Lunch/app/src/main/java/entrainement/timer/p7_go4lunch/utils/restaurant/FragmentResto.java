@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ public class FragmentResto extends Fragment {
     private static final String TAG = "FragmentContact";
     private CoordinatorLayout coordinatorLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private CardView norestaurant;
 
 
     @Override
@@ -52,18 +54,26 @@ public class FragmentResto extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fragment_resto, container, false);
         recyclerView =  view.findViewById(R.id.recycleContact);
         recyclerView.setHasFixedSize(true);
+        norestaurant= view.findViewById(R.id.norestaurant);
         layoutManager = new LinearLayoutManager(view.getContext());
         coordinatorLayout= view.findViewById(R.id.coordinate);
         recyclerView.setLayoutManager(layoutManager);
         serviceCollegue.getListCollegue();
         recyclerView.setAdapter(adapter);
 
+
         Other.checkrealtime(new Other.Adapterinterf() {
             @Override
             public void onFinish(List<Results> listePlaceApi) {
+                if (listePlaceApi.isEmpty())
+                {
+                    norestaurant.setVisibility(View.VISIBLE);
+                } else
+                {
+                    norestaurant.setVisibility(view.GONE);
+                }
                 AdaptateurPlace adapter=new AdaptateurPlace(listePlaceApi);
                 recyclerView.setAdapter(adapter);
-
             }
 
             @Override
@@ -90,6 +100,7 @@ public class FragmentResto extends Fragment {
 
         inflater.inflate(R.menu.search, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
+        menu.setGroupVisible(R.id.sortedmenu,true);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(getContext().SEARCH_SERVICE);
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
@@ -123,6 +134,8 @@ public class FragmentResto extends Fragment {
             });
         }
     }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 

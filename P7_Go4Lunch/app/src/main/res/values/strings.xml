@@ -157,7 +157,7 @@
     <string name="site">Site</string>
     <string name="go4lunch">Go4Lunch</string>
     <string name="deconnection">Deconnection</string>
-    <string name="etes_vous_sur_de_voulaoir_partir">Etes vous sur de voulaoir partir ?</string>
+    <string name="etes_vous_sur_de_voulaoir_partir">Etes vous sur de vouloir partir ?</string>
     <string name="me_rappeler_mon_rendez_vous_de_demain">Me rappeler mon rendez vous de demain ?</string>
     <string name="activer">Activer ?</string>
     <string name="nom">nom</string>
@@ -174,5 +174,6 @@
     <string name="se_deconnecter">Se Deconnecter</string>
     <string name="bad_internet">Connexion Internet mauvaise ou inexistante</string>
     <string name="unaivailable">horaire non disponible</string>
+    <string name="no_restaurant_detected">No Restaurant Detected</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

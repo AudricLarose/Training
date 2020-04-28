@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinate"
     android:orientation="vertical"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:listitem="@layout/rowresto"
-    tools:context=".utils.restaurant.FragmentResto">
+    tools:context=".utils.restaurant.FragmentResto"
+    tools:listitem="@layout/rowresto">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleContact"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="60sp"
-            android:layout_marginBottom="60sp"
-            />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleContact"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60sp"
+        android:layout_marginBottom="60sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/norestaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.3"
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:id="@+id/imagerestaurant"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:background="@drawable/norestaurant1" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="210dp"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_orange_dark"
+                android:text="@string/no_restaurant_detected" />
+
+        </androidx.cardview.widget.CardView>
+
+
+
+
+    </RelativeLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,4 +1,4 @@
-package entrainement.timer.p7_go4lunch.api;
+package entrainement.timer.p7_go4lunch.utils;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

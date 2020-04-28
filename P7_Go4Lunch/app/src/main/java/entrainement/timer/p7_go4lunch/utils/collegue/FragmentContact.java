@@ -21,7 +21,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.api.ViewModelApi;
+import entrainement.timer.p7_go4lunch.utils.ViewModelApi;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;

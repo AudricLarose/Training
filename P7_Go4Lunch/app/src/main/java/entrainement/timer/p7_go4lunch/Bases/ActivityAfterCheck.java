@@ -113,7 +113,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
         View view= getLayoutInflater().from(this).inflate(R.layout.backpressed,null);
         builder.setView(view).setTitle(getString(R.string.areyousur)).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
@@ -166,7 +165,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search,menu);
         MenuItem menuItem= menu.findItem(R.id.search);
-        MenuItem sortedmenu = menu.findItem(R.id.sortedmenu);
         searchView= (SearchView) menuItem.getActionView();
         return true;
     }

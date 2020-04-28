@@ -77,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createSignInIntent(0);
-                Other.internetIsOn(MainActivity.this);
-                Other.GPSOnVerify(MainActivity.this);
+                Other.InternetOnVerify(MainActivity.this);
             }
         });
     }
@@ -104,9 +103,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Other.internetIsOn(MainActivity.this);
-                Other.GPSOnVerify(MainActivity.this);
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                Other.InternetOnVerify(MainActivity.this);
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 

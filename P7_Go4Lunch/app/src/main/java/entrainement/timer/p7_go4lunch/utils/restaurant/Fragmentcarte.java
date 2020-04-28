@@ -2,6 +2,7 @@ package entrainement.timer.p7_go4lunch.utils.restaurant;
 
 import android.Manifest;
 import android.app.SearchManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,21 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,13 +41,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.util.Arrays;
 import java.util.List;
 
-import entrainement.timer.p7_go4lunch.AdaptateurSuggestion;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
@@ -58,23 +59,22 @@ import entrainement.timer.p7_go4lunch.model.Results;
 import entrainement.timer.p7_go4lunch.utils.Other;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsActivity";
+    int AUTOCOMPLETE_REQUEST_CODE = 1;
     private GoogleMap mMap;
     private ExtendedServicePlace extendedServicePlace;
     private ImageButton localise;
     private PlacesClient placesClient;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private FindCurrentPlaceRequest request;
-    private ProgressBar progressBar;
     private SearchView searchView = null;
     private ExtendedServiceCollegue serviceCollegue = DI.getService();
     private ExtendedServicePlace servicePlace = DI.getServicePlace();
     private RequestQueue queue;
-//    private RecyclerView recyclerView;
-//    private RecyclerView.LayoutManager layoutManager;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,20 +97,11 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
         placesClient = Places.createClient(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         serviceCollegue.updateMyLikes();
-//        recyclerView = rootView.findViewById(R.id.RecycleviewMapSuggestion);
         extendedServicePlace = DI.getServicePlace();
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-//        layoutManager = new LinearLayoutManager(rootView.getContext());
         queue = Volley.newRequestQueue(getContext());
         List<entrainement.timer.p7_go4lunch.model.Place> placeList = servicePlace.generateSuggestion();
-        AdaptateurSuggestion adaptateurSuggestion = new AdaptateurSuggestion(placeList);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setAdapter(adaptateurSuggestion);
-//        if (placeList.isEmpty()) {
-//            recyclerView.setVisibility(View.GONE);
-//        }
         return rootView;
     }
 
@@ -132,71 +123,64 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
         }
+
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            searchView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.TYPES);
+                    Intent intent = new Autocomplete.IntentBuilder(
+                            AutocompleteActivityMode.FULLSCREEN, placeFields)
+                            .build(getContext());
+                    startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                }
+            });
             searchView.setOnSearchClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    recyclerView.setVisibility(View.VISIBLE);
-
+                    List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.TYPES);
+                    Intent intent = new Autocomplete.IntentBuilder(
+                            AutocompleteActivityMode.FULLSCREEN, placeFields)
+                            .setCountry("FR")
+                            .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                             .build(getContext());
+                    startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
                 }
             });
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    Other.FilterSearch(getContext(), query, mMap, new Other.Finishsuggest() {
-                        @Override
-                        public void onFinish(List<entrainement.timer.p7_go4lunch.model.Place> placeList) {
-//                            recyclerView.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    return false;
-                }
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    Other.FilterSearch(getContext(), newText, mMap, new Other.Finishsuggest() {
-                        @Override
-                        public void onFinish(List<entrainement.timer.p7_go4lunch.model.Place> placeList) {
+        }
+    }
 
-                        }
-                    });
-                    return true;
-                }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Other.FilterSearch(getContext(), place.getName(), mMap, new Other.Finishsuggest() {
+                    @Override
+                    public void onFinish(List<entrainement.timer.p7_go4lunch.model.Place> placeList) {
 
-            });
+                    }
+                });
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
         mMap.setMinZoomPreference(6.0f);
         mMap.setMaxZoomPreference(14.0f);
         Other.GPSOnVerify(getContext());
         Places.initialize(getContext(), getString(R.string.pswd));
-//        recyclerView.setVisibility(View.GONE);
-        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                Other.internetIsOn(getContext());
-                LatLng variable = mMap.getCameraPosition().target;
-                if (getContext().checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                        getContext().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, 1);
-                } else {
-                    String latl = variable.latitude + "," + variable.longitude;
-//                    Other.CallApiPlease(getContext(), latl, mMap, new Other.TheCalling() {
-//                        @Override
-//                        public void onFinish() {
-//                        }
-//                    });
-
-                }
-            }
-        });
         Other.checkrealtime(new Other.Adapterinterf() {
             @Override
             public void onFinish(List<Results> listePlaceApi) {
@@ -205,7 +189,7 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
 
             @Override
             public void onRequest(List<Results> request) {
-                if (request!=null && !request.isEmpty()&&request.get(0).getLat()!=null) {
+                if (request != null && !request.isEmpty() && request.get(0).getLat() != null) {
                     for (int i = 0; i < request.size(); i++) {
                         double latitude = Double.parseDouble(request.get(i).getLat());
                         double longitude = Double.parseDouble(request.get(i).getLongi());
@@ -215,6 +199,7 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
                 }
             }
         });
+
         List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.TYPES);
         request = FindCurrentPlaceRequest.newInstance(placeFields);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
