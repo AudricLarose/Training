@@ -49,9 +49,11 @@ public class AdaptateurPlace extends RecyclerView.Adapter<AdaptateurPlace.LeHold
         Results place = listedeplaces.get(position);
         holder.nom.setText(place.getName());
         holder.adresse.setText(place.getVicinity());
-        holder.perso.setText(place.getWhocome());
+        String number= "("+place.getWhocome()+")";
+        holder.perso.setText(number);
         place.getGeometry().getLocation().setDistance(Other.getDistance(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng()));
-        holder.distance.setText(String.valueOf(place.getGeometry().getLocation().getDistance()));
+        String meter= String.valueOf(place.getGeometry().getLocation().getDistance())+"m";
+        holder.distance.setText(meter);
         if (place!= null) {
             if (place.getOpeningHours()!= null && place.getOpeningHours().getOpenNow()!=null) {
                 if (place.getOpeningHours().getOpenNow() == true) {

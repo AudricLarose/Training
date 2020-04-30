@@ -11,7 +11,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +39,7 @@ public class FragmentResto extends Fragment {
     private List<Results> liste2Place = servicePlace.generateListPlaceAPI();
     private SearchView searchView = null;
     private AdaptateurPlace adapter=new AdaptateurPlace(liste2Place);
-    private static final String TAG = "FragmentContact";
     private CoordinatorLayout coordinatorLayout;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private CardView norestaurant;
 
 
@@ -97,7 +93,6 @@ public class FragmentResto extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-
         inflater.inflate(R.menu.search, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
         menu.setGroupVisible(R.id.sortedmenu,true);
@@ -116,13 +111,11 @@ public class FragmentResto extends Fragment {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    Toast.makeText(getContext(), newText, Toast.LENGTH_SHORT).show();
                     String userInput = newText.toLowerCase();
                     List<Results> newList = new ArrayList<>();
                     for (Results name :liste2Place)
                     {
                         if (name.getName().toLowerCase().contains(userInput)){
-                            Toast.makeText(getContext(), name.getName(), Toast.LENGTH_SHORT).show();
                             newList.add(name);
                         }
                     }

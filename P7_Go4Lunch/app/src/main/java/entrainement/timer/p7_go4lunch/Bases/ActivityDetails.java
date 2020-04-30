@@ -91,7 +91,6 @@ public class ActivityDetails extends AppCompatActivity {
         AdaptateurQuiVient adapter = new AdaptateurQuiVient(viewModelApi.getwhocome(), this);
 
         // I verifiy if User have internet and the GPS on.
-        Other.initGlobalVerificationConnectionCheck(ActivityDetails.this);
         Intent intent = this.getIntent();
         Bundle extra = intent.getExtras();
         if (extra != null) {
@@ -270,42 +269,6 @@ public class ActivityDetails extends AppCompatActivity {
         nointernet.setVisibility(View.VISIBLE);
     }
 
-    private void iUnpressLikeButton(Results place) {
-        unlikebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                myLikes.remove(place.getPlaceId());
-                Me.setMyLikes(myLikes);
-                servicePlace.unLike(place);
-                unlikebutton.setVisibility(View.GONE);
-                like.setVisibility(View.VISIBLE);
-
-                Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
-//                    etoiles.setRating(Integer.parseInt(starData.trim()) - 1);
-            }
-        });
-    }
-
-    private void iUnpresschoiceButton(RelativeLayout myChoice, Results place) {
-        put_me_Out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                collegueList.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
-                Me.setMy_choice(" ");
-                Me.setId_mychoice(" ");
-                serviceCollegue.dontaddMyChoice();
-                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
-                serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
-                servicePlace.unsaveMyPlace(place);
-                serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getName());
-                put_me_Out.setVisibility(View.GONE);
-                myChoice.setVisibility(View.VISIBLE);
-                Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
-            }
-        });
-    }
-
     private void iPressChoiceButton(RelativeLayout myChoice, Results place) {
         myChoice.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -344,10 +307,44 @@ public class ActivityDetails extends AppCompatActivity {
                 like.setVisibility(View.GONE);
                 unlikebutton.setVisibility(View.VISIBLE);
                 Snackbar.make(coordinatorLayout, getString(R.string.youlike), Snackbar.LENGTH_LONG).show();
-//                    etoiles.setRating(Integer.parseInt(starData.trim()) + 1);
             }
         });
     }
+
+    private void iUnpressLikeButton(Results place) {
+        unlikebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myLikes.remove(place.getPlaceId());
+                Me.setMyLikes(myLikes);
+                servicePlace.unLike(place);
+                unlikebutton.setVisibility(View.GONE);
+                like.setVisibility(View.VISIBLE);
+                Snackbar.make(coordinatorLayout, getString(R.string.dontlike), Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void iUnpresschoiceButton(RelativeLayout myChoice, Results place) {
+        put_me_Out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collegueList.remove(new Collegue(Me.getMyName(), getString(R.string.mychoice), Me.getMyPhoto()));
+                Me.setMy_choice(" ");
+                Me.setId_mychoice(" ");
+                serviceCollegue.dontaddMyChoice();
+                collegueList = servicePlace.CompareCollegueNPlace(place, ActivityDetails.this);
+                serviceCollegue.twentyFourHourLast(ActivityDetails.this, true);
+                servicePlace.unsaveMyPlace(place);
+                serviceCollegue.whenNotifyme(ActivityDetails.this, false, place.getName());
+                put_me_Out.setVisibility(View.GONE);
+                myChoice.setVisibility(View.VISIBLE);
+                Snackbar.make(coordinatorLayout, getString(R.string.retired), Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
 
     @Override
     protected void onResume() {

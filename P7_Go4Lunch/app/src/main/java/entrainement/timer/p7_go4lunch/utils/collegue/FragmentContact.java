@@ -49,6 +49,7 @@ public class FragmentContact extends Fragment {
         layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
         Other.checkrealitimeCollegue(new Other.AdapterCollegueCB() {
             @Override
             public void onFinish(List<Collegue> listresultcollegue) {

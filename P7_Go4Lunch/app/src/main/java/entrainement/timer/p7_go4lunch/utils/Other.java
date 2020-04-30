@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,11 +37,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -58,7 +55,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -67,13 +63,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import entrainement.timer.p7_go4lunch.Bases.ActivityDetails;
+import entrainement.timer.p7_go4lunch.BuildConfig;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
+import entrainement.timer.p7_go4lunch.api.Inter;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
 import entrainement.timer.p7_go4lunch.api.restaurant.ExtendedServicePlace;
 import entrainement.timer.p7_go4lunch.model.ApiforOnePlace;
 import entrainement.timer.p7_go4lunch.model.Collegue;
-import entrainement.timer.p7_go4lunch.api.Inter;
 import entrainement.timer.p7_go4lunch.model.Me;
 import entrainement.timer.p7_go4lunch.model.PlaceApi;
 import entrainement.timer.p7_go4lunch.model.Results;
@@ -90,23 +87,7 @@ public class Other {
     private static PlacesClient placesClient;
     private static FusedLocationProviderClient fusedLocationProviderClient;
     private FindCurrentPlaceRequest request;
-//
-//
-//    // Update the list of the modele
-//    public static void updatemyliste(String id, List<Results> liste2place, int increment, String go_or_like) {
-//        for (Results place : liste2place) {
-//            if (place.getId().equals(id)) {
-//                switch (go_or_like) {
-//                    case "go":
-//                        break;
-//                    case "like":
-//                        place.setLike(valueOf(Integer.valueOf(place.getLike()) + increment));
-//                        break;
-//                    default:
-//                }
-//            }
-//        }
-//    }
+
 
     public static List<Results> incrementIncomeCollegue(String id, List<Results> resultsList, int increment) {
         for (Results place : resultsList) {
@@ -164,6 +145,7 @@ public class Other {
         AlertDialog alertDialog = AlertGPS(context);
         alertDialog.show();
     }
+
     private static AlertDialog AlertGPS(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(R.string.mustGPSOn).setTitle("Alert GPS").setPositiveButton(R.string.GPSok, new DialogInterface.OnClickListener() {
@@ -174,6 +156,7 @@ public class Other {
         });
         return builder.create();
     }
+
     // Verify if user have Internet is on and stop if not
     public static boolean InternetOnVerify(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -201,6 +184,7 @@ public class Other {
         AlertDialog alertDialog = AlertInternet(context);
         alertDialog.show();
     }
+
     private static AlertDialog AlertInternet(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Vous devez activer votre connexion internet pour profiter de l'application").setTitle("Alert Internet").setPositiveButton("J'ai bien activé ma connexion", new DialogInterface.OnClickListener() {
@@ -325,6 +309,7 @@ public class Other {
             Toast.makeText(activity, R.string.nordv, Toast.LENGTH_LONG).show();
         }
     }
+
     public static void theGoodPlace(String id, String name, String photo, Double etoile, String adresse, ThegoodPlace thegoodPlace) {
         Results place = new Results(id, name, photo, etoile, adresse);
         thegoodPlace.GoodPlace(place);
@@ -349,15 +334,6 @@ public class Other {
         }
     }
 
-    public static void initGlobalVerificationConnectionCheck(Context context) {
-        context.registerReceiver(
-                new ConnectivityChangeReceiver(),
-                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        context.registerReceiver(
-                new initBroadcaster4GPS(),
-                new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-    }
-
     public static int getDistance(Double lat, Double longe) {
         float[] result = new float[1];
         Location.distanceBetween(Me.getMy_latitude(), Me.getMy_longitude(), lat, longe, result);
@@ -370,9 +346,9 @@ public class Other {
             @Override
             public int compare(Results o1, Results o2) {
                 if (o1.getGeometry().getLocation().getDistance() > o2.getGeometry().getLocation().getDistance()) {
-                    return -1;
-                } else {
                     return 1;
+                } else {
+                    return -1;
                 }
             }
 
@@ -415,44 +391,10 @@ public class Other {
         return url;
     }
 
-    public static void FilterSearch(Context context, String query, GoogleMap mMap, Finishsuggest finishsuggest) {
-        ExtendedServicePlace extendedServicePlace = DI.getServicePlace();
-        List<entrainement.timer.p7_go4lunch.model.Place> placeList = extendedServicePlace.generateSuggestion();
-        placeList.clear();
-        if (query != null) {
-            FindAutocompletePredictionsRequest request1 = launchPlace(context, query);
-            placesClient.findAutocompletePredictions(request1).addOnSuccessListener((response) -> {
-                placeList.clear();
-                for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                    String placeId = prediction.getPlaceId();
-                    List<com.google.android.libraries.places.api.model.Place.Field> placeFields = Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME, com.google.android.libraries.places.api.model.Place.Field.LAT_LNG);
-                    FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
-                    placesClient.fetchPlace(request).addOnSuccessListener((response1) -> {
-                        Place place = response1.getPlace();
-                        placeList.add(new entrainement.timer.p7_go4lunch.model.Place(place.getId(), place.getName(), place.getAddress(), " ", ""));
-                        LatLng place_found = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-                        finishsuggest.onFinish(placeList);
-                        addPlaceWithInfo(context, mMap, place, place_found);
-                    }).addOnFailureListener((exception) -> {
-                        if (exception instanceof ApiException) {
-                            ApiException apiException = (ApiException) exception;
-                            int statusCode = apiException.getStatusCode();
-                            // Handle error with given status code.
-                            Log.e(TAG, "Place not found: " + exception.getMessage());
-                        }
-                    });
-                }
-            }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    ApiException apiException = (ApiException) exception;
-                    Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                }
-            });
-        }
-    }
 
-    private static void addPlaceWithInfo(Context context, GoogleMap mMap, Place place, LatLng place_found) {
-        String adresse = getAdresseOfPlace(place_found.latitude,place_found.longitude, context);
+    public static void addOnePlaceWithInfo(Context context, GoogleMap mMap, Place place) {
+        LatLng place_found = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+        String adresse = getAdresseOfPlace(place_found.latitude, place_found.longitude, context);
         mMap.addMarker(new MarkerOptions().position(place_found).title(place.getName()).snippet(adresse).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -485,11 +427,11 @@ public class Other {
     private static String getAdresseOfPlace(double latitude, double longitude, Context context) {
 
         String adress = " ";
-        Geocoder geocoder= new Geocoder(context, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addressList = null;
         try {
-            addressList = geocoder.getFromLocation(latitude,longitude,1);
-            adress=addressList.get(0).getAddressLine(0);
+            addressList = geocoder.getFromLocation(latitude, longitude, 1);
+            adress = addressList.get(0).getAddressLine(0);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -499,9 +441,8 @@ public class Other {
     }
 
     private static FindAutocompletePredictionsRequest launchPlace(Context context, String query) {
-        Places.initialize(context, context.getString(R.string.pswd));
+        Places.initialize(context, BuildConfig.API_KEY_GMAIL);
         placesClient = Places.createClient(context);
-        Toast.makeText(context, query, Toast.LENGTH_SHORT).show();
         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
         return FindAutocompletePredictionsRequest.builder()
                 .setSessionToken(token)
@@ -521,7 +462,7 @@ public class Other {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot
                                                 queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots!=null) {
+                        if (queryDocumentSnapshots != null) {
                             List<Collegue> resultsBDD = queryDocumentSnapshots.toObjects(Collegue.class);
                             for (int i = 0; i < listeCollegue.size(); i++) {
                                 for (Collegue resultBDD : resultsBDD) {
@@ -561,6 +502,7 @@ public class Other {
     }
 
     public static void mylocation(Activity activity, GoogleMap mMap, Context context) {
+        Other.GPSOnVerify(context);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<Location>() {
             @Override
@@ -572,14 +514,9 @@ public class Other {
                     updateWhereIam(latitude, longitude, latLng);
                     Other other = new Other();
                     String latl = latitude + "," + longitude;
-                    other.CallApiPlease(context, latl, mMap, new Other.TheCalling() {
-                        @Override
-                        public void onFinish() {
-
-                        }
-                    });
                     mMap.addMarker(new MarkerOptions().position(latLng).title(context.getString(R.string.here)).icon(BitmapDescriptorFactory.fromResource(R.drawable.localisation)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    other.CallApiPlease(context, latl, mMap);
                 }
             }
 
@@ -593,14 +530,14 @@ public class Other {
     }
 
     //Get the Place With API Place
-    public static void CallApiPlease(Context context, String location, GoogleMap map, TheCalling callback) {
+    public static void CallApiPlease(Context context, String location, GoogleMap map) {
         String baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(ScalarsConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
                 .build();
         Inter intera = retrofit.create(Inter.class);
-        Call<String> call = intera.getplaces("ChIJN1t_tDeuEmsRUsoyG83frY4", "AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c", location, "restaurant", "800", "cruise");
+        Call<String> call = intera.getplaces(context.getString( R.string.place_id), BuildConfig.API_KEY_PLACE, location, "restaurant", "800", "cruise");
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
@@ -625,7 +562,6 @@ public class Other {
                         public void onFinish() {
                             servicePlace.GetApiPlace(context, map);
                             Other.EraseMyBddWisely();
-                            callback.onFinish();
                         }
                     });
                 } catch (JSONException e) {
@@ -647,7 +583,7 @@ public class Other {
                 .addConverterFactory(ScalarsConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
                 .build();
         Inter intera = retrofit.create(Inter.class);
-        Call<String> call = intera.getOnlyOnePlaceWithDetails(location, "AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c", "id,name,geometry,website,formatted_phone_number,type,vicinity,photo");
+        Call<String> call = intera.getOnlyOnePlaceWithDetails(location, BuildConfig.API_KEY_PLACE, "id,name,geometry,website,formatted_phone_number,type,vicinity,photo");
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
@@ -674,10 +610,6 @@ public class Other {
         });
     }
 
-    public interface Finishsuggest {
-        void onFinish(List<entrainement.timer.p7_go4lunch.model.Place> placeList);
-    }
-
     public interface AdapterCollegueCB {
         void onFinish(List<Collegue> listresultcollegue);
     }
@@ -686,20 +618,11 @@ public class Other {
         void onFinish(Results apiforOnePlaces);
     }
 
-    public interface TheCalling {
-        void onFinish();
-    }
 
     public interface Adapterinterf {
         void onFinish(List<Results> listePlaceApi);
 
         void onRequest(List<Results> request);
-    }
-
-    public interface OnFinish<T> {
-        void success(List<T> objects);
-
-        void error(Exception e);
     }
 
 

@@ -42,15 +42,11 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     // Generate the list of Place and placing  Markers  in function of the size list
     public void GetApiPlace(Context context, GoogleMap mMap) {
-        ExtendedServicePlace servicePlace = DI.getServicePlace();
-        List<Results> resultsList = servicePlace.generateListPlaceAPI();
-        for (Results results : resultsList) {
-            PlacetheInfoPlace(context, mMap);
-        }
+            PlaceListInfoPlace(context, mMap);
     }
 
     // Put info on the place
-    void PlacetheInfoPlace(Context context, GoogleMap mMap) {
+    void PlaceListInfoPlace(Context context, GoogleMap mMap) {
         for (Results place : listPlaceApi) {
             if (place.getGeometry().getLocation().getLat() != null) {
                 LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
@@ -76,8 +72,6 @@ public class ExtendedServicePlace implements InterfacePlace {
 
     // Place the Marker
     public void eventPlace(GoogleMap mMap, Results place, LatLng latLng) {
-//        if (place.getGeometry().getLocation().getLat() != null) {
-//            LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
             Marker marker;
             if (place.getWhocome()==null){
                 place.setWhocome("0");
@@ -119,8 +113,6 @@ public class ExtendedServicePlace implements InterfacePlace {
         });
         return tmp;
     }
-
-
 
     // Call back of CompareNPlace
     public interface Increment {
@@ -169,7 +161,7 @@ public class ExtendedServicePlace implements InterfacePlace {
                     .document(idrestaurant)
                     .collection("choice")
                     .document(Me.getMyName())
-                    .update(note2);
+                    .set(note2);
         }
     }
 

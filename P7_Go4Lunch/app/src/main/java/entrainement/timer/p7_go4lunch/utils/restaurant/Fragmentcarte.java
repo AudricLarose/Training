@@ -51,6 +51,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.Arrays;
 import java.util.List;
 
+import entrainement.timer.p7_go4lunch.BuildConfig;
 import entrainement.timer.p7_go4lunch.DI.DI;
 import entrainement.timer.p7_go4lunch.R;
 import entrainement.timer.p7_go4lunch.api.collegue.ExtendedServiceCollegue;
@@ -93,7 +94,7 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
         View rootView = inflater.inflate(R.layout.fragment_fragmentcarte, container, false);
         localise = rootView.findViewById(R.id.local);
         extendedServicePlace = DI.getServicePlace();
-        Places.initialize(getContext(), getString(R.string.pswd));
+        Places.initialize(getContext(), BuildConfig.API_KEY_GMAIL);
         placesClient = Places.createClient(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         serviceCollegue.updateMyLikes();
@@ -113,12 +114,7 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
 
         inflater.inflate(R.menu.search, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
-        MenuItem sortedmenu = menu.findItem(R.id.sortedmenu);
 
-        if (sortedmenu != null) {
-            SearchView searchView2 = (SearchView) sortedmenu.getActionView();
-            searchView2.setVisibility(View.INVISIBLE);
-        }
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(getContext().SEARCH_SERVICE);
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
@@ -139,7 +135,7 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
             searchView.setOnSearchClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.TYPES);
+                    List<Place.Field> placeFields = Arrays.asList(Place.Field.ID,Place.Field.NAME, Place.Field.TYPES, Place.Field.LAT_LNG);
                     Intent intent = new Autocomplete.IntentBuilder(
                             AutocompleteActivityMode.FULLSCREEN, placeFields)
                             .setCountry("FR")
@@ -157,16 +153,9 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Other.FilterSearch(getContext(), place.getName(), mMap, new Other.Finishsuggest() {
-                    @Override
-                    public void onFinish(List<entrainement.timer.p7_go4lunch.model.Place> placeList) {
-
-                    }
-                });
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Other.addOnePlaceWithInfo(getContext(), mMap, place);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
@@ -177,16 +166,11 @@ public class Fragmentcarte<call> extends Fragment implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(6.0f);
-        mMap.setMaxZoomPreference(14.0f);
         Other.GPSOnVerify(getContext());
-        Places.initialize(getContext(), getString(R.string.pswd));
+        Places.initialize(getContext(), BuildConfig.API_KEY_GMAIL);
         Other.checkrealtime(new Other.Adapterinterf() {
             @Override
-            public void onFinish(List<Results> listePlaceApi) {
-
-            }
-
+            public void onFinish(List<Results> listePlaceApi) {}
             @Override
             public void onRequest(List<Results> request) {
                 if (request != null && !request.isEmpty() && request.get(0).getLat() != null) {

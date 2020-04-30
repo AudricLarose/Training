@@ -67,9 +67,6 @@ public class ActivityAfterCheck extends AppCompatActivity {
         nameSide.setText(Me.getMyName());
         mailSide.setText(Me.getMyMail());
 
-        // I verifiy if User have internet and the GPS on.
-        Other.initGlobalVerificationConnectionCheck(ActivityAfterCheck.this);
-
 
         // SideBar Hidden
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

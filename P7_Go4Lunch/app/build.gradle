@@ -10,6 +10,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -21,11 +22,13 @@ android {
             buildConfigField "boolean", "enableDebugLogging", "false"
             buildConfigField "String", "API_KEY_FACEBOOK", "\"1255943667937708\""
             buildConfigField "String", "API_KEY_GMAIL", "\"AIzaSyApIPM8WUg0LDig8wUeSY8vvz3dj8mbgTc\""
+            buildConfigField "String", "API_KEY_PLACE", "\"AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c\""
             resValue "string", "build_type", "Release" }
         debug {
             buildConfigField "boolean", "enableDebugLogging", "true"
             buildConfigField "String", "API_KEY_FACEBOOK", "\"1255943667937708\""
             buildConfigField "String", "API_KEY_GMAIL", "\"AIzaSyApIPM8WUg0LDig8wUeSY8vvz3dj8mbgTc\""
+            buildConfigField "String", "API_KEY_PLACE", "\"AIzaSyC85iU9E8o4rOCwv2UurWP31fGXaTRcL8c\""
         }
     }
     compileOptions {
@@ -54,6 +57,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'com.android.support:multidex:1.0.3'
+
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -83,7 +88,6 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
     implementation 'com.twitter.sdk.android:twitter-core:3.3.0'
-    implementation 'com.google.firebase:firebase-firestore:21.4.1'
     implementation 'com.google.firebase:firebase-core:17.2.3'
     implementation 'com.firebaseui:firebase-ui-firestore:4.1.0'
     testImplementation 'junit:junit:4.12'

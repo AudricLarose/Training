@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         cardFa=findViewById(R.id.cardFa);
         cardG = findViewById(R.id.cardG);
         loginButton = findViewById(R.id.cardF);
-        Other.initGlobalVerificationConnectionCheck(MainActivity.this);
+        Other.GPSOnVerify(MainActivity.this);
         initializeFBLogin();
         cardFa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createSignInIntent(0);
+                Other.GPSOnVerify(MainActivity.this);
                 Other.InternetOnVerify(MainActivity.this);
             }
         });
@@ -104,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Other.InternetOnVerify(MainActivity.this);
+                Other.GPSOnVerify(MainActivity.this);
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 

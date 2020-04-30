@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">P7Go4Lunch</string>
     <string name="eating_at">mange au</string>
-    <string name="coming"> vient !</string>
+    <string name="coming">y va !</string>
     <string name="dont_choose"> n\'a pas encore choisi </string>
     <string name="Map">Carte</string>
     <string name="list">Liste </string>
@@ -141,7 +141,7 @@
     <string name="button_like">Button like</string>
     <string name="internet_button">Internet Button</string>
     <string name="like">Like</string>
-    <string name="unlike">Unlike</string>
+    <string name="unlike">"Disliké "</string>
     <string name="green_button">green Button</string>
     <string name="check_not_button">check not button</string>
     <string name="connectez_vous_avec_facebook">Connectez vous avec Facebook</string>
@@ -175,5 +175,6 @@
     <string name="bad_internet">Connexion Internet mauvaise ou inexistante</string>
     <string name="unaivailable">horaire non disponible</string>
     <string name="no_restaurant_detected">No Restaurant Detected</string>
+    <string name="place_id">ChIJN1t_tDeuEmsRUsoyG83frY4</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

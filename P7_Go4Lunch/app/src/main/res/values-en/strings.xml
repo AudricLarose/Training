@@ -63,4 +63,5 @@
     <string name="me_rappeler_mon_rendez_vous_de_demain">Ask me for rendez-vous tommorrows ?</string>
     <string name="mustGPSOn">"You must turn on your GPS to continue with your apps "</string>
     <string name="no_restaurant_detected">Aucun Restaurant détecté</string>
+    <string name="unlike">Unlike</string>
 </resources>
