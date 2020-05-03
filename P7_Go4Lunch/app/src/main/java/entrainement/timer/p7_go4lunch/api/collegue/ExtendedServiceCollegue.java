@@ -11,7 +11,6 @@ import android.os.SystemClock;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.MutableLiveData;
 
@@ -116,13 +115,17 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
 
     @Override
     public void getme(String id) {
-        for (Collegue collegue : collegues) {
-            if (collegue.getId().equals(id)) {
-                Me.setMy_choice(collegue.getChoice());
-                Me.setId_mychoice(collegue.getId_mychoice());
-                Me.setNoteChoice(collegue.getNote_choice());
-                boolean aBoolean = Boolean.valueOf(collegue.getBeNotified());
-                Me.setBeNotified(aBoolean);
+        if (collegues != null) {
+            for (Collegue collegue : collegues) {
+                if (collegue.getId() != null && id != null) {
+                    if (collegue.getId() != null && collegue.getId().equals(id)) {
+                        Me.setMy_choice(collegue.getChoice());
+                        Me.setId_mychoice(collegue.getId_mychoice());
+                        Me.setNoteChoice(collegue.getNote_choice());
+                        boolean aBoolean = Boolean.valueOf(collegue.getBeNotified());
+                        Me.setBeNotified(aBoolean);
+                    }
+                }
             }
         }
     }
@@ -180,11 +183,11 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         List<String> liste_who_come_with_me = new ArrayList<>();
         List<Collegue> listcollegue = collegues;
         for (Collegue collegue : listcollegue) {
-            if (collegue.getId_mychoice()!= null && collegue.getId_mychoice().equals(idRestaurant)) {
+            if (collegue.getId_mychoice() != null && collegue.getId_mychoice().equals(idRestaurant)) {
                 liste_who_come_with_me.add(collegue.getName());
                 Me.setGetCoworker(liste_who_come_with_me);
             } else {
-                Me.setGetCoworker(liste_who_come_with_me  );
+                Me.setGetCoworker(liste_who_come_with_me);
             }
         }
         return liste_who_come_with_me;
@@ -205,7 +208,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         Me.setId_mychoice(idRestaurant);
         Me.setChoicePhoto(photo);
         Me.setNoteChoice(notechoix);
-        Other.sendItToMyBDDPleaseatCollegue(id, collegues, restaurant,notechoix);
+        Other.sendItToMyBDDPleaseatCollegue(id, collegues, restaurant, notechoix);
     }
 
     @Override
@@ -226,7 +229,7 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
         if (Me.getMyName() != null) {
             String restaurant_name = Me.getMy_choice();
             names = Me.getGetCoworker();
-             names.remove(Me.getMyName());
+            names.remove(Me.getMyName());
             Intent intent = new Intent(context, ActivityDetails.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -241,12 +244,12 @@ public class ExtendedServiceCollegue implements InterfaceCollegue {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel1");
             if (names.size() != 0) {
                 builder.setContentTitle(context.getString(R.string.reminder))
-                        .setContentText(context.getString(R.string.rendezvous1)+ " " + restaurant_name + " " + context.getString(R.string.with)+ " " + names+ " " + context.getString(R.string.dontforget))
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1)+ " " + restaurant_name+ " " + context.getString(R.string.with) + " "+ names +" " + context.getString(R.string.au)+" "+ Me.getAdresschoice()+ " "+ context.getString(R.string.dontforget1)))
+                        .setContentText(context.getString(R.string.rendezvous1) + " " + restaurant_name + " " + context.getString(R.string.with) + " " + names + " " + context.getString(R.string.dontforget))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rdv1) + " " + restaurant_name + " " + context.getString(R.string.with) + " " + names + " " + context.getString(R.string.au) + " " + Me.getAdresschoice() + " " + context.getString(R.string.dontforget1)))
                         .setSmallIcon(R.mipmap.ic_launcher);
             } else {
                 builder.setContentTitle(context.getString(R.string.reminder))
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + " "+ restaurant_name+ " " + context.getString(R.string.au)+" "+ Me.getAdresschoice()+ " " + context.getString(R.string.dontforgetit1)))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.rendezvous) + " " + restaurant_name + " " + context.getString(R.string.au) + " " + Me.getAdresschoice() + " " + context.getString(R.string.dontforgetit1)))
                         .setContentText(context.getString(R.string.rendezvous3)).setSmallIcon(R.mipmap.ic_launcher);
             }
             if (notificationManager != null) {

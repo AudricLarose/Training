@@ -10,7 +10,6 @@ public class Geometry implements Serializable {
     @Expose
     private Location location;
 
-
     public Location getLocation() {
         return location;
     }

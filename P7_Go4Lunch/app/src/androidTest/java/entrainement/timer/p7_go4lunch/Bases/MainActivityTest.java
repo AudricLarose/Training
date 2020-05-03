@@ -58,7 +58,7 @@ public class MainActivityTest {
 
     @Test
     public  void isFaceBookHere(){
-        onView(ViewMatchers.withId(R.id.cardF))
+        onView(ViewMatchers.withId(R.id.cardF2))
                 .check(matches(isDisplayed()));
     }
     @Test
@@ -82,13 +82,13 @@ public class MainActivityTest {
     @Test
     public void ElementClickFacebook() {
         ViewInteraction cardView = onView(
-                allOf(withId(R.id.cardF),
+                allOf(withId(R.id.cardFa),
                         childAtPosition(
                                 allOf(withId(R.id.drawer_layout),
                                         childAtPosition(
                                                 withId(android.R.id.content),
                                                 0)),
-                                3),
+                                2),
                         isDisplayed()));
         cardView.perform(click());
     }

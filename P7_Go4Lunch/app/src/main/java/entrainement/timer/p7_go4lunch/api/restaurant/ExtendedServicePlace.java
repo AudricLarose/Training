@@ -48,10 +48,12 @@ public class ExtendedServicePlace implements InterfacePlace {
     // Put info on the place
     void PlaceListInfoPlace(Context context, GoogleMap mMap) {
         for (Results place : listPlaceApi) {
+            if (place.getGeometry() != null && place.getGeometry().getLocation() != null) {
             if (place.getGeometry().getLocation().getLat() != null) {
-                LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
+                    LatLng latLng = new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng());
                 eventPlace(mMap, place, latLng);
             }
+        }
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {

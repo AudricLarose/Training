@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -296,15 +295,19 @@ public class Other {
         Intent intent = new Intent(activity, ActivityDetails.class);
         Bundle extra = new Bundle();
         String name_lunch = Me.getMy_choice();
-        Other.theGoodPlace(id_rest, Me.getMy_choice(), Me.getChoicePhoto(), Double.valueOf(Me.getNoteChoice()) - 1, Me.getAdresschoice(), new ThegoodPlace() {
-            @Override
-            public void GoodPlace(Results results) {
-                extra.putSerializable("Place", results);
+        if (Me.getMy_choice() != null && !Me.getNoteChoice().isEmpty() && Me.getChoicePhoto() != null && Me.getAdresschoice() != null) {
+            Other.theGoodPlace(id_rest, Me.getMy_choice(), Me.getChoicePhoto(), Double.valueOf(Me.getNoteChoice()) - 1, Me.getAdresschoice(), new ThegoodPlace() {
+                @Override
+                public void GoodPlace(Results results) {
+                    extra.putSerializable("Place", results);
+                }
+            });
+            if (name_lunch != null && !name_lunch.trim().isEmpty()) {
+                intent.putExtras(extra);
+                activity.startActivity(intent);
+            } else {
+                Toast.makeText(activity, R.string.nordv, Toast.LENGTH_LONG).show();
             }
-        });
-        if (name_lunch != null && !name_lunch.trim().isEmpty()) {
-            intent.putExtras(extra);
-            activity.startActivity(intent);
         } else {
             Toast.makeText(activity, R.string.nordv, Toast.LENGTH_LONG).show();
         }
@@ -345,6 +348,7 @@ public class Other {
         Collections.sort(listePlaceApi, new Comparator<Results>() {
             @Override
             public int compare(Results o1, Results o2) {
+
                 if (o1.getGeometry().getLocation().getDistance() > o2.getGeometry().getLocation().getDistance()) {
                     return 1;
                 } else {
@@ -537,7 +541,7 @@ public class Other {
                 .addConverterFactory(ScalarsConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
                 .build();
         Inter intera = retrofit.create(Inter.class);
-        Call<String> call = intera.getplaces(context.getString( R.string.place_id), BuildConfig.API_KEY_PLACE, location, "restaurant", "800", "cruise");
+        Call<String> call = intera.getplaces(context.getString(R.string.place_id), BuildConfig.API_KEY_PLACE, location, "restaurant", "800", "cruise");
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {

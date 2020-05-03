@@ -58,6 +58,7 @@
                 android:layout_marginBottom="60sp" />
 
             <ImageView
+                android:id="@+id/cardF2"
                 android:layout_marginLeft="10dp"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"

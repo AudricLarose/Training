@@ -109,13 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
-
             @Override
             public void onCancel() {
                 Log.d(TAG, "facebook:onCancel");
                 // ...
             }
-
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
@@ -129,9 +127,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         service = DI.getService();
-
         if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
-
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String collegue = user.getDisplayName();
             String photo = user.getPhotoUrl().toString();

@@ -51,9 +51,13 @@ public class AdaptateurPlace extends RecyclerView.Adapter<AdaptateurPlace.LeHold
         holder.adresse.setText(place.getVicinity());
         String number= "("+place.getWhocome()+")";
         holder.perso.setText(number);
-        place.getGeometry().getLocation().setDistance(Other.getDistance(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng()));
-        String meter= String.valueOf(place.getGeometry().getLocation().getDistance())+"m";
-        holder.distance.setText(meter);
+
+        if (place.getGeometry()!=null && place.getGeometry().getLocation()!=null) {
+            place.getGeometry().getLocation().setDistance(Other.getDistance(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng()));
+            String meter = String.valueOf(place.getGeometry().getLocation().getDistance()) + "m";
+
+            holder.distance.setText(meter);
+        }
         if (place!= null) {
             if (place.getOpeningHours()!= null && place.getOpeningHours().getOpenNow()!=null) {
                 if (place.getOpeningHours().getOpenNow() == true) {
