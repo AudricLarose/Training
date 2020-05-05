@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
                         .setAvailableProviders(Collections.singletonList(providers.get(i)))
                         .build(),
                 RC_SIGN_IN);
